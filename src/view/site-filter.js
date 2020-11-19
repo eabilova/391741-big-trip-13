@@ -16,5 +16,5 @@ export const siteFilterTemplate = () => {
   </div>
 
   <button class="visually-hidden" type="submit">Accept filter</button>
-</form>`
-}
+</form>`;
+};

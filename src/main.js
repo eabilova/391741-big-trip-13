@@ -1,3 +1,4 @@
+import {render} from "./utils/render.js";
 import {tripInfoSectionTemplate} from "./view/trip-info-section.js";
 import {tripRouteTemplate} from "./view/trip-route.js";
 import {tripCostTemplate} from "./view/trip-cost.js";
@@ -9,15 +10,10 @@ import {editingFormTemlplate} from "./view/editing-form.js";
 import {siteContentListItemTemplate} from "./view/content-list-item.js";
 
 
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 const TASK_COUNT = 3;
 const BEFOREEND = `beforeend`;
 const AFTEREND = `afterend`;
 const AFTERBEGIN = `afterbegin`;
-const BEFOREBEGIN = `beforebegin`;
 const siteHeader = document.querySelector(`header`);
 const tripMain = siteHeader.querySelector(`.trip-main`);
 const tripControls = siteHeader.querySelector(`.trip-controls`);
