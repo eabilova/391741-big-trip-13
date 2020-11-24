@@ -41,17 +41,32 @@ const generateToCity = () => {
   return cities[randomIndex];
 };
 
-// const generateExtraOffers = () => {
-//   const offers = [
-//     `Add luggage`,
-//     `Switch to comfort`,
-//     `Add meal`,
-//     `Choose seats`,
-//     `Travel by train`,
-//   ];
-//
-//   return offers.slice(0, getRandomInteger(0, offers.length - 1));
-// };
+const generateExtraOffers = () => {
+  const offers = [
+    {
+      offerName: "Add luggage",
+      price: 30
+    },
+    {
+      offerName: "Switch to comfort",
+      price: 100
+    },
+    {
+      offerName: "Add meal",
+      price: 15
+    },
+    {
+      offerName: "Choose seats",
+      price: 5
+    },
+    {
+      offerName: "Travel by train",
+      price: 40
+    },
+  ];
+
+  return offers.slice(getRandomInteger(0, offers.length - 1));
+};
 
 const generateDescription = () => {
   const splitDescription = DESCRIPTION.split(`. `);
@@ -64,7 +79,7 @@ const generateDate = () => {
   const day = dayjs(date).format(`MMM DD`);
   const startTime = dayjs(date).format(`HH:mm`);
   const endDate = dayjs(date).add(getRandomInteger(0, 12), `hour`);
-  const endTime = endDate.format(`HH:mm`)
+  const endTime = endDate.format(`HH:mm`);
   const duration = endDate.diff(dayjs(date), `minute`);
 
   return {
@@ -72,7 +87,7 @@ const generateDate = () => {
     startTime,
     endTime,
     duration,
-  }
+  };
 };
 
 export const generateRoute = () => {
@@ -80,7 +95,7 @@ export const generateRoute = () => {
   return {
     type: generateRouteType(),
     city: generateToCity(),
-    // extraOffers: generateExtraOffers(),
+    extraOffers: generateExtraOffers(),
     destinationDescription: generateDescription(),
     photo: `http://picsum.photos/248/152?r=${Math.random()}`,
     time: {

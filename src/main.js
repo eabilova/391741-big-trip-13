@@ -8,6 +8,7 @@ import {siteSortingTemplate} from "./view/sorting.js";
 import {siteContentListTemplate} from "./view/content-list.js";
 import {editingFormTemlplate} from "./view/editing-form.js";
 import {siteContentListItemTemplate} from "./view/content-list-item.js";
+import {createEventOffer} from "./view/event-offer.js";
 import {generateRoute} from "./mock/route-point.js";
 
 const POINT_COUNT = 20;
@@ -37,6 +38,14 @@ render(tripEvents, siteContentListTemplate(), BEFOREEND);
 
 const tripList = tripEvents.querySelector(`.trip-events__list`);
 render(tripList, editingFormTemlplate(), AFTERBEGIN);
-for (let i = 0; i < POINT_COUNT; i++) {
+for (let i = 0; i < points.length; i++) {
   render(tripList, siteContentListItemTemplate(points[i]), BEFOREEND);
-}
+  const offerContainer = Array.from(tripList.querySelectorAll(`.event__selected-offers`));
+  const {extraOffers} = points[i];
+  for (let n = 0; n < extraOffers.length; n++) {
+    render(offerContainer[i], createEventOffer(extraOffers[n]), BEFOREEND)
+  }
+};
+
+
+
