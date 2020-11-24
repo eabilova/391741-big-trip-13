@@ -6,7 +6,7 @@ import {siteMenuTempalte} from "./view/site-menu.js";
 import {siteFilterTemplate} from "./view/site-filter.js";
 import {siteSortingTemplate} from "./view/sorting.js";
 import {siteContentListTemplate} from "./view/content-list.js";
-import {editingFormTemlplate} from "./view/editing-form.js";
+import {editingFormTemplate} from "./view/editing-form.js";
 import {siteContentListItemTemplate} from "./view/content-list-item.js";
 import {createEventOffer} from "./view/event-offer.js";
 import {generateRoute} from "./mock/route-point.js";
@@ -29,7 +29,7 @@ const tripEvents = main.querySelector(`.trip-events`);
 render(tripMain, tripInfoSectionTemplate(), AFTERBEGIN);
 
 const tripInfoSection = tripMain.querySelector(`.trip-info`);
-render(tripInfoSection, tripRouteTemplate(), AFTERBEGIN);
+render(tripInfoSection, tripRouteTemplate(points), AFTERBEGIN);
 render(tripInfoSection, tripCostTemplate(), BEFOREEND);
 render(switchControl, siteMenuTempalte(), AFTEREND);
 render(filterControl, siteFilterTemplate(), AFTEREND);
@@ -37,7 +37,7 @@ render(tripEvents, siteSortingTemplate(), BEFOREEND);
 render(tripEvents, siteContentListTemplate(), BEFOREEND);
 
 const tripList = tripEvents.querySelector(`.trip-events__list`);
-render(tripList, editingFormTemlplate(), AFTERBEGIN);
+render(tripList, editingFormTemplate(points[0]), AFTERBEGIN);
 for (let i = 0; i < points.length; i++) {
   render(tripList, siteContentListItemTemplate(points[i]), BEFOREEND);
   const offerContainer = Array.from(tripList.querySelectorAll(`.event__selected-offers`));

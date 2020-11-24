@@ -1,30 +1,12 @@
 import dayjs from "dayjs";
+import {getRandomInteger} from "../utils/render.js";
+import {EVENT_TYPES} from "../const.js";
 
 const DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
-const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
-
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
-};
-
 const generateRouteType = () => {
-  const types = [
-    `Taxi`,
-    `Bus`,
-    `Train`,
-    `Ship`,
-    `Transport`,
-    `Drive`,
-    `Flight`,
-    `Check-in`,
-    `Sightseeing`,
-    `Restaurant`,
-  ];
-  const randomIndex = getRandomInteger(0, types.length - 1);
-
-  return types[randomIndex];
+  const randomIndex = getRandomInteger(0, EVENT_TYPES.length - 1);
+  return EVENT_TYPES[randomIndex];
 };
 
 const generateToCity = () => {
@@ -77,13 +59,17 @@ const generateDescription = () => {
 const generateDate = () => {
   const date = new Date();
   const day = dayjs(date).format(`MMM DD`);
+  const startFullDate = dayjs(date).format(`DD/MM/YY HH:mm`);
   const startTime = dayjs(date).format(`HH:mm`);
   const endDate = dayjs(date).add(getRandomInteger(0, 12), `hour`);
+  const endFullDate = endDate.format(`DD/MM/YY HH:mm`);
   const endTime = endDate.format(`HH:mm`);
   const duration = endDate.diff(dayjs(date), `minute`);
 
   return {
     day,
+    startFullDate,
+    endFullDate,
     startTime,
     endTime,
     duration,
@@ -100,7 +86,9 @@ export const generateRoute = () => {
     photo: `http://picsum.photos/248/152?r=${Math.random()}`,
     time: {
       date: date.day,
+      startFullDate: date.startFullDate,
       startTime: date.startTime,
+      endFullDate: date.endFullDate,
       endTime: date.endTime,
       duration: date.duration
     },
