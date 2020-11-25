@@ -18,7 +18,7 @@ const identifySelectedOffers = (currentOffers) => {
             <span class="event__offer-price">${offer.price}</span>
           </label>
         </div>`).join(``);
-}
+};
 
 export const editingFormTemplate = (point = {}) => {
   const {
@@ -26,13 +26,12 @@ export const editingFormTemplate = (point = {}) => {
     city = ``,
     extraOffers = [],
     destinationDescription = ``,
-    photo = `http://picsum.photos/248/152?r=Math.random()`,
     time = {
       startFullDate: dayjs.format(`DD/MM/YY HH:MM`),
       endFullDate: dayjs.format(`DD/MM/YY HH:MM`),
-  },
+    },
     price = ``,
-  } =  point;
+  } = point;
 
   const eventType = editingEventTypeFormTemplate(type);
   const checkOffers = identifySelectedOffers(extraOffers);

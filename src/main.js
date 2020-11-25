@@ -43,9 +43,6 @@ for (let i = 0; i < points.length; i++) {
   const offerContainer = Array.from(tripList.querySelectorAll(`.event__selected-offers`));
   const {extraOffers} = points[i];
   for (let n = 0; n < extraOffers.length; n++) {
-    render(offerContainer[i], createEventOffer(extraOffers[n]), BEFOREEND)
+    render(offerContainer[i], createEventOffer(extraOffers[n]), BEFOREEND);
   }
-};
-
-
-
+}

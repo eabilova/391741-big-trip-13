@@ -1,6 +1,7 @@
 import dayjs from "dayjs";
 import {getRandomInteger} from "../utils/render.js";
 import {EVENT_TYPES} from "../const.js";
+import {OFFERS} from "../const.js";
 
 const DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
@@ -24,35 +25,7 @@ const generateToCity = () => {
 };
 
 const generateExtraOffers = () => {
-  const offers = [
-    {
-      id: "luggage",
-      offerName: "Add luggage",
-      price: 30
-    },
-    {
-      id: "comfort",
-      offerName: "Switch to comfort",
-      price: 100
-    },
-    {
-      id: "meal",
-      offerName: "Add meal",
-      price: 15
-    },
-    {
-      id: "seats",
-      offerName: "Choose seats",
-      price: 5
-    },
-    {
-      id: "train",
-      offerName: "Travel by train",
-      price: 40
-    },
-  ];
-
-  return offers.slice(getRandomInteger(0, offers.length - 1));
+  return OFFERS.slice(getRandomInteger(0, OFFERS.length - 1));
 };
 
 const generateDescription = () => {

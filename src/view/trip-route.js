@@ -3,15 +3,13 @@ const generateRouteInformation = (points) => {
   for (let i = 0; i < points.length; i++) {
     const {city} = points[i];
     route[i] = city;
- }
-  return route.join(' - ')
-}
+  }
+  return route.join(` - `);
+};
 
 const generateTripDates = (points) => {
-  const sortedList = points.sort((a, b) => b.time.startFullDate - a.time.startFullDate);
-  const {time} = points;
-  return points[0].time.date + `-` + points[points.length-1].time.date;
-}
+  return points[0].time.date + ` - ` + points[points.length - 1].time.date;
+};
 export const tripRouteTemplate = (points) => {
   const fullRoute = generateRouteInformation(points);
   const tripDates = generateTripDates(points);
