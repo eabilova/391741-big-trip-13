@@ -8,6 +8,7 @@ const generateRouteInformation = (points) => {
 }
 
 const generateTripDates = (points) => {
+  const sortedList = points.sort((a, b) => b.time.startFullDate - a.time.startFullDate);
   const {time} = points;
   return points[0].time.date + `-` + points[points.length-1].time.date;
 }

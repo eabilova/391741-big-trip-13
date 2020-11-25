@@ -26,22 +26,27 @@ const generateToCity = () => {
 const generateExtraOffers = () => {
   const offers = [
     {
+      id: "luggage",
       offerName: "Add luggage",
       price: 30
     },
     {
+      id: "comfort",
       offerName: "Switch to comfort",
       price: 100
     },
     {
+      id: "meal",
       offerName: "Add meal",
       price: 15
     },
     {
+      id: "seats",
       offerName: "Choose seats",
       price: 5
     },
     {
+      id: "train",
       offerName: "Travel by train",
       price: 40
     },
@@ -83,7 +88,7 @@ export const generateRoute = () => {
     city: generateToCity(),
     extraOffers: generateExtraOffers(),
     destinationDescription: generateDescription(),
-    photo: `http://picsum.photos/248/152?r=${Math.random()}`,
+    photo: `http://picsum.photos/248/152?r=Math.random()`,
     time: {
       date: date.day,
       startFullDate: date.startFullDate,
