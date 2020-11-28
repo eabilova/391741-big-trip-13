@@ -1,5 +1,5 @@
-import {EVENT_TYPES} from "../const.js";
-import {OFFERS} from "../const.js";
+import {EVENT_TYPES, OFFERS, PHOTO_NUMBER} from "../const.js";
+import {getRandomInteger} from "../utils/render.js";
 import dayjs from "dayjs";
 
 const editingEventTypeFormTemplate = (currentType) => {
@@ -10,8 +10,15 @@ const editingEventTypeFormTemplate = (currentType) => {
 };
 
 const addPhotos = (point) => {
-  const {photo} = point;
-  return photo.map((pointPhoto) => `<img class="event__photo" src="img/photos/${pointPhoto}.jpg" alt="Event photo">`).join(``);
+  let {photosAmount} = point;
+  const photos = [];
+  while (photosAmount) {
+    let randomNumber = getRandomInteger(PHOTO_NUMBER.min, PHOTO_NUMBER.max);
+    photos[photosAmount] = `<img class="event__photo" src="http://picsum.photos/248/152?r=${randomNumber}.jpg" alt="Event photo">`;
+    photosAmount--;
+  }
+
+  return photos.join(``);
 };
 
 const identifySelectedOffers = (currentOffers) => {

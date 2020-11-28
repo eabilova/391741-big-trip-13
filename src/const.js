@@ -43,8 +43,6 @@ export const OFFERS = [
   },
 ];
 
-export const PHOTOS = [1, 2, 3, 4, 5, 6, 7];
-
 export const CITIES = [
   `Las Vegas`,
   `Los Angeles`,
@@ -52,3 +50,8 @@ export const CITIES = [
   `Houston`,
   `New York`,
 ];
+
+export const PHOTO_NUMBER = {
+  min: 0,
+  max: 1000
+};
