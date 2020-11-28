@@ -9,6 +9,11 @@ const editingEventTypeFormTemplate = (currentType) => {
   </div>`).join(``);
 };
 
+const addPhotos = (point) => {
+  const {photo} = point;
+  return photo.map((pointPhoto) => `<img class="event__photo" src="img/photos/${pointPhoto}.jpg" alt="Event photo">`);
+};
+
 const identifySelectedOffers = (currentOffers) => {
   return OFFERS.map((offer) => `<div class="event__offer-selector">
           <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" type="checkbox" name="event-offer-${offer.id}" ${currentOffers.find((currentOffer) => currentOffer.id === offer.id) ? `checked` : ``}>
@@ -30,11 +35,13 @@ export const editingFormTemplate = (point = {}) => {
       startFullDate: dayjs.format(`DD/MM/YY HH:MM`),
       endFullDate: dayjs.format(`DD/MM/YY HH:MM`),
     },
-    price = ``,
+    photo= null,
+    price = ` `
   } = point;
 
   const eventType = editingEventTypeFormTemplate(type);
   const checkOffers = identifySelectedOffers(extraOffers);
+  const photos = addPhotos(point);
 
   return `<form class="event event--edit" action="#" method="post">
   <header class="event__header">
@@ -95,10 +102,14 @@ export const editingFormTemplate = (point = {}) => {
       ${checkOffers}
       </div>
     </section>
-
     <section class="event__section  event__section--destination">
       <h3 class="event__section-title  event__section-title--destination">Destination</h3>
       <p class="event__destination-description">${destinationDescription}</p>
+      <div class="event__photos-container">
+        <div class="event__photos-tape">
+          ${photos}
+        </div>
+      </div>
     </section>
   </section>
 </form>`;

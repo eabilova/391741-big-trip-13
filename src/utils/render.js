@@ -2,9 +2,9 @@ export const render = (container, template, place) => {
   container.insertAdjacentHTML(place, template);
 };
 
-export const getRandomInteger = (a = 0, b = 1) => {
-  const lower = Math.ceil(Math.min(a, b));
-  const upper = Math.floor(Math.max(a, b));
+export const getRandomInteger = (min = 0, max = 1) => {
+  const minCeiling = Math.ceil(Math.min(min, max));
+  const maxFlooring = Math.floor(Math.max(min, max));
 
-  return Math.floor(lower + Math.random() * (upper - lower + 1));
+  return Math.floor(minCeiling + Math.random() * (maxFlooring - minCeiling + 1));
 };

@@ -1,3 +1,4 @@
+import {BEFOREEND, AFTERBEGIN, AFTEREND} from "./const.js";
 import {render} from "./utils/render.js";
 import {tripInfoSectionTemplate} from "./view/trip-info-section.js";
 import {tripRouteTemplate} from "./view/trip-route.js";
@@ -14,10 +15,8 @@ import {generateRoute} from "./mock/route-point.js";
 const POINT_COUNT = 20;
 
 const points = new Array(POINT_COUNT).fill().map(generateRoute);
+const sortedPoints = points.sort((a, b) => a.time.tripDate - b.time.tripDate);
 
-const BEFOREEND = `beforeend`;
-const AFTEREND = `afterend`;
-const AFTERBEGIN = `afterbegin`;
 const siteHeader = document.querySelector(`header`);
 const tripMain = siteHeader.querySelector(`.trip-main`);
 const tripControls = siteHeader.querySelector(`.trip-controls`);
@@ -37,12 +36,20 @@ render(tripEvents, siteSortingTemplate(), BEFOREEND);
 render(tripEvents, siteContentListTemplate(), BEFOREEND);
 
 const tripList = tripEvents.querySelector(`.trip-events__list`);
-render(tripList, editingFormTemplate(points[0]), AFTERBEGIN);
-for (let i = 0; i < points.length; i++) {
-  render(tripList, siteContentListItemTemplate(points[i]), BEFOREEND);
+render(tripList, editingFormTemplate(sortedPoints[0]), AFTERBEGIN);
+
+const renderOffers = (point) => {
   const offerContainer = Array.from(tripList.querySelectorAll(`.event__selected-offers`));
-  const {extraOffers} = points[i];
-  for (let n = 0; n < extraOffers.length; n++) {
-    render(offerContainer[i], createEventOffer(extraOffers[n]), BEFOREEND);
-  }
-}
+  const {extraOffers} = point;
+  extraOffers.forEach((offer) => {
+    render(offerContainer[pointIndex], createEventOffer(offer), BEFOREEND);
+  });
+  pointIndex++;
+};
+
+let pointIndex = 0;
+sortedPoints.forEach((point) =>  {
+  render(tripList, siteContentListItemTemplate(point), BEFOREEND);
+  renderOffers(point);
+});
+

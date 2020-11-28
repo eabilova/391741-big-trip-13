@@ -1,14 +1,12 @@
 const generateRouteInformation = (points) => {
-  const route = [];
-  for (let i = 0; i < points.length; i++) {
-    const {city} = points[i];
-    route[i] = city;
-  }
-  return route.join(` - `);
+  const cities = points.reduce((total, point) => {
+      return total.concat(point.city);
+    }, []);
+  return cities.join(` - `);
 };
 
 const generateTripDates = (points) => {
-  return points[0].time.date + ` - ` + points[points.length - 1].time.date;
+  return points[0].time.day + ` - ` + points[points.length - 1].time.day;
 };
 export const tripRouteTemplate = (points) => {
   const fullRoute = generateRouteInformation(points);

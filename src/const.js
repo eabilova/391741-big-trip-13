@@ -1,4 +1,8 @@
-﻿export const EVENT_TYPES = [
+﻿export const BEFOREEND = `beforeend`;
+export const AFTEREND = `afterend`;
+export const AFTERBEGIN = `afterbegin`;
+
+export const EVENT_TYPES = [
   `taxi`,
   `bus`,
   `train`,
@@ -37,4 +41,14 @@ export const OFFERS = [
     offerName: `Travel by train`,
     price: 40
   },
+];
+
+export const PHOTOS = [1, 2, 3, 4, 5, 6, 7];
+
+export const CITIES = [
+  `Las Vegas`,
+  `Los Angeles`,
+  `San Francisco`,
+  `Houston`,
+  `New York`,
 ];

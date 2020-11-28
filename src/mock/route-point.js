@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import {getRandomInteger} from "../utils/render.js";
-import {EVENT_TYPES} from "../const.js";
-import {OFFERS} from "../const.js";
+import {EVENT_TYPES, OFFERS, CITIES, PHOTOS} from "../const.js";
 
 const DESCRIPTION = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras aliquet varius magna, non porta ligula feugiat eget. Fusce tristique felis at fermentum pharetra. Aliquam id orci ut lectus varius viverra. Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. Sed sed nisi sed augue convallis suscipit in sed felis. Aliquam erat volutpat. Nunc fermentum tortor ac porta dapibus. In rutrum ac purus sit amet tempus.`;
 
@@ -11,17 +10,9 @@ const generateRouteType = () => {
 };
 
 const generateToCity = () => {
-  const cities = [
-    `Las Vegas`,
-    `Los Angeles`,
-    `San Francisco`,
-    `Houston`,
-    `New York`,
-  ];
+  const randomIndex = getRandomInteger(0, CITIES.length - 1);
 
-  const randomIndex = getRandomInteger(0, cities.length - 1);
-
-  return cities[randomIndex];
+  return CITIES[randomIndex];
 };
 
 const generateExtraOffers = () => {
@@ -36,15 +27,17 @@ const generateDescription = () => {
 
 const generateDate = () => {
   const date = new Date();
-  const day = dayjs(date).format(`MMM DD`);
-  const startFullDate = dayjs(date).format(`DD/MM/YY HH:mm`);
-  const startTime = dayjs(date).format(`HH:mm`);
-  const endDate = dayjs(date).add(getRandomInteger(0, 12), `hour`);
+  const tripDate = dayjs(date).add(getRandomInteger(0, 7), `day`).add(getRandomInteger(0, 7), `hour`);
+  const day = tripDate.format(`MMM DD`);
+  const startFullDate = tripDate.format(`DD/MM/YY HH:mm`);
+  const startTime = tripDate.format(`HH:mm`);
+  const endDate = tripDate.add(getRandomInteger(7, 12), `hour`);
   const endFullDate = endDate.format(`DD/MM/YY HH:mm`);
   const endTime = endDate.format(`HH:mm`);
   const duration = endDate.diff(dayjs(date), `minute`);
 
   return {
+    tripDate,
     day,
     startFullDate,
     endFullDate,
@@ -54,22 +47,18 @@ const generateDate = () => {
   };
 };
 
+const generatePhotos = () => {
+  return PHOTOS.slice(0, getRandomInteger(0, PHOTOS.length - 1));
+}
+
 export const generateRoute = () => {
-  const date = generateDate();
   return {
     type: generateRouteType(),
     city: generateToCity(),
     extraOffers: generateExtraOffers(),
     destinationDescription: generateDescription(),
-    photo: `http://picsum.photos/248/152?r=Math.random()`,
-    time: {
-      date: date.day,
-      startFullDate: date.startFullDate,
-      startTime: date.startTime,
-      endFullDate: date.endFullDate,
-      endTime: date.endTime,
-      duration: date.duration
-    },
+    photo: generatePhotos(),
+    time: generateDate(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
     price: getRandomInteger(0, 200),
   };
