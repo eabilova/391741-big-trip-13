@@ -14,7 +14,7 @@ export const siteContentListItemTemplate = (point) => {
         &mdash;
         <time class="event__end-time" datetime="2019-03-18T11:00">${time.endTime}</time>
       </p>
-      <p class="event__duration">${time.duration}M</p>
+      <p class="event__duration">${time.duration}H</p>
     </div>
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">${price}</span>

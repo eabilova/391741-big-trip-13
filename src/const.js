@@ -55,3 +55,30 @@ export const PHOTO_NUMBER = {
   min: 0,
   max: 1000
 };
+
+export const PHOTO_AMOUNT = {
+  min: 0,
+  max: 10
+};
+
+export const PRICE_AMOUNT = {
+  min: 0,
+  max: 200
+};
+
+export const TIME_DIFFERENCE = {
+  firstHalf: {
+    min: 0,
+    max: 6
+  },
+  secondHalf: {
+    min: 7,
+    max: 12
+  }
+};
+
+export const DAY_DIFFERENCE = {
+  min: 0,
+  max: 7
+};
+
