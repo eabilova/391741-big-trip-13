@@ -11,7 +11,7 @@ const editingEventTypeFormTemplate = (currentType) => {
 
 const addPhotos = (point) => {
   const {photo} = point;
-  return photo.map((pointPhoto) => `<img class="event__photo" src="img/photos/${pointPhoto}.jpg" alt="Event photo">`);
+  return photo.map((pointPhoto) => `<img class="event__photo" src="img/photos/${pointPhoto}.jpg" alt="Event photo">`).join(``);
 };
 
 const identifySelectedOffers = (currentOffers) => {
@@ -35,7 +35,6 @@ export const editingFormTemplate = (point = {}) => {
       startFullDate: dayjs.format(`DD/MM/YY HH:MM`),
       endFullDate: dayjs.format(`DD/MM/YY HH:MM`),
     },
-    photo= null,
     price = ` `
   } = point;
 

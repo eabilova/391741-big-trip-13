@@ -9,7 +9,7 @@ const generateRouteType = () => {
   return EVENT_TYPES[randomIndex];
 };
 
-const generateToCity = () => {
+const getCity = () => {
   const randomIndex = getRandomInteger(0, CITIES.length - 1);
 
   return CITIES[randomIndex];
@@ -48,13 +48,13 @@ const generateDate = () => {
 };
 
 const generatePhotos = () => {
-  return PHOTOS.slice(0, getRandomInteger(0, PHOTOS.length - 1));
-}
+  return PHOTOS.slice(getRandomInteger(0, PHOTOS.length - 1), getRandomInteger(0, PHOTOS.length - 1));
+};
 
 export const generateRoute = () => {
   return {
     type: generateRouteType(),
-    city: generateToCity(),
+    city: getCity(),
     extraOffers: generateExtraOffers(),
     destinationDescription: generateDescription(),
     photo: generatePhotos(),

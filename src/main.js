@@ -39,7 +39,7 @@ const tripList = tripEvents.querySelector(`.trip-events__list`);
 render(tripList, editingFormTemplate(sortedPoints[0]), AFTERBEGIN);
 
 const renderOffers = (point) => {
-  const offerContainer = Array.from(tripList.querySelectorAll(`.event__selected-offers`));
+  const offerContainer = tripList.querySelectorAll(`.event__selected-offers`);
   const {extraOffers} = point;
   extraOffers.forEach((offer) => {
     render(offerContainer[pointIndex], createEventOffer(offer), BEFOREEND);
@@ -48,7 +48,7 @@ const renderOffers = (point) => {
 };
 
 let pointIndex = 0;
-sortedPoints.forEach((point) =>  {
+sortedPoints.forEach((point) => {
   render(tripList, siteContentListItemTemplate(point), BEFOREEND);
   renderOffers(point);
 });
