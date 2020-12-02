@@ -1,8 +1,4 @@
-﻿export const BEFOREEND = `beforeend`;
-export const AFTEREND = `afterend`;
-export const AFTERBEGIN = `afterbegin`;
-
-export const EVENT_TYPES = [
+﻿export const EVENT_TYPES = [
   `taxi`,
   `bus`,
   `train`,
