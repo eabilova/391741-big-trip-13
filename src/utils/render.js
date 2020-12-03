@@ -1,5 +1,11 @@
-export const render = (container, template, place) => {
-  container.insertAdjacentElement(place, template);
+export const RenderPosition = {
+  AFTERBEGIN: `afterbegin`,
+  BEFOREEND: `beforeend`,
+  AFTEREND: `afterend`,
+};
+
+export const render = (container, element, place) => {
+  container.insertAdjacentElement(place, element);
 };
 
 export const createElement = (template) => {

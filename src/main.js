@@ -1,5 +1,4 @@
-import {render} from "./utils/render.js";
-import {AFTERBEGIN, AFTEREND, BEFOREEND} from "./const.js";
+import {render, RenderPosition} from "./utils/render.js";
 import InfoSection from "./view/trip-info-section.js";
 import TripInfo from "./view/trip-route.js";
 import TripCost from "./view/trip-cost.js";
@@ -37,7 +36,7 @@ const renderRoutePoint = (routeList, point) => {
     replacePointToForm();
   });
 
-  render(routeList, routePoint.getElement(), BEFOREEND);
+  render(routeList, routePoint.getElement(), RenderPosition.BEFOREEND);
 };
 
 const siteHeader = document.querySelector(`header`);
@@ -49,30 +48,30 @@ const main = document.querySelector(`main`);
 const tripEvents = main.querySelector(`.trip-events`);
 
 const infoSectionComponent = new InfoSection();
-render(tripMain, infoSectionComponent.getElement(), AFTERBEGIN);
+render(tripMain, infoSectionComponent.getElement(), RenderPosition.AFTERBEGIN);
 
 const tripInfoComponent = new TripInfo(sortedPoints);
 const tripCostComponent = new TripCost(sortedPoints);
-render(infoSectionComponent.getElement(), tripInfoComponent.getElement(), AFTERBEGIN);
-render(infoSectionComponent.getElement(), tripCostComponent.getElement(), BEFOREEND);
+render(infoSectionComponent.getElement(), tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
+render(infoSectionComponent.getElement(), tripCostComponent.getElement(), RenderPosition.BEFOREEND);
 
 const siteMenuComponent = new SiteMenu();
 const filterComponent = new SiteFilter();
-render(switchControl, siteMenuComponent.getElement(), AFTEREND);
-render(filterControl, filterComponent.getElement(), AFTEREND);
+render(switchControl, siteMenuComponent.getElement(), RenderPosition.AFTEREND);
+render(filterControl, filterComponent.getElement(), RenderPosition.AFTEREND);
 
 const siteSortingComponent = new SiteSorting();
-render(tripEvents, siteSortingComponent.getElement(), BEFOREEND);
+render(tripEvents, siteSortingComponent.getElement(), RenderPosition.BEFOREEND);
 
 const routeListComponent = new RouteList();
-render(tripEvents, routeListComponent.getElement(), BEFOREEND);
+render(tripEvents, routeListComponent.getElement(), RenderPosition.BEFOREEND);
 
 const renderOffers = (point, index) => {
   const offerContainer = routeListComponent.getElement().querySelectorAll(`.event__selected-offers`);
   const {extraOffers} = point;
   extraOffers.forEach((offer) => {
     const eventOfferComponent = new EventOffer(offer);
-    render(offerContainer[index], eventOfferComponent.getElement(), BEFOREEND);
+    render(offerContainer[index], eventOfferComponent.getElement(), RenderPosition.BEFOREEND);
   });
 };
 
