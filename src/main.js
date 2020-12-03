@@ -26,16 +26,17 @@ const renderRoutePoint = (routeList, point) => {
 
   const replaceFormToPoint = () => {
     routeList.replaceChild(routePoint.getElement(), editRoutePoint.getElement());
+    editRoutePoint.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
+      evt.preventDefault();
+      replaceFormToPoint();
+    });
   };
 
   routePoint.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
     replacePointToForm();
   });
 
-  editRoutePoint.getElement().querySelector(`form`).addEventListener(`submit`, (evt) => {
-    evt.preventDefault();
-    replaceFormToPoint();
-  });
+
 
   render(routeList, routePoint.getElement(), RenderPosition.BEFOREEND);
 };
