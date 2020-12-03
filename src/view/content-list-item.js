@@ -1,4 +1,6 @@
-export const siteContentListItemTemplate = (point) => {
+import {createElement} from "../utils/render.js";
+
+const siteContentListItemTemplate = (point) => {
   const {time, price, isFavorite, type, city} = point;
 
   return `<li class="trip-events__item">
@@ -35,3 +37,26 @@ export const siteContentListItemTemplate = (point) => {
   </div>
 </li>`;
 };
+
+export default class RoutePoint {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return siteContentListItemTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,21 +1,43 @@
-import {BEFOREEND, AFTERBEGIN, AFTEREND} from "./const.js";
-import {render} from "./utils/render.js";
-import {tripInfoSectionTemplate} from "./view/trip-info-section.js";
-import {tripRouteTemplate} from "./view/trip-route.js";
-import {tripCostTemplate} from "./view/trip-cost.js";
-import {siteMenuTempalte} from "./view/site-menu.js";
-import {siteFilterTemplate} from "./view/site-filter.js";
-import {siteSortingTemplate} from "./view/sorting.js";
-import {siteContentListTemplate} from "./view/content-list.js";
-import {editingFormTemplate} from "./view/editing-form.js";
-import {siteContentListItemTemplate} from "./view/content-list-item.js";
-import {createEventOffer} from "./view/event-offer.js";
+import {render, RenderPosition} from "./utils/render.js";
+import InfoSection from "./view/trip-info-section.js";
+import TripInfo from "./view/trip-route.js";
+import TripCost from "./view/trip-cost.js";
+import SiteMenu from "./view/site-menu.js";
+import SiteFilter from "./view/site-filter.js";
+import SiteSorting from "./view/sorting.js";
+import RouteList from "./view/content-list.js";
+import EditingForm from "./view/editing-form.js";
+import RoutePoint from "./view/content-list-item.js";
+import EventOffer from "./view/event-offer.js";
 import {generateRoute} from "./mock/route-point.js";
 
 const POINT_COUNT = 20;
 
 const points = new Array(POINT_COUNT).fill().map(generateRoute);
 const sortedPoints = points.sort((a, b) => a.time.tripDate - b.time.tripDate);
+
+const renderRoutePoint = (routeList, point) => {
+  const routePoint = new RoutePoint(point);
+  const editRoutePoint = new EditingForm(point);
+
+  const replacePointToForm = () => {
+    routeList.replaceChild(editRoutePoint.getElement(), routePoint.getElement());
+    editRoutePoint.getElement().addEventListener(`submit`, (evt) => {
+      evt.preventDefault();
+      replaceFormToPoint();
+    });
+  };
+
+  const replaceFormToPoint = () => {
+    routeList.replaceChild(routePoint.getElement(), editRoutePoint.getElement());
+  };
+
+  routePoint.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+    replacePointToForm();
+  });
+
+  render(routeList, routePoint.getElement(), RenderPosition.BEFOREEND);
+};
 
 const siteHeader = document.querySelector(`header`);
 const tripMain = siteHeader.querySelector(`.trip-main`);
@@ -25,31 +47,36 @@ const filterControl = tripControls.querySelector(`h2:last-of-type`);
 const main = document.querySelector(`main`);
 const tripEvents = main.querySelector(`.trip-events`);
 
-render(tripMain, tripInfoSectionTemplate(), AFTERBEGIN);
+const infoSectionComponent = new InfoSection();
+render(tripMain, infoSectionComponent.getElement(), RenderPosition.AFTERBEGIN);
 
-const tripInfoSection = tripMain.querySelector(`.trip-info`);
-render(tripInfoSection, tripRouteTemplate(points), AFTERBEGIN);
-render(tripInfoSection, tripCostTemplate(), BEFOREEND);
-render(switchControl, siteMenuTempalte(), AFTEREND);
-render(filterControl, siteFilterTemplate(), AFTEREND);
-render(tripEvents, siteSortingTemplate(), BEFOREEND);
-render(tripEvents, siteContentListTemplate(), BEFOREEND);
+const tripInfoComponent = new TripInfo(sortedPoints);
+const tripCostComponent = new TripCost(sortedPoints);
+render(infoSectionComponent.getElement(), tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
+render(infoSectionComponent.getElement(), tripCostComponent.getElement(), RenderPosition.BEFOREEND);
 
-const tripList = tripEvents.querySelector(`.trip-events__list`);
-render(tripList, editingFormTemplate(sortedPoints[0]), AFTERBEGIN);
+const siteMenuComponent = new SiteMenu();
+const filterComponent = new SiteFilter();
+render(switchControl, siteMenuComponent.getElement(), RenderPosition.AFTEREND);
+render(filterControl, filterComponent.getElement(), RenderPosition.AFTEREND);
 
-const renderOffers = (point) => {
-  const offerContainer = tripList.querySelectorAll(`.event__selected-offers`);
+const siteSortingComponent = new SiteSorting();
+render(tripEvents, siteSortingComponent.getElement(), RenderPosition.BEFOREEND);
+
+const routeListComponent = new RouteList();
+render(tripEvents, routeListComponent.getElement(), RenderPosition.BEFOREEND);
+
+const renderOffers = (point, index) => {
+  const offerContainer = routeListComponent.getElement().querySelectorAll(`.event__selected-offers`);
   const {extraOffers} = point;
   extraOffers.forEach((offer) => {
-    render(offerContainer[pointIndex], createEventOffer(offer), BEFOREEND);
+    const eventOfferComponent = new EventOffer(offer);
+    render(offerContainer[index], eventOfferComponent.getElement(), RenderPosition.BEFOREEND);
   });
-  pointIndex++;
 };
 
-let pointIndex = 0;
-sortedPoints.forEach((point) => {
-  render(tripList, siteContentListItemTemplate(point), BEFOREEND);
-  renderOffers(point);
+sortedPoints.forEach((point, index) => {
+  renderRoutePoint(routeListComponent.getElement(), point);
+  renderOffers(point, index);
 });
 

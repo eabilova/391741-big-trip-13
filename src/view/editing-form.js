@@ -1,5 +1,5 @@
 import {EVENT_TYPES, OFFERS, PHOTO_NUMBER} from "../const.js";
-import {getRandomInteger} from "../utils/render.js";
+import {createElement, getRandomInteger} from "../utils/render.js";
 import dayjs from "dayjs";
 
 const editingEventTypeFormTemplate = (currentType) => {
@@ -32,19 +32,20 @@ const identifySelectedOffers = (currentOffers) => {
         </div>`).join(``);
 };
 
-export const editingFormTemplate = (point = {}) => {
-  const {
-    type = `taxi`,
-    city = ``,
-    extraOffers = [],
-    destinationDescription = ``,
-    time = {
-      startFullDate: dayjs.format(`DD/MM/YY HH:MM`),
-      endFullDate: dayjs.format(`DD/MM/YY HH:MM`),
-    },
-    price = ` `
-  } = point;
+const BLANK_POINT = {
+  type: `taxi`,
+  city: ``,
+  extraOffers: [],
+  destinationDescription: ``,
+  time: {
+    startFullDate: dayjs(new Date()).format(`DD/MM/YY HH:MM`),
+    endFullDate: dayjs(new Date()).format(`DD/MM/YY HH:MM`),
+  },
+  price: ` `,
+};
 
+const editingFormTemplate = (point = {}) => {
+  const {type, extraOffers, city, time, price, destinationDescription} = point;
   const eventType = editingEventTypeFormTemplate(type);
   const checkOffers = identifySelectedOffers(extraOffers);
   const photos = addPhotos(point);
@@ -120,3 +121,26 @@ export const editingFormTemplate = (point = {}) => {
   </section>
 </form>`;
 };
+
+export default class EditingForm {
+  constructor(point = BLANK_POINT) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return editingFormTemplate(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
