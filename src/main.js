@@ -5,6 +5,7 @@ import TripCost from "./view/trip-cost.js";
 import SiteMenu from "./view/site-menu.js";
 import SiteFilter from "./view/site-filter.js";
 import SiteSorting from "./view/sorting.js";
+import EmptyList from "./view/no-points.js";
 import RouteList from "./view/content-list.js";
 import EditingForm from "./view/editing-form.js";
 import RoutePoint from "./view/content-list-item.js";
@@ -20,16 +21,28 @@ const renderRoutePoint = (routeList, point) => {
   const routePoint = new RoutePoint(point);
   const editRoutePoint = new EditingForm(point);
 
-  const replacePointToForm = () => {
-    routeList.replaceChild(editRoutePoint.getElement(), routePoint.getElement());
-    editRoutePoint.getElement().addEventListener(`submit`, (evt) => {
+  const onEscKeyDown = (evt) => {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
       replaceFormToPoint();
-    });
+    }
+  };
+
+  const onClickClose = (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+  }
+
+  const replacePointToForm = () => {
+    routeList.replaceChild(editRoutePoint.getElement(), routePoint.getElement());
+    editRoutePoint.getElement().addEventListener(`submit`, replaceFormToPoint);
+    editRoutePoint.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, onClickClose)
+    document.addEventListener(`keydown`, onEscKeyDown);
   };
 
   const replaceFormToPoint = () => {
     routeList.replaceChild(routePoint.getElement(), editRoutePoint.getElement());
+    document.removeEventListener(`keydown`, onEscKeyDown);
   };
 
   routePoint.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
@@ -50,10 +63,12 @@ const tripEvents = main.querySelector(`.trip-events`);
 const infoSectionComponent = new InfoSection();
 render(tripMain, infoSectionComponent.getElement(), RenderPosition.AFTERBEGIN);
 
-const tripInfoComponent = new TripInfo(sortedPoints);
-const tripCostComponent = new TripCost(sortedPoints);
-render(infoSectionComponent.getElement(), tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
-render(infoSectionComponent.getElement(), tripCostComponent.getElement(), RenderPosition.BEFOREEND);
+if (points.length !== 0) {
+  const tripInfoComponent = new TripInfo(sortedPoints);
+  const tripCostComponent = new TripCost(sortedPoints);
+  render(infoSectionComponent.getElement(), tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
+  render(infoSectionComponent.getElement(), tripCostComponent.getElement(), RenderPosition.BEFOREEND);
+}
 
 const siteMenuComponent = new SiteMenu();
 const filterComponent = new SiteFilter();
@@ -63,20 +78,26 @@ render(filterControl, filterComponent.getElement(), RenderPosition.AFTEREND);
 const siteSortingComponent = new SiteSorting();
 render(tripEvents, siteSortingComponent.getElement(), RenderPosition.BEFOREEND);
 
-const routeListComponent = new RouteList();
-render(tripEvents, routeListComponent.getElement(), RenderPosition.BEFOREEND);
+if (points.length !== 0) {
+  const routeListComponent = new RouteList();
+  render(tripEvents, routeListComponent.getElement(), RenderPosition.BEFOREEND);
 
-const renderOffers = (point, index) => {
-  const offerContainer = routeListComponent.getElement().querySelectorAll(`.event__selected-offers`);
-  const {extraOffers} = point;
-  extraOffers.forEach((offer) => {
-    const eventOfferComponent = new EventOffer(offer);
-    render(offerContainer[index], eventOfferComponent.getElement(), RenderPosition.BEFOREEND);
+  const renderOffers = (point, index) => {
+    const offerContainer = routeListComponent.getElement().querySelectorAll(`.event__selected-offers`);
+    const {extraOffers} = point;
+    extraOffers.forEach((offer) => {
+      const eventOfferComponent = new EventOffer(offer);
+      render(offerContainer[index], eventOfferComponent.getElement(), RenderPosition.BEFOREEND);
+    });
+  };
+
+  sortedPoints.forEach((point, index) => {
+    renderRoutePoint(routeListComponent.getElement(), point);
+    renderOffers(point, index);
   });
-};
+} else {
+  const emptyList = new EmptyList();
+  render(tripEvents, emptyList.getElement(), RenderPosition.BEFOREEND);
+}
 
-sortedPoints.forEach((point, index) => {
-  renderRoutePoint(routeListComponent.getElement(), point);
-  renderOffers(point, index);
-});
 
