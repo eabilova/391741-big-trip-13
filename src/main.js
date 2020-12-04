@@ -25,7 +25,6 @@ const renderRoutePoint = (routeList, point) => {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
       replaceFormToPoint();
-      document.removeEventListener(`keydown`, onEscKeyDown);
     }
   };
 
@@ -43,6 +42,7 @@ const renderRoutePoint = (routeList, point) => {
 
   const replaceFormToPoint = () => {
     routeList.replaceChild(routePoint.getElement(), editRoutePoint.getElement());
+    document.removeEventListener(`keydown`, onEscKeyDown);
   };
 
   routePoint.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
