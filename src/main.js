@@ -28,15 +28,15 @@ const renderRoutePoint = (routeList, point) => {
     }
   };
 
+  const onClickClose = (evt) => {
+    evt.preventDefault();
+    replaceFormToPoint();
+  }
+
   const replacePointToForm = () => {
     routeList.replaceChild(editRoutePoint.getElement(), routePoint.getElement());
-    editRoutePoint.getElement().addEventListener(`submit`, (evt) => {
-      evt.preventDefault();
-      replaceFormToPoint();
-    });
-    editRoutePoint.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
-      replaceFormToPoint();
-    });
+    editRoutePoint.getElement().addEventListener(`submit`, replaceFormToPoint);
+    editRoutePoint.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, onClickClose)
     document.addEventListener(`keydown`, onEscKeyDown);
   };
 
