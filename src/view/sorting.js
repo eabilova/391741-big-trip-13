@@ -1,4 +1,4 @@
-import {createElement} from "../utils/render.js";
+import Abstract from "./abstract.js";
 
 const siteSortingTemplate = () => {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
@@ -29,24 +29,8 @@ const siteSortingTemplate = () => {
 </form>`;
 };
 
-export default class SiteSorting {
-  constructor() {
-    this._element = null;
-  }
-
+export default class SiteSorting extends Abstract {
   getTemplate() {
     return siteSortingTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

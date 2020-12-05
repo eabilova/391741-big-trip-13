@@ -1,4 +1,4 @@
-import {createElement} from "../utils/render.js";
+import Abstract from "./abstract.js";
 
 export const tripCostTemplate = (points) => {
   const total = (points.map((point) => point.price)).reduce((a, b) => a + b, 0);
@@ -8,25 +8,13 @@ export const tripCostTemplate = (points) => {
   </p>`;
 };
 
-export default class TripCost {
+export default class TripCost extends Abstract {
   constructor(points) {
+    super();
     this._points = points;
-    this._element = null;
   }
 
   getTemplate() {
     return tripCostTemplate(this._points);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,4 +1,4 @@
-import {createElement} from "../utils/render.js";
+import Abstract from "./abstract.js";
 
 const siteContentListItemTemplate = (point) => {
   const {time, price, isFavorite, type, city} = point;
@@ -38,25 +38,24 @@ const siteContentListItemTemplate = (point) => {
 </li>`;
 };
 
-export default class RoutePoint {
+export default class RoutePoint extends Abstract {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
+    this._clickHandler = this._clickHandler.bind(this);
   }
 
   getTemplate() {
     return siteContentListItemTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _clickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
   }
 
-  removeElement() {
-    this._element = null;
+  setClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
   }
 }

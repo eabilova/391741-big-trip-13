@@ -1,28 +1,12 @@
-import {createElement} from "../utils/render.js";
+import Abstract from "./abstract.js";
 
 const siteContentListTemplate = () => {
   return `<ul class="trip-events__list">
 </ul>`;
 };
 
-export default class RouteList {
-  constructor() {
-    this._element = null;
-  }
-
+export default class RouteList extends Abstract {
   getTemplate() {
     return siteContentListTemplate();
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,4 +1,4 @@
-import {render, RenderPosition} from "./utils/render.js";
+import {render, RenderPosition, replace} from "./utils/render.js";
 import InfoSection from "./view/trip-info-section.js";
 import TripInfo from "./view/trip-route.js";
 import TripCost from "./view/trip-cost.js";
@@ -28,28 +28,30 @@ const renderRoutePoint = (routeList, point) => {
     }
   };
 
-  const onClickClose = (evt) => {
-    evt.preventDefault();
-    replaceFormToPoint();
-  }
-
   const replacePointToForm = () => {
-    routeList.replaceChild(editRoutePoint.getElement(), routePoint.getElement());
-    editRoutePoint.getElement().addEventListener(`submit`, replaceFormToPoint);
-    editRoutePoint.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, onClickClose)
+    replace(editRoutePoint, routePoint);
+    editRoutePoint.setFormSubmitHandler(() => {
+      replaceFormToPoint();
+    });
+    editRoutePoint.setEditClickHandler(() => {
+      replaceFormToPoint();
+    });
     document.addEventListener(`keydown`, onEscKeyDown);
   };
 
   const replaceFormToPoint = () => {
-    routeList.replaceChild(routePoint.getElement(), editRoutePoint.getElement());
+    editRoutePoint.removeEditClickHandler(() => {
+      replaceFormToPoint();
+    });
+    replace(routePoint, editRoutePoint);
     document.removeEventListener(`keydown`, onEscKeyDown);
   };
 
-  routePoint.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, () => {
+  routePoint.setClickHandler(() => {
     replacePointToForm();
   });
 
-  render(routeList, routePoint.getElement(), RenderPosition.BEFOREEND);
+  render(routeList, routePoint, RenderPosition.BEFOREEND);
 };
 
 const siteHeader = document.querySelector(`header`);
@@ -61,43 +63,43 @@ const main = document.querySelector(`main`);
 const tripEvents = main.querySelector(`.trip-events`);
 
 const infoSectionComponent = new InfoSection();
-render(tripMain, infoSectionComponent.getElement(), RenderPosition.AFTERBEGIN);
+render(tripMain, infoSectionComponent, RenderPosition.AFTERBEGIN);
 
 if (points.length !== 0) {
   const tripInfoComponent = new TripInfo(sortedPoints);
   const tripCostComponent = new TripCost(sortedPoints);
-  render(infoSectionComponent.getElement(), tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
-  render(infoSectionComponent.getElement(), tripCostComponent.getElement(), RenderPosition.BEFOREEND);
+  render(infoSectionComponent, tripInfoComponent, RenderPosition.AFTERBEGIN);
+  render(infoSectionComponent, tripCostComponent, RenderPosition.BEFOREEND);
 }
 
 const siteMenuComponent = new SiteMenu();
 const filterComponent = new SiteFilter();
-render(switchControl, siteMenuComponent.getElement(), RenderPosition.AFTEREND);
-render(filterControl, filterComponent.getElement(), RenderPosition.AFTEREND);
+render(switchControl, siteMenuComponent, RenderPosition.AFTEREND);
+render(filterControl, filterComponent, RenderPosition.AFTEREND);
 
 const siteSortingComponent = new SiteSorting();
-render(tripEvents, siteSortingComponent.getElement(), RenderPosition.BEFOREEND);
+render(tripEvents, siteSortingComponent, RenderPosition.BEFOREEND);
 
 if (points.length !== 0) {
   const routeListComponent = new RouteList();
-  render(tripEvents, routeListComponent.getElement(), RenderPosition.BEFOREEND);
+  render(tripEvents, routeListComponent, RenderPosition.BEFOREEND);
 
   const renderOffers = (point, index) => {
     const offerContainer = routeListComponent.getElement().querySelectorAll(`.event__selected-offers`);
     const {extraOffers} = point;
     extraOffers.forEach((offer) => {
       const eventOfferComponent = new EventOffer(offer);
-      render(offerContainer[index], eventOfferComponent.getElement(), RenderPosition.BEFOREEND);
+      render(offerContainer[index], eventOfferComponent, RenderPosition.BEFOREEND);
     });
   };
 
   sortedPoints.forEach((point, index) => {
-    renderRoutePoint(routeListComponent.getElement(), point);
+    renderRoutePoint(routeListComponent, point);
     renderOffers(point, index);
   });
 } else {
   const emptyList = new EmptyList();
-  render(tripEvents, emptyList.getElement(), RenderPosition.BEFOREEND);
+  render(tripEvents, emptyList, RenderPosition.BEFOREEND);
 }
 
 

@@ -1,12 +1,22 @@
+import Abstract from "../view/abstract.js";
+
 export const RenderPosition = {
   AFTERBEGIN: `afterbegin`,
   BEFOREEND: `beforeend`,
   AFTEREND: `afterend`,
 };
 
-export const render = (container, element, place) => {
-  container.insertAdjacentElement(place, element);
-};
+export const render = ((container, child, place) => {
+  if (container instanceof Abstract) {
+    container = container.getElement();
+  }
+
+  if (child instanceof Abstract) {
+    child = child.getElement();
+  }
+
+  container.insertAdjacentElement(place, child);
+});
 
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);
@@ -15,9 +25,18 @@ export const createElement = (template) => {
   return newElement.firstChild;
 };
 
-export const getRandomInteger = (min = 0, max = 1) => {
-  const minCeiling = Math.ceil(Math.min(min, max));
-  const maxFlooring = Math.floor(Math.max(min, max));
+export const replace = (newChild, oldChild) => {
+  if (oldChild instanceof Abstract) {
+    oldChild = oldChild.getElement();
+  }
 
-  return Math.floor(minCeiling + Math.random() * (maxFlooring - minCeiling + 1));
+  if (newChild instanceof Abstract) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+  if (parent === null || oldChild === null || newChild === null) {
+    throw new Error(`Can't replace nonexistent elements`);
+  }
+  parent.replaceChild(newChild, oldChild);
 };
