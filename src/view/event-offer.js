@@ -1,4 +1,4 @@
-﻿import {createElement} from "../utils/render.js";
+﻿import Abstract from "./abstract.js";
 
 export const createEventOffer = (offer) => {
   const {offerName, price} = offer;
@@ -10,25 +10,13 @@ export const createEventOffer = (offer) => {
 };
 
 
-export default class EventOffer {
+export default class EventOffer extends Abstract {
   constructor(offer) {
+    super();
     this._offer = offer;
-    this._element = null;
   }
 
   getTemplate() {
     return createEventOffer(this._offer);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

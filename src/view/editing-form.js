@@ -1,6 +1,7 @@
 import {EVENT_TYPES, OFFERS, PHOTO_NUMBER} from "../const.js";
-import {createElement, getRandomInteger} from "../utils/render.js";
+import {getRandomInteger} from "../utils/common.js";
 import dayjs from "dayjs";
+import Abstract from "./abstract.js";
 
 const editingEventTypeFormTemplate = (currentType) => {
   return EVENT_TYPES.map((type)=> `<div class="event__type-item">
@@ -122,25 +123,40 @@ const editingFormTemplate = (point = {}) => {
 </form>`;
 };
 
-export default class EditingForm {
+export default class EditingForm extends Abstract {
   constructor(point = BLANK_POINT) {
+    super();
     this._point = point;
-    this._element = null;
+    this._editClickHandler = this._editClickHandler.bind(this);
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
   }
 
   getTemplate() {
     return editingFormTemplate(this._point);
   }
 
-  getElement() {
-    if (!this._element) {
-      this._element = createElement(this.getTemplate());
-    }
-
-    return this._element;
+  _editClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
   }
 
-  removeElement() {
-    this._element = null;
+  setEditClickHandler(callback) {
+    this._callback.editClick = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._editClickHandler);
+  }
+
+  removeEditClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).removeEventListener(`click`, this._editClickHandler);
+  }
+
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit();
+  }
+
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
   }
 }
