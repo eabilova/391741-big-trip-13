@@ -29,17 +29,6 @@ export default class Point {
       }
     };
 
-    const renderFavorite = (point) => {
-      point.setClickFavoriteButtonHandler(() => {
-        if (point.isFavorite) {
-          point.isFavorite = false;
-        } else {
-          point.isFavorite = true;
-        }
-        this._renderPoint();
-      })
-    }
-
     const replacePointToForm = () => {
       replace(editRoutePoint, routePoint);
       editRoutePoint.setFormSubmitHandler(() => {
@@ -57,13 +46,9 @@ export default class Point {
       });
       replace(routePoint, editRoutePoint);
       routePoint.setClickFavoriteButtonHandler(() => {
-        if (routePoint.isFavorite) {
-          routePoint.isFavorite = false;
-      } else {
-          routePoint.isFavorite = true;
-      }
-      this._renderPoint();
-    })
+        routePoint.isFavorite = routePoint.isFavorite !== true;
+        this._renderPoint();
+      })
       document.removeEventListener(`keydown`, onEscKeyDown);
     };
 
@@ -98,8 +83,5 @@ export default class Point {
     } else {
       this._renderEmptyList();
     }
-
   }
-
-
 }

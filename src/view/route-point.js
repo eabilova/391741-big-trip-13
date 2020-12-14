@@ -43,6 +43,7 @@ export default class RoutePoint extends Abstract {
     super();
     this._point = point;
     this._clickHandler = this._clickHandler.bind(this);
+    this._clickFavoriteButtonHandler = this._clickFavoriteButtonHandler.bind(this);
   }
 
   getTemplate() {
