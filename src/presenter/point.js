@@ -1,7 +1,7 @@
 ﻿import EmptyList from "../view/no-points.js";
 import RouteList from "../view/content-list.js";
 import EditingForm from "../view/editing-form.js";
-import RoutePoint from "../view/content-list-item.js";
+import RoutePoint from "../view/route-point.js";
 import EventOffer from "../view/event-offer.js";
 import {render, RenderPosition, replace} from "../utils/render";
 
@@ -11,13 +11,11 @@ export default class Point {
 
     this._routeListComponent = new RouteList();
     this._emptyList = new EmptyList();
-
   }
 
   init(points) {
     this._points = points.slice();
     this._renderPoint(this._points);
-    this._renderFavorite(this._points);
   }
 
   _renderPointMode(routeList, point) {
@@ -30,6 +28,17 @@ export default class Point {
         replaceFormToPoint();
       }
     };
+
+    const renderFavorite = (point) => {
+      point.setClickFavoriteButtonHandler(() => {
+        if (point.isFavorite) {
+          point.isFavorite = false;
+        } else {
+          point.isFavorite = true;
+        }
+        this._renderPoint();
+      })
+    }
 
     const replacePointToForm = () => {
       replace(editRoutePoint, routePoint);
@@ -47,6 +56,14 @@ export default class Point {
         replaceFormToPoint();
       });
       replace(routePoint, editRoutePoint);
+      routePoint.setClickFavoriteButtonHandler(() => {
+        if (routePoint.isFavorite) {
+          routePoint.isFavorite = false;
+      } else {
+          routePoint.isFavorite = true;
+      }
+      this._renderPoint();
+    })
       document.removeEventListener(`keydown`, onEscKeyDown);
     };
 
@@ -81,16 +98,8 @@ export default class Point {
     } else {
       this._renderEmptyList();
     }
+
   }
 
-  _renderFavorite(points) {
-    points.forEach((point) => point.setClickFavoriteButtonHandler(() => {
-      if (point.isFavorite) {
-        point.isFavorite = false;
-      } else {
-        point.isFavorite = true;
-      }
-      this._renderPoint(point);
-    }));
-  }
+
 }
