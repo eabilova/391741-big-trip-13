@@ -78,3 +78,5 @@ export const DAY_DIFFERENCE = {
   max: 7
 };
 
+export const POINT_COUNT = 20;
+

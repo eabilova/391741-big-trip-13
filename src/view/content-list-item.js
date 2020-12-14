@@ -54,8 +54,23 @@ export default class RoutePoint extends Abstract {
     this._callback.click();
   }
 
+  _clickFavoriteButtonHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
+  }
+
   setClickHandler(callback) {
     this._callback.click = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
+  }
+
+  setClickFavoriteButtonHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._clickFavoriteButtonHandler);
+  }
+
+  removeClickFavoriteButtonHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.event__favorite-btn`).removeEventListener(`click`, this._clickFavoriteButtonHandler);
   }
 }
