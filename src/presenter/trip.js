@@ -7,7 +7,6 @@ import SiteSorting from "../view/sorting.js";
 import PointPresenter from "./point.js";
 import EmptyList from "../view/no-points";
 import TripList from "../view/content-list.js";
-import EventOffer from "../view/event-offer";
 import {updatePoint} from "../utils/common.js";
 import {switchControl, filterControl, tripEvents} from "../main.js";
 import {render, RenderPosition} from "../utils/render.js";
@@ -69,25 +68,15 @@ export default class Trip {
       this._renderSort();
       render(tripEvents, this._tripListContainer, RenderPosition.BEFOREEND);
 
-      const renderOffers = (point, index) => {
-        const offerContainer = this._tripListContainer.getElement().querySelectorAll(`.event__selected-offers`);
-        const {extraOffers} = point;
-        extraOffers.forEach((offer) => {
-          const eventOfferComponent = new EventOffer(offer);
-          render(offerContainer[index], eventOfferComponent, RenderPosition.BEFOREEND);
-        });
-      };
-
-      this._points.forEach((point, index) => {
+      this._points.forEach((point) => {
         this._renderPoint(point);
-        renderOffers(point, index);
       });
     } else {
       this._renderEmptyList();
     }
   }
 
-  _renderPoint(point) {
+  _renderPoint(point, pointIndex) {
     const tripPoint = new PointPresenter(this._tripListContainer, this._handlePointChange, this._handleModeChange);
     tripPoint.init(point);
     this._tripPoint[point.id] = tripPoint;

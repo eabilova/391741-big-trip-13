@@ -1,11 +1,7 @@
 ﻿import EditTripForm from "../view/editing-form.js";
 import TripPoint from "../view/trip-point.js";
-import {
-  render,
-  RenderPosition,
-  replace,
-  remove
-} from "../utils/render";
+import EventOffer from "../view/event-offer";
+import {render, RenderPosition, replace, remove} from "../utils/render";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -37,6 +33,7 @@ export default class Point {
 
     this._tripPoint = new TripPoint(point);
     this._editTripPoint = new EditTripForm(point);
+    this._renderOffers(point, this._pointIndex);
 
     this._tripPoint.setClickHandler(this._clickHandler);
     this._tripPoint.setFavoriteButtonClickHandler(this._favoriteButtonClickHandler);
@@ -67,6 +64,15 @@ export default class Point {
     if (this._mode !== Mode.DEFAULT) {
       this._replaceFormToPoint();
     }
+  }
+
+  _renderOffers(point) {
+    const offerContainer = this._tripPoint.getElement().querySelector(`.event__selected-offers`);
+    const {extraOffers} = point;
+    extraOffers.forEach((offer) => {
+      const eventOfferComponent = new EventOffer(offer);
+      render(offerContainer, eventOfferComponent, RenderPosition.BEFOREEND);
+    });
   }
 
   _replacePointToForm() {
