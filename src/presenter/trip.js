@@ -76,7 +76,7 @@ export default class Trip {
     }
   }
 
-  _renderPoint(point, pointIndex) {
+  _renderPoint(point) {
     const tripPoint = new PointPresenter(this._tripListContainer, this._handlePointChange, this._handleModeChange);
     tripPoint.init(point);
     this._tripPoint[point.id] = tripPoint;
