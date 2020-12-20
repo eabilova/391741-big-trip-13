@@ -43,7 +43,7 @@ export default class RoutePoint extends Abstract {
     super();
     this._point = point;
     this._clickHandler = this._clickHandler.bind(this);
-    this._clickFavoriteButtonHandler = this._clickFavoriteButtonHandler.bind(this);
+    this._favoriteButtonClickHandler = this._favoriteButtonClickHandler.bind(this);
   }
 
   getTemplate() {
@@ -55,9 +55,9 @@ export default class RoutePoint extends Abstract {
     this._callback.click();
   }
 
-  _clickFavoriteButtonHandler(evt) {
+  _favoriteButtonClickHandler(evt) {
     evt.preventDefault();
-    this._callback.click();
+    this._callback.favoriteClick();
   }
 
   setClickHandler(callback) {
@@ -65,13 +65,8 @@ export default class RoutePoint extends Abstract {
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
   }
 
-  setClickFavoriteButtonHandler(callback) {
-    this._callback.click = callback;
-    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._clickFavoriteButtonHandler);
-  }
-
-  removeClickFavoriteButtonHandler(callback) {
-    this._callback.click = callback;
-    this.getElement().querySelector(`.event__favorite-btn`).removeEventListener(`click`, this._clickFavoriteButtonHandler);
+  setFavoriteButtonClickHandler(callback) {
+    this._callback.favoriteClick = callback;
+    this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteButtonClickHandler);
   }
 }

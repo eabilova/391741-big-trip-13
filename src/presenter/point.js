@@ -1,87 +1,119 @@
-﻿import EmptyList from "../view/no-points.js";
-import RouteList from "../view/content-list.js";
-import EditingForm from "../view/editing-form.js";
-import RoutePoint from "../view/route-point.js";
-import EventOffer from "../view/event-offer.js";
-import {render, RenderPosition, replace} from "../utils/render";
+﻿import EditTripForm from "../view/editing-form.js";
+import TripPoint from "../view/trip-point.js";
+import {
+  render,
+  RenderPosition,
+  replace,
+  remove
+} from "../utils/render";
+
+const Mode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
+};
 
 export default class Point {
-  constructor(pointListContainer) {
-    this._pointListContainer = pointListContainer;
+  constructor(pointContainer, changeData, changeMode) {
+    this._pointContainer = pointContainer;
+    this._changeData = changeData;
+    this._changeMode = changeMode;
 
-    this._routeListComponent = new RouteList();
-    this._emptyList = new EmptyList();
+    this._tripPoint = null;
+    this._editTripPoint = null;
+    this._mode = Mode.DEFAULT;
+
+    this._clickHandler = this._clickHandler.bind(this);
+    this._favoriteButtonClickHandler = this._favoriteButtonClickHandler.bind(this);
+    this._editClickHandler = this._editClickHandler.bind(this);
+    this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
   }
 
-  init(points) {
-    this._points = points.slice();
-    this._renderPoint(this._points);
-  }
+  init(point) {
+    this._point = point;
 
-  _renderPointMode(routeList, point) {
-    const routePoint = new RoutePoint(point);
-    const editRoutePoint = new EditingForm(point);
+    const prevPointComponent = this._tripPoint;
+    const prevPointEditComponent = this._editTripPoint;
 
-    const onEscKeyDown = (evt) => {
-      if (evt.key === `Escape` || evt.key === `Esc`) {
-        evt.preventDefault();
-        replaceFormToPoint();
-      }
-    };
+    this._tripPoint = new TripPoint(point);
+    this._editTripPoint = new EditTripForm(point);
 
-    const replacePointToForm = () => {
-      replace(editRoutePoint, routePoint);
-      editRoutePoint.setFormSubmitHandler(() => {
-        replaceFormToPoint();
-      });
-      editRoutePoint.setEditClickHandler(() => {
-        replaceFormToPoint();
-      });
-      document.addEventListener(`keydown`, onEscKeyDown);
-    };
+    this._tripPoint.setClickHandler(this._clickHandler);
+    this._tripPoint.setFavoriteButtonClickHandler(this._favoriteButtonClickHandler);
 
-    const replaceFormToPoint = () => {
-      editRoutePoint.removeEditClickHandler(() => {
-        replaceFormToPoint();
-      });
-      replace(routePoint, editRoutePoint);
-      routePoint.setClickFavoriteButtonHandler(() => {
-        routePoint.isFavorite = routePoint.isFavorite !== true;
-        this._renderPoint();
-      })
-      document.removeEventListener(`keydown`, onEscKeyDown);
-    };
-
-    routePoint.setClickHandler(() => {
-      replacePointToForm();
-    });
-
-    render(routeList, routePoint, RenderPosition.BEFOREEND);
-  }
-
-  _renderEmptyList() {
-    render(this._pointListContainer, this._emptyList, RenderPosition.BEFOREEND);
-  }
-
-  _renderPoint() {
-    if (this._points.length !== 0) {
-      render(this._pointListContainer, this._routeListComponent, RenderPosition.BEFOREEND);
-
-      const renderOffers = (point, index) => {
-        const offerContainer = this._routeListComponent.getElement().querySelectorAll(`.event__selected-offers`);
-        const {extraOffers} = point;
-        extraOffers.forEach((offer) => {
-          const eventOfferComponent = new EventOffer(offer);
-          render(offerContainer[index], eventOfferComponent, RenderPosition.BEFOREEND);
-        });
-      };
-
-      this._points.forEach((point, index) => {
-        this._renderPointMode(this._routeListComponent, point);
-        renderOffers(point, index);
-      });
-    } else {
-      this._renderEmptyList();
+    if (prevPointComponent === null || prevPointEditComponent === null) {
+      render(this._pointContainer, this._tripPoint, RenderPosition.BEFOREEND);
+      return;
     }
+
+    if (this._mode === Mode.DEFAULT) {
+      replace(this._tripPoint, prevPointComponent);
+    }
+
+    if (this._mode === Mode.EDITING) {
+      replace(this._editTripPoint, prevPointEditComponent);
+    }
+
+    remove(prevPointComponent);
+    remove(prevPointEditComponent);
+  }
+
+  destroy() {
+    remove(this._tripPoint);
+    remove(this._editTripPoint);
+  }
+
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceFormToPoint();
+    }
+  }
+
+  _replacePointToForm() {
+    replace(this._editTripPoint, this._tripPoint);
+    this._editTripPoint.setFormSubmitHandler(this._formSubmitHandler);
+    this._editTripPoint.setEditClickHandler(this._editClickHandler);
+    document.addEventListener(`keydown`, this._escKeyDownHandler);
+    this._changeMode();
+    this._mode = Mode.EDITING;
+  }
+
+  _replaceFormToPoint() {
+    this._editTripPoint.removeEditClickHandler(this._editClickHandler);
+    replace(this._tripPoint, this._editTripPoint);
+    document.removeEventListener(`keydown`, this._escKeyDownHandler);
+    this._mode = Mode.DEFAULT;
+  }
+
+  _escKeyDownHandler(evt) {
+    if (evt.key === `Escape` || evt.key === `Esc`) {
+      evt.preventDefault();
+      this._replaceFormToPoint();
+    }
+  }
+
+  _formSubmitHandler(point) {
+    this._replaceFormToPoint();
+    this._changeData(point);
+  }
+
+  _editClickHandler() {
+    this._replaceFormToPoint();
+  }
+
+  _favoriteButtonClickHandler() {
+    this._changeData(
+        Object.assign(
+            {},
+            this._point,
+            {
+              isFavorite: !this._point.isFavorite
+            }
+        )
+    );
+  }
+
+  _clickHandler() {
+    this._replacePointToForm();
   }
 }
