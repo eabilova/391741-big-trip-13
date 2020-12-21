@@ -9,7 +9,7 @@ import EmptyList from "../view/no-points";
 import TripList from "../view/content-list.js";
 import {updatePoint} from "../utils/common.js";
 import {switchControl, filterControl, tripEvents} from "../main.js";
-import {render, RenderPosition} from "../utils/render.js";
+import {render, RenderPosition, remove} from "../utils/render.js";
 import {SortType} from "../const.js";
 
 export default class Trip {
@@ -22,6 +22,7 @@ export default class Trip {
     this._infoSectionComponent = new InfoSection();
     this._siteMenuComponent = new SiteMenu();
     this._filterComponent = new SiteFilter();
+    // this._siteSortingComponent = new SiteSorting(this._currentSortType);
     this._tripListContainer = new TripList();
     this._emptyList = new EmptyList();
 
@@ -105,6 +106,7 @@ export default class Trip {
 
     this._sortPointList(sortType);
     this._clearPointList();
+    remove(this._siteSortingComponent);
     this._renderTripList(sortType);
 
   }
@@ -129,7 +131,7 @@ export default class Trip {
         this._points.sort((a, b) => a.type - b.type);
         break;
       case SortType.TIME:
-        this._points.sort((a, b) => a.time.startTime - b.time.startTime);
+        this._points.sort((a, b) => a.time.startTime.localeCompare(b.time.startTime));
         break;
       case SortType.PRICE:
         this._points.sort((a, b) => a.price - b.price);

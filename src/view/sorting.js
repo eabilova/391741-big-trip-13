@@ -1,10 +1,10 @@
 import Abstract from "./abstract.js";
 import {SortType} from "../const.js";
 
-const siteSortingTemplate = (sorting) => {
+const siteSortingTemplate = (sortType) => {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
   <div class="trip-sort__item  trip-sort__item--day">
-    <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" ${sorting === SortType.DAY ? `checked` : ``}>
+    <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" ${sortType === SortType.DAY ? `checked` : ``}>
     <label class="trip-sort__btn" for="sort-day" data-sort-type="${SortType.DAY}">Day</label>
   </div>
 
@@ -14,12 +14,12 @@ const siteSortingTemplate = (sorting) => {
   </div>
 
   <div class="trip-sort__item  trip-sort__item--time">
-    <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" ${sorting ===  SortType.TIME ? `checked` : ``}>
+    <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" ${sortType === SortType.TIME ? `checked` : ``}>
     <label class="trip-sort__btn" for="sort-time" data-sort-type="${SortType.TIME}">Time</label>
   </div>
 
   <div class="trip-sort__item  trip-sort__item--price">
-    <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" ${sorting === SortType.PRICE ? `checked` : ``}>
+    <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" ${sortType === SortType.PRICE ? `checked` : ``}>
     <label class="trip-sort__btn" for="sort-price" data-sort-type="${SortType.PRICE}">Price</label>
   </div>
 
@@ -31,9 +31,10 @@ const siteSortingTemplate = (sorting) => {
 };
 
 export default class SiteSorting extends Abstract {
-  constructor() {
+  constructor(sortType) {
     super();
 
+    this._sortType = sortType;
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
@@ -48,6 +49,6 @@ export default class SiteSorting extends Abstract {
   }
 
   getTemplate() {
-    return siteSortingTemplate();
+    return siteSortingTemplate(this._sortType);
   }
 }
