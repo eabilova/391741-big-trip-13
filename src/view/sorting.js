@@ -45,7 +45,9 @@ export default class SiteSorting extends Abstract {
 
   setSortTypeChangeHandler(callback) {
     this._callback.sortTypeChange = callback;
-    this.getElement().querySelectorAll(`.trip-sort__input`).forEach((item) =>item.addEventListener(`change`, this._sortTypeChangeHandler));
+    this.getElement().querySelectorAll(`.trip-sort__input`).forEach((input) => {
+      input.addEventListener(`change`, this._sortTypeChangeHandler);
+    });
   }
 
   getTemplate() {
