@@ -22,7 +22,6 @@ export default class Trip {
     this._infoSectionComponent = new InfoSection();
     this._siteMenuComponent = new SiteMenu();
     this._filterComponent = new SiteFilter();
-    // this._siteSortingComponent = new SiteSorting(this._currentSortType);
     this._tripListContainer = new TripList();
     this._emptyList = new EmptyList();
 

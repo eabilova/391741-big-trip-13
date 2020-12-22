@@ -39,6 +39,9 @@ export default class SiteSorting extends Abstract {
   }
 
   _sortTypeChangeHandler(evt) {
+    if (evt.target.control.disabled) {
+      return;
+    }
     evt.preventDefault();
     this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
