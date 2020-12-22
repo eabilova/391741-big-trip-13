@@ -82,3 +82,10 @@ export const DAY_DIFFERENCE = {
 
 export const POINT_COUNT = 20;
 
+export const SortType = {
+  DAY: `sort-day`,
+  EVENT: `sort-event`,
+  TIME: `sort-time`,
+  PRICE: `sort-price`,
+  OFFER: `sort-offer`,
+};
