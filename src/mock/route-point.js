@@ -15,8 +15,14 @@ const getCity = () => {
   return CITIES[randomIndex];
 };
 
-const generateExtraOffers = () => {
-  return OFFERS.slice(getRandomInteger(0, OFFERS.length - 1));
+const generateExtraOffers = (pointType) => {
+  let currentOffer;
+  OFFERS.forEach((offer) => {
+    if (offer.type === pointType) {
+      currentOffer = offer.offers.slice(getRandomInteger(0, offer.offers.length - 1));
+    }
+  });
+  return currentOffer;
 };
 
 const generateDescription = () => {
@@ -48,11 +54,13 @@ const generateDate = () => {
 };
 
 export const generateRoute = () => {
+  const type = generateRouteType();
+
   return {
     id: generateId(),
-    type: generateRouteType(),
+    type,
     city: getCity(),
-    extraOffers: generateExtraOffers(),
+    extraOffers: generateExtraOffers(type),
     destinationDescription: generateDescription(),
     photosAmount: getRandomInteger(PHOTO_AMOUNT.min, PHOTO_AMOUNT.max),
     time: generateDate(),

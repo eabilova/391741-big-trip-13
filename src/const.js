@@ -13,8 +13,33 @@ export const EVENT_TYPES = [
   `restaurant`,
 ];
 
-export const OFFERS = [
+export const OFFERS = [{
+  type: `taxi`,
+  offers: [{
+    id: `luggage`,
+    offerName: `Add luggage`,
+    price: 30
+  },
   {
+    id: `comfort`,
+    offerName: `Switch to comfort`,
+    price: 100
+  },
+  {
+    id: `seats`,
+    offerName: `Choose seats`,
+    price: 5
+  },
+  {
+    id: `train`,
+    offerName: `Travel by train`,
+    price: 40
+  },
+  ]
+},
+{
+  type: `bus`,
+  offers: [{
     id: `luggage`,
     offerName: `Add luggage`,
     price: 30
@@ -39,6 +64,149 @@ export const OFFERS = [
     offerName: `Travel by train`,
     price: 40
   },
+  ]
+},
+{
+  type: `train`,
+  offers: [{
+    id: `luggage`,
+    offerName: `Add luggage`,
+    price: 30
+  },
+  {
+    id: `comfort`,
+    offerName: `Switch to comfort`,
+    price: 100
+  },
+  {
+    id: `meal`,
+    offerName: `Add meal`,
+    price: 15
+  },
+  {
+    id: `seats`,
+    offerName: `Choose seats`,
+    price: 5
+  },
+  ]
+},
+{
+  type: `ship`,
+  offers: [{
+    id: `luggage`,
+    offerName: `Add luggage`,
+    price: 30
+  },
+  {
+    id: `comfort`,
+    offerName: `Switch to comfort`,
+    price: 100
+  },
+  {
+    id: `meal`,
+    offerName: `Add meal`,
+    price: 15
+  },
+  {
+    id: `seats`,
+    offerName: `Choose seats`,
+    price: 5
+  },
+  {
+    id: `train`,
+    offerName: `Travel by train`,
+    price: 40
+  },
+  ]
+},
+{
+  type: `transport`,
+  offers: [{
+    id: `luggage`,
+    offerName: `Add luggage`,
+    price: 30
+  },
+  {
+    id: `comfort`,
+    offerName: `Switch to comfort`,
+    price: 100
+  },
+  {
+    id: `seats`,
+    offerName: `Choose seats`,
+    price: 5
+  },
+  {
+    id: `train`,
+    offerName: `Travel by train`,
+    price: 40
+  },
+  ]
+},
+{
+  type: `drive`,
+  offers: [{
+    id: `train`,
+    offerName: `Travel by train`,
+    price: 40
+  }
+  ]
+},
+{
+  type: `flight`,
+  offers: [{
+    id: `luggage`,
+    offerName: `Add luggage`,
+    price: 30
+  },
+  {
+    id: `comfort`,
+    offerName: `Switch to comfort`,
+    price: 100
+  },
+  {
+    id: `meal`,
+    offerName: `Add meal`,
+    price: 15
+  },
+  {
+    id: `seats`,
+    offerName: `Choose seats`,
+    price: 5
+  },
+  {
+    id: `train`,
+    offerName: `Travel by train`,
+    price: 40
+  },
+  ]
+},
+{
+  type: `check-in`,
+  offers: [{
+    id: `comfort`,
+    offerName: `Switch to comfort`,
+    price: 100
+  },
+  {
+    id: `meal`,
+    offerName: `Add meal`,
+    price: 15
+  }
+  ]
+},
+{
+  type: `sightseeng`,
+  offers: [{
+    id: `comfort`,
+    offerName: `Switch to comfort`,
+    price: 100
+  }]
+},
+{
+  type: `restaurant`,
+  offers: []
+}
 ];
 
 export const CITIES = [

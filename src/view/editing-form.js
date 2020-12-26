@@ -1,17 +1,25 @@
-import {EVENT_TYPES, OFFERS, PHOTO_NUMBER} from "../const.js";
-import {getRandomInteger} from "../utils/common.js";
+import {
+  EVENT_TYPES,
+  OFFERS,
+  PHOTO_NUMBER
+} from "../const.js";
+import {
+  getRandomInteger
+} from "../utils/common.js";
 import dayjs from "dayjs";
 import Abstract from "./abstract.js";
 
 const editingEventTypeFormTemplate = (currentType) => {
-  return EVENT_TYPES.map((type)=> `<div class="event__type-item">
+  return EVENT_TYPES.map((type) => `<div class="event__type-item">
     <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${currentType === type ? `checked` : ``}>
       <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type.charAt(0).toUpperCase()}${type.slice(1)}</label>
   </div>`).join(``);
 };
 
 const addPhotos = (point) => {
-  let {photosAmount} = point;
+  let {
+    photosAmount
+  } = point;
   const photos = [];
   while (photosAmount) {
     let randomNumber = getRandomInteger(PHOTO_NUMBER.min, PHOTO_NUMBER.max);
@@ -22,8 +30,16 @@ const addPhotos = (point) => {
   return photos.join(``);
 };
 
-const identifySelectedOffers = (currentOffers) => {
-  return OFFERS.map((offer) => `<div class="event__offer-selector">
+const identifySelectedOffers = (type, currentOffers) => {
+  let selectedOffer;
+  OFFERS.forEach((offer) => {
+    if (offer.type === type) {
+      selectedOffer = offer;
+      return;
+    }
+  });
+
+  return Object.values(selectedOffer.offers).map((offer) => `<div class="event__offer-selector">
           <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" type="checkbox" name="event-offer-${offer.id}" ${currentOffers.find((currentOffer) => currentOffer.id === offer.id) ? `checked` : ``}>
           <label class="event__offer-label" for="event-offer-${offer.id}-1">
             <span class="event__offer-title">${offer.offerName}</span>
@@ -46,9 +62,16 @@ const BLANK_POINT = {
 };
 
 const editingFormTemplate = (point = {}) => {
-  const {type, extraOffers, city, time, price, destinationDescription} = point;
+  const {
+    type,
+    extraOffers,
+    city,
+    time,
+    price,
+    destinationDescription
+  } = point;
   const eventType = editingEventTypeFormTemplate(type);
-  const checkOffers = identifySelectedOffers(extraOffers);
+  const checkOffers = identifySelectedOffers(type, extraOffers);
   const photos = addPhotos(point);
 
   return `<form class="event event--edit" action="#" method="post">
