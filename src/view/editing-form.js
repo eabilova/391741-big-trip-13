@@ -1,25 +1,17 @@
-import {
-  EVENT_TYPES,
-  OFFERS,
-  PHOTO_NUMBER
-} from "../const.js";
-import {
-  getRandomInteger
-} from "../utils/common.js";
+import {EVENT_TYPES, OFFERS, PHOTO_NUMBER} from "../const.js";
+import {getRandomInteger} from "../utils/common.js";
 import dayjs from "dayjs";
 import Abstract from "./abstract.js";
 
-const editingEventTypeFormTemplate = (currentType) => {
+const editingEventTypeFormTemplate = (currentType, isCurrentType) => {
   return EVENT_TYPES.map((type) => `<div class="event__type-item">
-    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${currentType === type ? `checked` : ``}>
+    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isCurrentType === type ? `checked` : ``}>
       <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type.charAt(0).toUpperCase()}${type.slice(1)}</label>
   </div>`).join(``);
 };
 
 const addPhotos = (point) => {
-  let {
-    photosAmount
-  } = point;
+  let {photosAmount} = point;
   const photos = [];
   while (photosAmount) {
     let randomNumber = getRandomInteger(PHOTO_NUMBER.min, PHOTO_NUMBER.max);
@@ -28,6 +20,22 @@ const addPhotos = (point) => {
   }
 
   return photos.join(``);
+};
+
+const addDestinationDescription = (point) => {
+  const photos = addPhotos(point);
+  let description;
+
+  if (point.destinationDescription.length > 0 || point.photosAmount > 0) {
+    description = `<h3 class="event__section-title  event__section-title--destination">Destination</h3>
+    <p class="event__destination-description">${point.destinationDescription}</p>
+    <div class="event__photos-container">
+      <div class="event__photos-tape">
+        ${point.photosAmount !== 0 ? photos : ``}
+      </div>
+    </div>`;
+  }
+  return description;
 };
 
 const identifySelectedOffers = (type, currentOffers) => {
@@ -68,11 +76,10 @@ const editingFormTemplate = (point = {}) => {
     city,
     time,
     price,
-    destinationDescription
   } = point;
   const eventType = editingEventTypeFormTemplate(type);
   const checkOffers = identifySelectedOffers(type, extraOffers);
-  const photos = addPhotos(point);
+  const description = addDestinationDescription(point);
 
   return `<form class="event event--edit" action="#" method="post">
   <header class="event__header">
@@ -134,13 +141,7 @@ const editingFormTemplate = (point = {}) => {
       </div>
     </section>
     <section class="event__section  event__section--destination">
-      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-      <p class="event__destination-description">${destinationDescription}</p>
-      <div class="event__photos-container">
-        <div class="event__photos-tape">
-          ${photos}
-        </div>
-      </div>
+    ${description !== undefined ? description : ``}
     </section>
   </section>
 </form>`;

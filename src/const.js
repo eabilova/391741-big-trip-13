@@ -196,7 +196,7 @@ export const OFFERS = [{
   ]
 },
 {
-  type: `sightseeng`,
+  type: `sightseeing`,
   offers: [{
     id: `comfort`,
     offerName: `Switch to comfort`,
