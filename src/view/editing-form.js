@@ -1,6 +1,8 @@
 import {EVENT_TYPES, OFFERS} from "../const.js";
 import dayjs from "dayjs";
 import SmartView from "./smart.js";
+import {generateDescription, generatePhotoList} from "../utils/common.js";
+
 
 const editingEventTypeFormTemplate = (currentType, isCurrentType) => {
   return EVENT_TYPES.map((type) => `<div class="event__type-item">
@@ -9,30 +11,30 @@ const editingEventTypeFormTemplate = (currentType, isCurrentType) => {
   </div>`).join(``);
 };
 
-const addPhotos = (photoLinks) => {
-  return photoLinks.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(``);
+const addPhotos = (isPhotos) => {
+  return isPhotos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(``);
 };
 
 const addDestinationDescription = (destinationDescription, photoLinks, isDestinationDescription, isPhotos) => {
-  const photos = addPhotos(photoLinks);
+  const photos = addPhotos(isPhotos);
   let description;
 
-  if (isDestinationDescription || isPhotos) {
+  if (isDestinationDescription.length > 0 || isPhotos.length > 0) {
     description = `<h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${destinationDescription}</p>
+    <p class="event__destination-description">${isDestinationDescription}</p>
     <div class="event__photos-container">
       <div class="event__photos-tape">
-        ${isPhotos ? photos : ``}
+        ${isPhotos.length > 0 ? photos : ``}
       </div>
     </div>`;
   }
   return description;
 };
 
-const identifySelectedOffers = (type, currentOffers) => {
+const identifySelectedOffers = (type, isCurrentType, currentOffers) => {
   let selectedTypeOffer;
   OFFERS.forEach((offer) => {
-    if (offer.type === type) {
+    if (offer.type === isCurrentType) {
       selectedTypeOffer = offer;
       return;
     }
@@ -61,9 +63,9 @@ const BLANK_POINT = {
 };
 
 const editingFormTemplate = (data) => {
-  const {type, extraOffers, city, time, price, destinationDescription, photoLinks, isCurrentType, isDestinationDescription, isPhotos} = data;
+  const {type, extraOffers, time, price, destinationDescription, photoLinks, isCurrentType, isDestinationDescription, isPhotos, isCurrentCity} = data;
   const eventType = editingEventTypeFormTemplate(type, isCurrentType);
-  const checkOffers = identifySelectedOffers(type, extraOffers);
+  const checkOffers = identifySelectedOffers(type, isCurrentType, extraOffers);
   const description = addDestinationDescription(destinationDescription, photoLinks, isDestinationDescription, isPhotos);
   const isSubmitDisabled = isCurrentType && !type;
 
@@ -72,7 +74,7 @@ const editingFormTemplate = (data) => {
     <div class="event__type-wrapper">
       <label class="event__type  event__type-btn" for="event-type-toggle-1">
         <span class="visually-hidden">Choose event type</span>
-        <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
+        <img class="event__type-icon" width="17" height="17" src="img/icons/${isCurrentType}.png" alt="Event type icon">
       </label>
       <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -86,9 +88,9 @@ const editingFormTemplate = (data) => {
 
     <div class="event__field-group  event__field-group--destination">
       <label class="event__label  event__type-output" for="event-destination-1">
-        ${type}
+        ${isCurrentType}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${isCurrentCity}" list="destination-list-1">
       <datalist id="destination-list-1">
         <option value="Amsterdam"></option>
         <option value="Geneva"></option>
@@ -176,7 +178,7 @@ export default class EditingForm extends SmartView {
   _typeChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      type: evt.target.value,
+      isCurrentType: evt.target.value,
       extraOffers: [],
     });
   }
@@ -184,16 +186,16 @@ export default class EditingForm extends SmartView {
   _destinationChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      isDestinationDescription: !this._isDestinationDescription,
-      isPhotos: !this._isPhotos
+      isCurrentCity: evt.target.value,
+      isDestinationDescription: generateDescription(),
+      isPhotos: generatePhotoList()
     });
   }
 
   _setInnerHandlers() {
     this.getElement()
       .querySelector(`.event__type-group`)
-      .addEventListener(`change`, this._typeChangeHandler)
-      ;
+      .addEventListener(`change`, this._typeChangeHandler);
     this.getElement()
       .querySelector(`.event__input--destination`)
       .addEventListener(`change`, this._destinationChangeHandler);
@@ -206,7 +208,7 @@ export default class EditingForm extends SmartView {
 
   reset(point) {
     this.updateData(
-      EditingForm.parsePointToData(point)
+        EditingForm.parsePointToData(point)
     );
   }
 
@@ -216,8 +218,9 @@ export default class EditingForm extends SmartView {
         point,
         {
           isCurrentType: point.type,
-          isDestinationDescription: point.destinationDescription.length > 0,
-          isPhotos: point.photoLinks.length > 0
+          isCurrentCity: point.city,
+          isDestinationDescription: point.destinationDescription,
+          isPhotos: point.photoLinks
         }
     );
   }
@@ -226,7 +229,7 @@ export default class EditingForm extends SmartView {
     data = Object.assign({}, data);
 
     if (!data.isCurrentType) {
-      data.currentType = `taxi`;
+      data.type = `taxi`;
     }
 
     if (!data.isDestinationDescription) {
