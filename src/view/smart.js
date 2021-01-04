@@ -3,17 +3,36 @@ import Abstract from "./abstract.js";
 export default class Smart extends Abstract {
   constructor() {
     super();
-
-  }
-  _restoreHandlers() {
-
+    this._data = {};
   }
 
-  _updateElement() {
+  updateData(update) {
+    if (!update) {
+      return;
+    }
 
+    this._data = Object.assign(
+      {},
+      this._data,
+      update
+    );
+
+    this.updateElement();
   }
 
-  _updateData() {
+  updateElement() {
+    let prevElement = this.getElement();
+    const parent = prevElement.parentElement;
+    this.removeElement();
 
+    const newElement = this.getElement();
+
+    parent.replaceChild(newElement, prevElement);
+
+    this.restoreHandlers();
+  }
+
+  restoreHandlers() {
+    throw new Error(`Abstract method not implemented: resetHandlers`);
   }
 }

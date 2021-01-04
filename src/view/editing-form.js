@@ -1,7 +1,6 @@
-import {EVENT_TYPES, OFFERS, PHOTO_NUMBER} from "../const.js";
-import {getRandomInteger} from "../utils/common.js";
+import {EVENT_TYPES, OFFERS} from "../const.js";
 import dayjs from "dayjs";
-import Abstract from "./abstract.js";
+import SmartView from "./smart.js";
 
 const editingEventTypeFormTemplate = (currentType, isCurrentType) => {
   return EVENT_TYPES.map((type) => `<div class="event__type-item">
@@ -10,28 +9,20 @@ const editingEventTypeFormTemplate = (currentType, isCurrentType) => {
   </div>`).join(``);
 };
 
-const addPhotos = (point) => {
-  let {photosAmount} = point;
-  const photos = [];
-  while (photosAmount) {
-    let randomNumber = getRandomInteger(PHOTO_NUMBER.min, PHOTO_NUMBER.max);
-    photos[photosAmount] = `<img class="event__photo" src="http://picsum.photos/248/152?r=${randomNumber}.jpg" alt="Event photo">`;
-    photosAmount--;
-  }
-
-  return photos.join(``);
+const addPhotos = (photoLinks) => {
+  return photoLinks.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(``);
 };
 
-const addDestinationDescription = (point) => {
-  const photos = addPhotos(point);
+const addDestinationDescription = (destinationDescription, photoLinks, isDestinationDescription, isPhotos) => {
+  const photos = addPhotos(photoLinks);
   let description;
 
-  if (point.destinationDescription.length > 0 || point.photosAmount > 0) {
+  if (isDestinationDescription || isPhotos) {
     description = `<h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${point.destinationDescription}</p>
+    <p class="event__destination-description">${destinationDescription}</p>
     <div class="event__photos-container">
       <div class="event__photos-tape">
-        ${point.photosAmount !== 0 ? photos : ``}
+        ${isPhotos ? photos : ``}
       </div>
     </div>`;
   }
@@ -39,22 +30,22 @@ const addDestinationDescription = (point) => {
 };
 
 const identifySelectedOffers = (type, currentOffers) => {
-  let selectedOffer;
+  let selectedTypeOffer;
   OFFERS.forEach((offer) => {
     if (offer.type === type) {
-      selectedOffer = offer;
+      selectedTypeOffer = offer;
       return;
     }
   });
 
-  return Object.values(selectedOffer.offers).map((offer) => `<div class="event__offer-selector">
-          <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" type="checkbox" name="event-offer-${offer.id}" ${currentOffers.find((currentOffer) => currentOffer.id === offer.id) ? `checked` : ``}>
-          <label class="event__offer-label" for="event-offer-${offer.id}-1">
-            <span class="event__offer-title">${offer.offerName}</span>
-            &plus;&euro;&nbsp;
-            <span class="event__offer-price">${offer.price}</span>
-          </label>
-        </div>`).join(``);
+  return Object.values(selectedTypeOffer.offers).map((offer) => `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" type="checkbox" name="event-offer-${offer.id}" ${currentOffers.find((currentOffer) => currentOffer.id === offer.id) ? `checked` : ``}>
+      <label class="event__offer-label" for="event-offer-${offer.id}-1">
+        <span class="event__offer-title">${offer.title}</span>
+        &plus;&euro;&nbsp;
+        <span class="event__offer-price">${offer.price}</span>
+      </label>
+    </div>`).join(``);
 };
 
 const BLANK_POINT = {
@@ -69,17 +60,12 @@ const BLANK_POINT = {
   price: ` `,
 };
 
-const editingFormTemplate = (point = {}) => {
-  const {
-    type,
-    extraOffers,
-    city,
-    time,
-    price,
-  } = point;
-  const eventType = editingEventTypeFormTemplate(type);
+const editingFormTemplate = (data) => {
+  const {type, extraOffers, city, time, price, destinationDescription, photoLinks, isCurrentType, isDestinationDescription, isPhotos} = data;
+  const eventType = editingEventTypeFormTemplate(type, isCurrentType);
   const checkOffers = identifySelectedOffers(type, extraOffers);
-  const description = addDestinationDescription(point);
+  const description = addDestinationDescription(destinationDescription, photoLinks, isDestinationDescription, isPhotos);
+  const isSubmitDisabled = isCurrentType && !type;
 
   return `<form class="event event--edit" action="#" method="post">
   <header class="event__header">
@@ -126,7 +112,7 @@ const editingFormTemplate = (point = {}) => {
       <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
     </div>
 
-    <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
+    <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? `disabled` : ``}>Save</button>
     <button class="event__reset-btn" type="reset">Delete</button>
     <button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
@@ -134,8 +120,7 @@ const editingFormTemplate = (point = {}) => {
   </header>
   <section class="event__details">
     <section class="event__section  event__section--offers">
-      <h3 class="event__section-title  event__section-title--offers">Offers</h3>
-
+    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
       <div class="event__available-offers">
       ${checkOffers}
       </div>
@@ -147,16 +132,20 @@ const editingFormTemplate = (point = {}) => {
 </form>`;
 };
 
-export default class EditingForm extends Abstract {
+export default class EditingForm extends SmartView {
   constructor(point = BLANK_POINT) {
     super();
-    this._point = point;
+    this._data = EditingForm.parsePointToData(point);
     this._editClickHandler = this._editClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._typeChangeHandler = this._typeChangeHandler.bind(this);
+    this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
-    return editingFormTemplate(this._point);
+    return editingFormTemplate(this._data);
   }
 
   _editClickHandler(evt) {
@@ -176,11 +165,82 @@ export default class EditingForm extends Abstract {
 
   _formSubmitHandler(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.formSubmit(EditingForm.parseDataToPoint(this._data));
   }
 
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  _typeChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      type: evt.target.value,
+      extraOffers: [],
+    });
+  }
+
+  _destinationChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      isDestinationDescription: !this._isDestinationDescription,
+      isPhotos: !this._isPhotos
+    });
+  }
+
+  _setInnerHandlers() {
+    this.getElement()
+      .querySelector(`.event__type-group`)
+      .addEventListener(`change`, this._typeChangeHandler)
+      ;
+    this.getElement()
+      .querySelector(`.event__input--destination`)
+      .addEventListener(`change`, this._destinationChangeHandler);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setFormSubmitHandler(this._callback.formSubmit);
+  }
+
+  reset(point) {
+    this.updateData(
+      EditingForm.parsePointToData(point)
+    );
+  }
+
+  static parsePointToData(point) {
+    return Object.assign(
+        {},
+        point,
+        {
+          isCurrentType: point.type,
+          isDestinationDescription: point.destinationDescription.length > 0,
+          isPhotos: point.photoLinks.length > 0
+        }
+    );
+  }
+
+  static parseDataToPoint(data) {
+    data = Object.assign({}, data);
+
+    if (!data.isCurrentType) {
+      data.currentType = `taxi`;
+    }
+
+    if (!data.isDestinationDescription) {
+      data.destinationDescription = ``;
+    }
+
+    if (!data.isPhotos) {
+      data.photoLinks = [];
+    }
+
+    delete data.isCurrentType;
+    delete data.isDestinationDescription;
+    delete data.isPhotos;
+
+    return data;
   }
 }

@@ -1,5 +1,6 @@
 import dayjs from "dayjs";
 import {getRandomInteger} from "../utils/common.js";
+import {PHOTO_NUMBER} from "../const.js";
 import {EVENT_TYPES, OFFERS, CITIES, PHOTO_AMOUNT, PRICE_AMOUNT, TIME_DIFFERENCE, DAY_DIFFERENCE, DESCRIPTION} from "../const.js";
 
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
@@ -24,6 +25,19 @@ const generateExtraOffers = (pointType) => {
   });
   return currentOffer;
 };
+
+const generatePhotoList = () => {
+  let photoAmount =  getRandomInteger(PHOTO_AMOUNT.min, PHOTO_AMOUNT.max);
+  let photos = [];
+
+  while (photoAmount) {
+    let randomNumber = getRandomInteger(PHOTO_NUMBER.min, PHOTO_NUMBER.max);
+    photos[photoAmount] = `http://picsum.photos/248/152?r=${randomNumber}.jpg`;
+    photoAmount--;
+  }
+
+  return photos;
+}
 
 const generateDescription = () => {
   const splitDescription = DESCRIPTION.split(`. `);
@@ -62,7 +76,7 @@ export const generateRoute = () => {
     city: getCity(),
     extraOffers: generateExtraOffers(type),
     destinationDescription: generateDescription(),
-    photosAmount: getRandomInteger(PHOTO_AMOUNT.min, PHOTO_AMOUNT.max),
+    photoLinks: generatePhotoList(),
     time: generateDate(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
     price: getRandomInteger(PRICE_AMOUNT.min, PRICE_AMOUNT.max),
