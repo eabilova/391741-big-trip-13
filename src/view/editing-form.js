@@ -4,41 +4,35 @@ import SmartView from "./smart.js";
 import {generateDescription, generatePhotoList} from "../utils/common.js";
 
 
-const editingEventTypeFormTemplate = (currentType, isCurrentType) => {
-  return EVENT_TYPES.map((type) => `<div class="event__type-item">
-    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${isCurrentType === type ? `checked` : ``}>
-      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type.charAt(0).toUpperCase()}${type.slice(1)}</label>
+const editingEventTypeFormTemplate = (type, currentType) => {
+  return EVENT_TYPES.map((eventType) => `<div class="event__type-item">
+    <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}" ${currentType === eventType ? `checked` : ``}>
+      <label class="event__type-label  event__type-label--${eventType}" for="event-type-${eventType}-1">${eventType.charAt(0).toUpperCase()}${eventType.slice(1)}</label>
   </div>`).join(``);
 };
 
-const addPhotos = (isPhotos) => {
-  return isPhotos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(``);
+const addPhotos = (currentPhotos) => {
+  return currentPhotos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(``);
 };
 
-const addDestinationDescription = (destinationDescription, photoLinks, isDestinationDescription, isPhotos) => {
-  const photos = addPhotos(isPhotos);
+const addDestinationDescription = (destinationDescription, photoLinks, currentDestinationDescription, currentPhotos) => {
+  const photos = addPhotos(currentPhotos);
   let description;
 
-  if (isDestinationDescription.length > 0 || isPhotos.length > 0) {
+  if (currentDestinationDescription.length > 0 || currentPhotos.length > 0) {
     description = `<h3 class="event__section-title  event__section-title--destination">Destination</h3>
-    <p class="event__destination-description">${isDestinationDescription}</p>
+    <p class="event__destination-description">${currentDestinationDescription}</p>
     <div class="event__photos-container">
       <div class="event__photos-tape">
-        ${isPhotos.length > 0 ? photos : ``}
+        ${currentPhotos.length > 0 ? photos : ``}
       </div>
     </div>`;
   }
   return description;
 };
 
-const identifySelectedOffers = (type, isCurrentType, currentOffers) => {
-  let selectedTypeOffer;
-  OFFERS.forEach((offer) => {
-    if (offer.type === isCurrentType) {
-      selectedTypeOffer = offer;
-      return;
-    }
-  });
+const identifySelectedOffers = (type, currentType, currentOffers) => {
+  const selectedTypeOffer = OFFERS.find((offer) => offer.type === currentType);
 
   return Object.values(selectedTypeOffer.offers).map((offer) => `<div class="event__offer-selector">
       <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" type="checkbox" name="event-offer-${offer.id}" ${currentOffers.find((currentOffer) => currentOffer.id === offer.id) ? `checked` : ``}>
@@ -63,18 +57,18 @@ const BLANK_POINT = {
 };
 
 const editingFormTemplate = (data) => {
-  const {type, extraOffers, time, price, destinationDescription, photoLinks, isCurrentType, isDestinationDescription, isPhotos, isCurrentCity} = data;
-  const eventType = editingEventTypeFormTemplate(type, isCurrentType);
-  const checkOffers = identifySelectedOffers(type, isCurrentType, extraOffers);
-  const description = addDestinationDescription(destinationDescription, photoLinks, isDestinationDescription, isPhotos);
-  const isSubmitDisabled = isCurrentType && !type;
+  const {type, extraOffers, time, price, destinationDescription, photoLinks, currentType, currentDestinationDescription, currentPhotos, currentCity} = data;
+  const eventType = editingEventTypeFormTemplate(type, currentType);
+  const checkOffers = identifySelectedOffers(type, currentType, extraOffers);
+  const description = addDestinationDescription(destinationDescription, photoLinks, currentDestinationDescription, currentPhotos);
+  const isSubmitDisabled = currentType && !type;
 
   return `<form class="event event--edit" action="#" method="post">
   <header class="event__header">
     <div class="event__type-wrapper">
       <label class="event__type  event__type-btn" for="event-type-toggle-1">
         <span class="visually-hidden">Choose event type</span>
-        <img class="event__type-icon" width="17" height="17" src="img/icons/${isCurrentType}.png" alt="Event type icon">
+        <img class="event__type-icon" width="17" height="17" src="img/icons/${currentType}.png" alt="Event type icon">
       </label>
       <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
 
@@ -88,9 +82,9 @@ const editingFormTemplate = (data) => {
 
     <div class="event__field-group  event__field-group--destination">
       <label class="event__label  event__type-output" for="event-destination-1">
-        ${isCurrentType}
+        ${currentType}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${isCurrentCity}" list="destination-list-1">
+      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentCity}" list="destination-list-1">
       <datalist id="destination-list-1">
         <option value="Amsterdam"></option>
         <option value="Geneva"></option>
@@ -122,13 +116,13 @@ const editingFormTemplate = (data) => {
   </header>
   <section class="event__details">
     <section class="event__section  event__section--offers">
-    <h3 class="event__section-title  event__section-title--offers">Offers</h3>
+    ${checkOffers ? `<h3 class="event__section-title  event__section-title--offers">Offers</h3>` : ``}
       <div class="event__available-offers">
       ${checkOffers}
       </div>
     </section>
     <section class="event__section  event__section--destination">
-    ${description !== undefined ? description : ``}
+    ${description ? description : ``}
     </section>
   </section>
 </form>`;
@@ -178,7 +172,7 @@ export default class EditingForm extends SmartView {
   _typeChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      isCurrentType: evt.target.value,
+      currentType: evt.target.value,
       extraOffers: [],
     });
   }
@@ -186,9 +180,9 @@ export default class EditingForm extends SmartView {
   _destinationChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
-      isCurrentCity: evt.target.value,
-      isDestinationDescription: generateDescription(),
-      isPhotos: generatePhotoList()
+      currentCity: evt.target.value,
+      currentDestinationDescription: generateDescription(),
+      currentPhotos: generatePhotoList()
     });
   }
 
@@ -217,10 +211,10 @@ export default class EditingForm extends SmartView {
         {},
         point,
         {
-          isCurrentType: point.type,
-          isCurrentCity: point.city,
-          isDestinationDescription: point.destinationDescription,
-          isPhotos: point.photoLinks
+          currentType: point.type,
+          currentCity: point.city,
+          currentDestinationDescription: point.destinationDescription,
+          currentPhotos: point.photoLinks
         }
     );
   }
@@ -228,21 +222,21 @@ export default class EditingForm extends SmartView {
   static parseDataToPoint(data) {
     data = Object.assign({}, data);
 
-    if (!data.isCurrentType) {
+    if (!data.currentType) {
       data.type = `taxi`;
     }
 
-    if (!data.isDestinationDescription) {
+    if (!data.currentDestinationDescription) {
       data.destinationDescription = ``;
     }
 
-    if (!data.isPhotos) {
+    if (!data.currentPhotos) {
       data.photoLinks = [];
     }
 
-    delete data.isCurrentType;
-    delete data.isDestinationDescription;
-    delete data.isPhotos;
+    delete data.currentType;
+    delete data.currentDestinationDescription;
+    delete data.currentPhotos;
 
     return data;
   }

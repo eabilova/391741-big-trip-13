@@ -13,195 +13,70 @@ export const EVENT_TYPES = [
   `restaurant`,
 ];
 
-export const OFFERS = [{
-  type: `taxi`,
-  offers: [{
+export const OFFER_LIST = {
+  luggage: {
     id: `luggage`,
     title: `Add luggage`,
     price: 30
   },
-  {
+  comfort: {
     id: `comfort`,
     title: `Switch to comfort`,
     price: 100
   },
-  {
+  meal: {
+    id: `meal`,
+    title: `Add meal`,
+    price: 15
+  },
+  seats: {
     id: `seats`,
     title: `Choose seats`,
     price: 5
   },
-  {
+  train: {
     id: `train`,
     title: `Travel by train`,
     price: 40
-  },
-  ]
+  }
+};
+
+
+export const OFFERS = [{
+  type: `taxi`,
+  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.seats, OFFER_LIST.train]
 },
 {
   type: `bus`,
-  offers: [{
-    id: `luggage`,
-    title: `Add luggage`,
-    price: 30
-  },
-  {
-    id: `comfort`,
-    title: `Switch to comfort`,
-    price: 100
-  },
-  {
-    id: `meal`,
-    title: `Add meal`,
-    price: 15
-  },
-  {
-    id: `seats`,
-    title: `Choose seats`,
-    price: 5
-  },
-  {
-    id: `train`,
-    title: `Travel by train`,
-    price: 40
-  },
-  ]
+  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.meal, OFFER_LIST.seats, OFFER_LIST.train]
 },
 {
   type: `train`,
-  offers: [{
-    id: `luggage`,
-    title: `Add luggage`,
-    price: 30
-  },
-  {
-    id: `comfort`,
-    title: `Switch to comfort`,
-    price: 100
-  },
-  {
-    id: `meal`,
-    title: `Add meal`,
-    price: 15
-  },
-  {
-    id: `seats`,
-    title: `Choose seats`,
-    price: 5
-  },
-  ]
+  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.meal, OFFER_LIST.seats]
 },
 {
   type: `ship`,
-  offers: [{
-    id: `luggage`,
-    title: `Add luggage`,
-    price: 30
-  },
-  {
-    id: `comfort`,
-    title: `Switch to comfort`,
-    price: 100
-  },
-  {
-    id: `meal`,
-    title: `Add meal`,
-    price: 15
-  },
-  {
-    id: `seats`,
-    title: `Choose seats`,
-    price: 5
-  },
-  {
-    id: `train`,
-    title: `Travel by train`,
-    price: 40
-  },
-  ]
+  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.meal, OFFER_LIST.seats, OFFER_LIST.train]
 },
 {
   type: `transport`,
-  offers: [{
-    id: `luggage`,
-    title: `Add luggage`,
-    price: 30
-  },
-  {
-    id: `comfort`,
-    title: `Switch to comfort`,
-    price: 100
-  },
-  {
-    id: `seats`,
-    title: `Choose seats`,
-    price: 5
-  },
-  {
-    id: `train`,
-    title: `Travel by train`,
-    price: 40
-  },
-  ]
+  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.seats, OFFER_LIST.train]
 },
 {
   type: `drive`,
-  offers: [{
-    id: `train`,
-    title: `Travel by train`,
-    price: 40
-  }
-  ]
+  offers: [OFFER_LIST.train]
 },
 {
   type: `flight`,
-  offers: [{
-    id: `luggage`,
-    title: `Add luggage`,
-    price: 30
-  },
-  {
-    id: `comfort`,
-    title: `Switch to comfort`,
-    price: 100
-  },
-  {
-    id: `meal`,
-    title: `Add meal`,
-    price: 15
-  },
-  {
-    id: `seats`,
-    title: `Choose seats`,
-    price: 5
-  },
-  {
-    id: `train`,
-    title: `Travel by train`,
-    price: 40
-  },
-  ]
+  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.meal, OFFER_LIST.seats, OFFER_LIST.train]
 },
 {
   type: `check-in`,
-  offers: [{
-    id: `comfort`,
-    title: `Switch to comfort`,
-    price: 100
-  },
-  {
-    id: `meal`,
-    title: `Add meal`,
-    price: 15
-  }
-  ]
+  offers: [OFFER_LIST.comfort, OFFER_LIST.meal]
 },
 {
   type: `sightseeing`,
-  offers: [{
-    id: `comfort`,
-    title: `Switch to comfort`,
-    price: 100
-  }]
+  offers: [OFFER_LIST.comfort]
 },
 {
   type: `restaurant`,
@@ -248,7 +123,7 @@ export const DAY_DIFFERENCE = {
   max: 7
 };
 
-export const POINT_COUNT = 20;
+export const POINT_COUNT = 5;
 
 export const SortType = {
   DAY: `sort-day`,
