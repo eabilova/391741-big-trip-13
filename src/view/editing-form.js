@@ -4,10 +4,10 @@ import SmartView from "./smart.js";
 import {generateDescription, generatePhotoList} from "../utils/common.js";
 
 
-const editingEventTypeFormTemplate = (type, currentType) => {
-  return EVENT_TYPES.map((eventType) => `<div class="event__type-item">
-    <input id="event-type-${eventType}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${eventType}" ${currentType === eventType ? `checked` : ``}>
-      <label class="event__type-label  event__type-label--${eventType}" for="event-type-${eventType}-1">${eventType.charAt(0).toUpperCase()}${eventType.slice(1)}</label>
+const editingEventTypeFormTemplate = (currentType) => {
+  return EVENT_TYPES.map((type) => `<div class="event__type-item">
+    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${currentType === type ? `checked` : ``}>
+      <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type.charAt(0).toUpperCase()}${type.slice(1)}</label>
   </div>`).join(``);
 };
 
@@ -15,7 +15,7 @@ const addPhotos = (currentPhotos) => {
   return currentPhotos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(``);
 };
 
-const addDestinationDescription = (destinationDescription, photoLinks, currentDestinationDescription, currentPhotos) => {
+const addDestinationDescription = (currentDestinationDescription, currentPhotos) => {
   const photos = addPhotos(currentPhotos);
   let description;
 
@@ -31,7 +31,7 @@ const addDestinationDescription = (destinationDescription, photoLinks, currentDe
   return description;
 };
 
-const identifySelectedOffers = (type, currentType, currentOffers) => {
+const identifySelectedOffers = (currentType, currentOffers) => {
   const selectedTypeOffer = OFFERS.find((offer) => offer.type === currentType);
 
   return Object.values(selectedTypeOffer.offers).map((offer) => `<div class="event__offer-selector">
@@ -57,10 +57,10 @@ const BLANK_POINT = {
 };
 
 const editingFormTemplate = (data) => {
-  const {type, extraOffers, time, price, destinationDescription, photoLinks, currentType, currentDestinationDescription, currentPhotos, currentCity} = data;
-  const eventType = editingEventTypeFormTemplate(type, currentType);
-  const checkOffers = identifySelectedOffers(type, currentType, extraOffers);
-  const description = addDestinationDescription(destinationDescription, photoLinks, currentDestinationDescription, currentPhotos);
+  const {type, extraOffers, time, price, currentType, currentDestinationDescription, currentPhotos, currentCity} = data;
+  const eventType = editingEventTypeFormTemplate(currentType);
+  const checkOffers = identifySelectedOffers(currentType, extraOffers);
+  const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
   const isSubmitDisabled = currentType && !type;
 
   return `<form class="event event--edit" action="#" method="post">
