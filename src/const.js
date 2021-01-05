@@ -13,32 +13,75 @@ export const EVENT_TYPES = [
   `restaurant`,
 ];
 
-export const OFFERS = [
-  {
+export const OFFER_LIST = {
+  luggage: {
     id: `luggage`,
-    offerName: `Add luggage`,
+    title: `Add luggage`,
     price: 30
   },
-  {
+  comfort: {
     id: `comfort`,
-    offerName: `Switch to comfort`,
+    title: `Switch to comfort`,
     price: 100
   },
-  {
+  meal: {
     id: `meal`,
-    offerName: `Add meal`,
+    title: `Add meal`,
     price: 15
   },
-  {
+  seats: {
     id: `seats`,
-    offerName: `Choose seats`,
+    title: `Choose seats`,
     price: 5
   },
-  {
+  train: {
     id: `train`,
-    offerName: `Travel by train`,
+    title: `Travel by train`,
     price: 40
-  },
+  }
+};
+
+
+export const OFFERS = [{
+  type: `taxi`,
+  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.seats, OFFER_LIST.train]
+},
+{
+  type: `bus`,
+  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.meal, OFFER_LIST.seats, OFFER_LIST.train]
+},
+{
+  type: `train`,
+  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.meal, OFFER_LIST.seats]
+},
+{
+  type: `ship`,
+  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.meal, OFFER_LIST.seats, OFFER_LIST.train]
+},
+{
+  type: `transport`,
+  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.seats, OFFER_LIST.train]
+},
+{
+  type: `drive`,
+  offers: [OFFER_LIST.train]
+},
+{
+  type: `flight`,
+  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.meal, OFFER_LIST.seats, OFFER_LIST.train]
+},
+{
+  type: `check-in`,
+  offers: [OFFER_LIST.comfort, OFFER_LIST.meal]
+},
+{
+  type: `sightseeing`,
+  offers: [OFFER_LIST.comfort]
+},
+{
+  type: `restaurant`,
+  offers: []
+}
 ];
 
 export const CITIES = [
@@ -80,7 +123,7 @@ export const DAY_DIFFERENCE = {
   max: 7
 };
 
-export const POINT_COUNT = 20;
+export const POINT_COUNT = 5;
 
 export const SortType = {
   DAY: `sort-day`,

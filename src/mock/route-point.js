@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
-import {getRandomInteger} from "../utils/common.js";
-import {EVENT_TYPES, OFFERS, CITIES, PHOTO_AMOUNT, PRICE_AMOUNT, TIME_DIFFERENCE, DAY_DIFFERENCE, DESCRIPTION} from "../const.js";
+import {getRandomInteger, generateDescription, generatePhotoList} from "../utils/common.js";
+import {EVENT_TYPES, OFFERS, CITIES, PRICE_AMOUNT, TIME_DIFFERENCE, DAY_DIFFERENCE} from "../const.js";
 
 const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
@@ -15,14 +15,14 @@ const getCity = () => {
   return CITIES[randomIndex];
 };
 
-const generateExtraOffers = () => {
-  return OFFERS.slice(getRandomInteger(0, OFFERS.length - 1));
-};
-
-const generateDescription = () => {
-  const splitDescription = DESCRIPTION.split(`. `);
-
-  return splitDescription.slice(0, getRandomInteger(0, splitDescription.length - 1)).join(`. `);
+const generateExtraOffers = (pointType) => {
+  let currentOffer;
+  OFFERS.forEach((offer) => {
+    if (offer.type === pointType) {
+      currentOffer = offer.offers.slice(getRandomInteger(0, offer.offers.length - 1));
+    }
+  });
+  return currentOffer;
 };
 
 const generateDate = () => {
@@ -48,13 +48,15 @@ const generateDate = () => {
 };
 
 export const generateRoute = () => {
+  const type = generateRouteType();
+
   return {
     id: generateId(),
-    type: generateRouteType(),
+    type,
     city: getCity(),
-    extraOffers: generateExtraOffers(),
+    extraOffers: generateExtraOffers(type),
     destinationDescription: generateDescription(),
-    photosAmount: getRandomInteger(PHOTO_AMOUNT.min, PHOTO_AMOUNT.max),
+    photoLinks: generatePhotoList(),
     time: generateDate(),
     isFavorite: Boolean(getRandomInteger(0, 1)),
     price: getRandomInteger(PRICE_AMOUNT.min, PRICE_AMOUNT.max),
