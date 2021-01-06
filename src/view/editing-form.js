@@ -2,6 +2,9 @@ import {EVENT_TYPES, OFFERS} from "../const.js";
 import dayjs from "dayjs";
 import SmartView from "./smart.js";
 import {generateDescription, generatePhotoList} from "../utils/common.js";
+import flatpickr from "flatpickr";
+
+import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 
 const editingEventTypeFormTemplate = (currentType) => {
@@ -94,10 +97,10 @@ const editingFormTemplate = (data) => {
 
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-1">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${time.startFullDate}">
+      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${time.userSelectedStartDate}">
       &mdash;
       <label class="visually-hidden" for="event-end-time-1">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${time.endFullDate}">
+      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${time.userSelectedEndDate}">
     </div>
 
     <div class="event__field-group  event__field-group--price">
@@ -132,12 +135,16 @@ export default class EditingForm extends SmartView {
   constructor(point = BLANK_POINT) {
     super();
     this._data = EditingForm.parsePointToData(point);
+    this._datepicker = null;
     this._editClickHandler = this._editClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
+    this._tripStartDateChangeHandler = this._tripStartDateChangeHandler.bind(this);
+    this._tripEndDateChangeHandler = this._tripEndDateChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
 
     this._setInnerHandlers();
+    this._setDatePicker();
   }
 
   getTemplate() {
@@ -186,6 +193,50 @@ export default class EditingForm extends SmartView {
     });
   }
 
+  _setDatePicker() {
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
+
+    if (this._data.userSelectedStartDate) {
+      this._datepicker = flatpickr(
+          this.getElement().querySelector(`#event-start-time-1`),
+          {
+            dateFormat: `j/m/y H:i`,
+            defaultDate: this._data.time.startFullDate,
+            onChange: this._tripStartDateChangeHandler
+          }
+      );
+    }
+    if (this._data.userSelectedEndDate) {
+      this._datepicker = flatpickr(
+          this.getElement().querySelector(`#event-end-time-1`),
+          {
+            dateFormat: `j/m/y H:i`,
+            defaultDate: this._data.time.endFullDate,
+            onChange: this._tripEndDateChangeHandler
+          }
+      );
+    }
+  }
+
+  _tripStartDateChangeHandler([userDate]) {
+    this.updateData({
+      time: {
+        startFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate(),
+      }
+    });
+  }
+
+  _tripEndDateChangeHandler([userDate]) {
+    this.updateData({
+      time: {
+        endFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate()
+      }
+    });
+  }
+
   _setInnerHandlers() {
     this.getElement()
       .querySelector(`.event__type-group`)
@@ -197,6 +248,7 @@ export default class EditingForm extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this._setDatepicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
@@ -214,7 +266,9 @@ export default class EditingForm extends SmartView {
           currentType: point.type,
           currentCity: point.city,
           currentDestinationDescription: point.destinationDescription,
-          currentPhotos: point.photoLinks
+          currentPhotos: point.photoLinks,
+          userSelectedStartDate: point.time.startFullDate,
+          userSelectedEndDate: point.time.endFullDate
         }
     );
   }
