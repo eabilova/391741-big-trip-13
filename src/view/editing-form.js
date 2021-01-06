@@ -97,10 +97,10 @@ const editingFormTemplate = (data) => {
 
     <div class="event__field-group  event__field-group--time">
       <label class="visually-hidden" for="event-start-time-1">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${time.userSelectedStartDate}">
+      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${time.currentStartDate}">
       &mdash;
       <label class="visually-hidden" for="event-end-time-1">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${time.userSelectedEndDate}">
+      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${time.currentEndDate}">
     </div>
 
     <div class="event__field-group  event__field-group--price">
@@ -199,9 +199,9 @@ export default class EditingForm extends SmartView {
       this._datepicker = null;
     }
 
-    if (this._data.userSelectedStartDate) {
+    if (this._data.time.currentStartDate) {
       this._datepicker = flatpickr(
-          this.getElement().querySelector(`#event-start-time-1`),
+          this.getElement().querySelector(`.event__input--time[name="event-start-time"]`),
           {
             dateFormat: `j/m/y H:i`,
             defaultDate: this._data.time.startFullDate,
@@ -209,9 +209,9 @@ export default class EditingForm extends SmartView {
           }
       );
     }
-    if (this._data.userSelectedEndDate) {
+    if (this._data.time.currentEndDate) {
       this._datepicker = flatpickr(
-          this.getElement().querySelector(`#event-end-time-1`),
+          this.getElement().querySelector(`.event__input--time[name="event-end-time"]`),
           {
             dateFormat: `j/m/y H:i`,
             defaultDate: this._data.time.endFullDate,
@@ -222,22 +222,24 @@ export default class EditingForm extends SmartView {
   }
 
   _tripStartDateChangeHandler([userDate]) {
-    console.log("1")
-    this.updateData({
+    this._data.time = Object.assign({
       time: {
+        ...this._data.time,
         startFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate(),
       }
-    });
-  }
+      });
+      this.updateData(this._data.time)
+  };
 
   _tripEndDateChangeHandler([userDate]) {
-    console.log("2")
-    this.updateData({
+    this._data.time = Object.assign({
       time: {
-        endFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate()
+        ...this._data.time,
+        endFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate(),
       }
-    });
-  }
+      });
+      this.updateData(this._data.time)
+  };
 
   _setInnerHandlers() {
     this.getElement()
@@ -269,8 +271,11 @@ export default class EditingForm extends SmartView {
           currentCity: point.city,
           currentDestinationDescription: point.destinationDescription,
           currentPhotos: point.photoLinks,
-          userSelectedStartDate: point.time.startFullDate,
-          userSelectedEndDate: point.time.endFullDate
+          time: {
+            ...point.time,
+            currentStartDate: point.time.startFullDate,
+            currentEndDate: point.time.endFullDate
+          }
         }
     );
   }
