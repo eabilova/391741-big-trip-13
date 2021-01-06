@@ -222,6 +222,7 @@ export default class EditingForm extends SmartView {
   }
 
   _tripStartDateChangeHandler([userDate]) {
+    console.log("1")
     this.updateData({
       time: {
         startFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate(),
@@ -230,6 +231,7 @@ export default class EditingForm extends SmartView {
   }
 
   _tripEndDateChangeHandler([userDate]) {
+    console.log("2")
     this.updateData({
       time: {
         endFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate()
@@ -248,7 +250,7 @@ export default class EditingForm extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this._setDatepicker();
+    this._setDatePicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
