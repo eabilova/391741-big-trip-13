@@ -126,7 +126,7 @@ export default class EditingForm extends SmartView {
   constructor(point = BLANK_POINT) {
     super();
     this._data = EditingForm.parsePointToData(point);
-    this._editClickHandler = this._editClickHandler.bind(this);
+    this._exitEditModeClickHandler = this._exitEditModeClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
@@ -138,19 +138,19 @@ export default class EditingForm extends SmartView {
     return editingFormTemplate(this._data);
   }
 
-  _editClickHandler(evt) {
+  _exitEditModeClickHandler(evt) {
     evt.preventDefault();
     this._callback.editClick();
   }
 
-  setEditClickHandler(callback) {
+  setExitEditModeClickHandler(callback) {
     this._callback.editClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._editClickHandler);
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._exitEditModeClickHandler);
   }
 
   removeEditClickHandler(callback) {
     this._callback.click = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).removeEventListener(`click`, this._editClickHandler);
+    this.getElement().querySelector(`.event__rollup-btn`).removeEventListener(`click`, this._exitEditModeClickHandler);
   }
 
   _formSubmitHandler(evt) {
@@ -199,7 +199,7 @@ export default class EditingForm extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this.setEditClickHandler();
+    this.setExitEditModeClickHandler(this._callback.editClick);
     this.setFormSubmitHandler(this._callback.formSubmit);
   }
 

@@ -87,7 +87,7 @@ export default class Point {
     replace(this._editTripPoint, this._tripPoint);
     this._renderDatesEditMode(this._editTripPoint);
     this._editTripPoint.setFormSubmitHandler(this._formSubmitHandler);
-    this._editTripPoint.setEditClickHandler(this._editClickHandler);
+    this._editTripPoint.setExitEditModeClickHandler(this._editClickHandler);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
     this._changeMode();
     this._mode = Mode.EDITING;
