@@ -3,6 +3,8 @@ import dayjs from "dayjs";
 import SmartView from "./smart.js";
 import TripDates from "../view/trip-dates.js";
 import {generateDescription, generatePhotoList} from "../utils/common.js";
+import {render, RenderPosition} from "../utils/render.js";
+
 
 const editingEventTypeFormTemplate = (currentType) => {
   return EVENT_TYPES.map((type) => `<div class="event__type-item">
@@ -44,15 +46,6 @@ const identifySelectedOffers = (currentType, currentOffers) => {
     </div>`).join(``);
 };
 
-// const defineTripDates = (currentStartDate, currentEndDate) => {
-// return `
-//       <label class="visually-hidden" for="event-start-time-1">From</label>
-//       <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${currentStartDate}">
-//       &mdash;
-//       <label class="visually-hidden" for="event-end-time-1">To</label>
-//       <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${currentEndDate}">`
-// }
-
 const BLANK_POINT = {
   type: `taxi`,
   city: ``,
@@ -70,7 +63,6 @@ const editingFormTemplate = (data) => {
   const eventType = editingEventTypeFormTemplate(currentType);
   const checkOffers = identifySelectedOffers(currentType, extraOffers);
   const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
-  // const tripdates = defineTripDates(time.currentStartDate, time.currentEndDate);
   const isSubmitDisabled = currentType && !type;
 
   return `<form class="event event--edit" action="#" method="post">
@@ -178,6 +170,7 @@ export default class EditingForm extends SmartView {
       currentType: evt.target.value,
       extraOffers: [],
     });
+    this._renderDatesEditMode(this._data);
   }
 
   _destinationChangeHandler(evt) {
@@ -187,6 +180,13 @@ export default class EditingForm extends SmartView {
       currentDestinationDescription: generateDescription(),
       currentPhotos: generatePhotoList()
     });
+    this._renderDatesEditMode(this._data);
+  }
+
+  _renderDatesEditMode(data) {
+    this._tripDatesContainer = this.getElement().querySelector(`.event__field-group--destination`);
+    this._tripDatesEditMode = new TripDates(data);
+    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
   }
 
   _setInnerHandlers() {

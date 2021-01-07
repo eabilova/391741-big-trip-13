@@ -1,4 +1,3 @@
-import Abstract from "./abstract.js";
 import dayjs from "dayjs";
 import flatpickr from "flatpickr";
 import SmartView from "./smart.js";
