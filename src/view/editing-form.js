@@ -1,7 +1,9 @@
 import {EVENT_TYPES, OFFERS} from "../const.js";
 import dayjs from "dayjs";
 import SmartView from "./smart.js";
+import TripDates from "../view/trip-dates.js";
 import {generateDescription, generatePhotoList} from "../utils/common.js";
+import {render, RenderPosition} from "../utils/render.js";
 
 
 const editingEventTypeFormTemplate = (currentType) => {
@@ -57,7 +59,7 @@ const BLANK_POINT = {
 };
 
 const editingFormTemplate = (data) => {
-  const {type, extraOffers, time, price, currentType, currentDestinationDescription, currentPhotos, currentCity} = data;
+  const {type, extraOffers, price, currentType, currentDestinationDescription, currentPhotos, currentCity} = data;
   const eventType = editingEventTypeFormTemplate(currentType);
   const checkOffers = identifySelectedOffers(currentType, extraOffers);
   const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
@@ -92,14 +94,6 @@ const editingFormTemplate = (data) => {
       </datalist>
     </div>
 
-    <div class="event__field-group  event__field-group--time">
-      <label class="visually-hidden" for="event-start-time-1">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${time.startFullDate}">
-      &mdash;
-      <label class="visually-hidden" for="event-end-time-1">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${time.endFullDate}">
-    </div>
-
     <div class="event__field-group  event__field-group--price">
       <label class="event__label" for="event-price-1">
         <span class="visually-hidden">Price</span>
@@ -132,7 +126,7 @@ export default class EditingForm extends SmartView {
   constructor(point = BLANK_POINT) {
     super();
     this._data = EditingForm.parsePointToData(point);
-    this._editClickHandler = this._editClickHandler.bind(this);
+    this._exitEditModeClickHandler = this._exitEditModeClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
@@ -144,19 +138,19 @@ export default class EditingForm extends SmartView {
     return editingFormTemplate(this._data);
   }
 
-  _editClickHandler(evt) {
+  _exitEditModeClickHandler(evt) {
     evt.preventDefault();
     this._callback.editClick();
   }
 
-  setEditClickHandler(callback) {
+  setExitEditModeClickHandler(callback) {
     this._callback.editClick = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._editClickHandler);
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._exitEditModeClickHandler);
   }
 
   removeEditClickHandler(callback) {
     this._callback.click = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).removeEventListener(`click`, this._editClickHandler);
+    this.getElement().querySelector(`.event__rollup-btn`).removeEventListener(`click`, this._exitEditModeClickHandler);
   }
 
   _formSubmitHandler(evt) {
@@ -175,6 +169,7 @@ export default class EditingForm extends SmartView {
       currentType: evt.target.value,
       extraOffers: [],
     });
+    this._renderDatesEditMode();
   }
 
   _destinationChangeHandler(evt) {
@@ -184,6 +179,13 @@ export default class EditingForm extends SmartView {
       currentDestinationDescription: generateDescription(),
       currentPhotos: generatePhotoList()
     });
+    this._renderDatesEditMode();
+  }
+
+  _renderDatesEditMode() {
+    this._tripDatesContainer = this.getElement().querySelector(`.event__field-group--destination`);
+    this._tripDatesEditMode = new TripDates(this._data);
+    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
   }
 
   _setInnerHandlers() {
@@ -197,6 +199,7 @@ export default class EditingForm extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this.setExitEditModeClickHandler(this._callback.editClick);
     this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
@@ -214,7 +217,7 @@ export default class EditingForm extends SmartView {
           currentType: point.type,
           currentCity: point.city,
           currentDestinationDescription: point.destinationDescription,
-          currentPhotos: point.photoLinks
+          currentPhotos: point.photoLinks,
         }
     );
   }

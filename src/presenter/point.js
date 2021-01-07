@@ -2,6 +2,7 @@
 import TripPoint from "../view/trip-point.js";
 import EventOffer from "../view/event-offer";
 import {render, RenderPosition, replace, remove} from "../utils/render";
+import TripDates from "../view/trip-dates.js";
 
 const Mode = {
   DEFAULT: `DEFAULT`,
@@ -33,6 +34,7 @@ export default class Point {
 
     this._tripPoint = new TripPoint(point);
     this._editTripPoint = new EditTripForm(point);
+
     this._renderOffers(point, this._pointIndex);
 
     this._tripPoint.setClickHandler(this._clickHandler);
@@ -75,10 +77,17 @@ export default class Point {
     });
   }
 
+  _renderDatesEditMode(editTripPoint) {
+    this._tripDatesContainer = editTripPoint.getElement().querySelector(`.event__field-group--destination`);
+    this._tripDatesEditMode = new TripDates(editTripPoint._data);
+    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
+  }
+
   _replacePointToForm() {
     replace(this._editTripPoint, this._tripPoint);
+    this._renderDatesEditMode(this._editTripPoint);
     this._editTripPoint.setFormSubmitHandler(this._formSubmitHandler);
-    this._editTripPoint.setEditClickHandler(this._editClickHandler);
+    this._editTripPoint.setExitEditModeClickHandler(this._editClickHandler);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
     this._changeMode();
     this._mode = Mode.EDITING;
@@ -86,6 +95,8 @@ export default class Point {
 
   _replaceFormToPoint() {
     this._editTripPoint.removeEditClickHandler(this._editClickHandler);
+    this._dateContainers = this._editTripPoint.getElement().querySelector(`.event__field-group--time`);
+    this._dateContainers.remove();
     replace(this._tripPoint, this._editTripPoint);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
     this._mode = Mode.DEFAULT;
