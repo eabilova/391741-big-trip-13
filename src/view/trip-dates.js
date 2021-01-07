@@ -7,11 +7,13 @@ import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const TripDatesTemplate = (data) => {
   const {time} = data;
-  return `<label class="visually-hidden" for="event-start-time-1">From</label>
+  return `<div class="event__field-group  event__field-group--time">
+  <label class="visually-hidden" for="event-start-time-1">From</label>
   <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${time.currentStartDate}">
   &mdash;
   <label class="visually-hidden" for="event-end-time-1">To</label>
-  <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${time.currentEndDate}">`;
+  <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${time.currentEndDate}">
+  </div>`;
 };
 
 export default class TripDates extends SmartView {
@@ -60,14 +62,14 @@ export default class TripDates extends SmartView {
 
   _tripStartDateChangeHandler([userDate]) {
     this._data.time = Object.assign(this._data.time, {
-      startFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate().format(`DD/MM/YY HH:MM`),
+      startFullDate: dayjs(userDate).hour(23).minute(59).second(59).format(`DD/MM/YY HH:MM`),
     });
       this.updateData(this._data)
   };
 
   _tripEndDateChangeHandler([userDate]) {
     this._data.time = Object.assign(this._data.time, {
-      endFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate().format(`DD/MM/YY HH:MM`),
+      endFullDate: dayjs(userDate).hour(23).minute(59).second(59).format(`DD/MM/YY HH:MM`),
     });
       this.updateData(this._data)
   };

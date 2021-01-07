@@ -78,9 +78,9 @@ export default class Point {
   }
 
   _renderDatesEditMode(editTripPoint) {
-    this._tripDatesContainer = editTripPoint.getElement().querySelector(`.event__field-group--time`);
+    this._tripDatesContainer = editTripPoint.getElement().querySelector(`.event__field-group--destination`);
     this._tripDatesEditMode = new TripDates(editTripPoint._data);
-    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.BEFOREEND);
+    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
   }
 
   _replacePointToForm() {
@@ -95,6 +95,8 @@ export default class Point {
 
   _replaceFormToPoint() {
     this._editTripPoint.removeEditClickHandler(this._editClickHandler);
+    this._dateContainers = this._editTripPoint.getElement().querySelector(`.event__field-group--time`);
+    this._dateContainers.remove();
     replace(this._tripPoint, this._editTripPoint);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
     this._mode = Mode.DEFAULT;

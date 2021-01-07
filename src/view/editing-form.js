@@ -1,6 +1,7 @@
 import {EVENT_TYPES, OFFERS} from "../const.js";
 import dayjs from "dayjs";
 import SmartView from "./smart.js";
+import TripDates from "../view/trip-dates.js";
 import {generateDescription, generatePhotoList} from "../utils/common.js";
 
 const editingEventTypeFormTemplate = (currentType) => {
@@ -99,9 +100,6 @@ const editingFormTemplate = (data) => {
         <option value="Geneva"></option>
         <option value="Chamonix"></option>
       </datalist>
-    </div>
-    <div class="event__field-group  event__field-group--time">
-
     </div>
 
     <div class="event__field-group  event__field-group--price">
