@@ -4,7 +4,7 @@ import SmartView from "./smart.js";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
-const TripDatesTemplate = (data) => {
+const tripDatesTemplate = (data) => {
   const {time} = data;
   return `<div class="event__field-group  event__field-group--time">
   <label class="visually-hidden" for="event-start-time-1">From</label>
@@ -18,7 +18,6 @@ const TripDatesTemplate = (data) => {
 export default class TripDates extends SmartView {
   constructor(point) {
     super();
-    console.log(point);
     this._data = TripDates.parsePointToData(point);
     this._datepicker = null;
 
@@ -28,7 +27,7 @@ export default class TripDates extends SmartView {
   }
 
   getTemplate() {
-    return TripDatesTemplate(this._data)
+    return tripDatesTemplate(this._data);
   }
 
   _setDatePicker() {
@@ -63,38 +62,31 @@ export default class TripDates extends SmartView {
     this._data.time = Object.assign(this._data.time, {
       startFullDate: dayjs(userDate).hour(23).minute(59).second(59).format(`DD/MM/YY HH:MM`),
     });
-      this.updateData(this._data)
-  };
+    this.updateData(this._data);
+  }
 
   _tripEndDateChangeHandler([userDate]) {
     this._data.time = Object.assign(this._data.time, {
       endFullDate: dayjs(userDate).hour(23).minute(59).second(59).format(`DD/MM/YY HH:MM`),
     });
-      this.updateData(this._data)
-  };
+    this.updateData(this._data);
+  }
 
   restoreHandlers() {
     this._setDatePicker();
   }
 
   reset(point) {
-    this.updateData(
-        EditingForm.parsePointToData(point)
+    this.updateData(TripDates.parsePointToData(point)
     );
   }
 
   static parsePointToData(point) {
-    return Object.assign(
-        {},
-        point,
-        {
-          time: {
-            ...point.time,
-            currentStartDate: point.time.startFullDate,
-            currentEndDate: point.time.endFullDate
-          }
-        }
-    );
+    point.time = Object.assign(point.time, {
+      currentStartDate: point.time.startFullDate,
+      currentEndDate: point.time.endFullDate
+    });
+    return point;
   }
 
   static parseDataToPoint(data) {

@@ -126,7 +126,6 @@ export default class EditingForm extends SmartView {
   constructor(point = BLANK_POINT) {
     super();
     this._data = EditingForm.parsePointToData(point);
-
     this._editClickHandler = this._editClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
@@ -170,7 +169,7 @@ export default class EditingForm extends SmartView {
       currentType: evt.target.value,
       extraOffers: [],
     });
-    this._renderDatesEditMode(this._data);
+    this._renderDatesEditMode();
   }
 
   _destinationChangeHandler(evt) {
@@ -180,12 +179,12 @@ export default class EditingForm extends SmartView {
       currentDestinationDescription: generateDescription(),
       currentPhotos: generatePhotoList()
     });
-    this._renderDatesEditMode(this._data);
+    this._renderDatesEditMode();
   }
 
-  _renderDatesEditMode(data) {
+  _renderDatesEditMode() {
     this._tripDatesContainer = this.getElement().querySelector(`.event__field-group--destination`);
-    this._tripDatesEditMode = new TripDates(data);
+    this._tripDatesEditMode = new TripDates(this._data);
     render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
   }
 
@@ -200,6 +199,7 @@ export default class EditingForm extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
+    this.setEditClickHandler();
     this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
@@ -218,11 +218,6 @@ export default class EditingForm extends SmartView {
           currentCity: point.city,
           currentDestinationDescription: point.destinationDescription,
           currentPhotos: point.photoLinks,
-          // time: {
-          //   ...point.time,
-          //   currentStartDate: point.time.startFullDate,
-          //   currentEndDate: point.time.endFullDate
-          // }
         }
     );
   }
