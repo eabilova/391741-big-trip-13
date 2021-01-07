@@ -2,9 +2,7 @@ import {EVENT_TYPES, OFFERS} from "../const.js";
 import dayjs from "dayjs";
 import SmartView from "./smart.js";
 import {generateDescription, generatePhotoList} from "../utils/common.js";
-import flatpickr from "flatpickr";
 
-import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 
 const editingEventTypeFormTemplate = (currentType) => {
@@ -47,15 +45,14 @@ const identifySelectedOffers = (currentType, currentOffers) => {
     </div>`).join(``);
 };
 
-const defineTripDates = (currentStartDate, currentEndDate) => {
-return `<div class="event__field-group  event__field-group--time">
-      <label class="visually-hidden" for="event-start-time-1">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${currentStartDate}">
-      &mdash;
-      <label class="visually-hidden" for="event-end-time-1">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${currentEndDate}">
-    </div>`
-}
+// const defineTripDates = (currentStartDate, currentEndDate) => {
+// return `
+//       <label class="visually-hidden" for="event-start-time-1">From</label>
+//       <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${currentStartDate}">
+//       &mdash;
+//       <label class="visually-hidden" for="event-end-time-1">To</label>
+//       <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${currentEndDate}">`
+// }
 
 const BLANK_POINT = {
   type: `taxi`,
@@ -74,7 +71,7 @@ const editingFormTemplate = (data) => {
   const eventType = editingEventTypeFormTemplate(currentType);
   const checkOffers = identifySelectedOffers(currentType, extraOffers);
   const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
-  const tripdates = defineTripDates(time.currentStartDate, time.currentEndDate);
+  // const tripdates = defineTripDates(time.currentStartDate, time.currentEndDate);
   const isSubmitDisabled = currentType && !type;
 
   return `<form class="event event--edit" action="#" method="post">
@@ -105,8 +102,9 @@ const editingFormTemplate = (data) => {
         <option value="Chamonix"></option>
       </datalist>
     </div>
+    <div class="event__field-group  event__field-group--time">
 
-    ${tripdates}
+    </div>
 
     <div class="event__field-group  event__field-group--price">
       <label class="event__label" for="event-price-1">
@@ -140,16 +138,13 @@ export default class EditingForm extends SmartView {
   constructor(point = BLANK_POINT) {
     super();
     this._data = EditingForm.parsePointToData(point);
-    this._datepicker = null;
     this._editClickHandler = this._editClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
-    this._tripStartDateChangeHandler = this._tripStartDateChangeHandler.bind(this);
-    this._tripEndDateChangeHandler = this._tripEndDateChangeHandler.bind(this);
+
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
 
     this._setInnerHandlers();
-    this._setDatePicker();
   }
 
   getTemplate() {
@@ -198,48 +193,6 @@ export default class EditingForm extends SmartView {
     });
   }
 
-  _setDatePicker() {
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
-    }
-
-    if (this._data.time.currentStartDate) {
-      this._datepicker = flatpickr(
-          this.getElement().querySelector(`.event__input--time[name="event-start-time"]`),
-          {
-            dateFormat: `j/m/y H:i`,
-            defaultDate: this._data.time.startFullDate,
-            onChange: this._tripStartDateChangeHandler
-          }
-      );
-    }
-    if (this._data.time.currentEndDate) {
-      this._datepicker = flatpickr(
-          this.getElement().querySelector(`.event__input--time[name="event-end-time"]`),
-          {
-            dateFormat: `j/m/y H:i`,
-            defaultDate: this._data.time.endFullDate,
-            onChange: this._tripEndDateChangeHandler
-          }
-      );
-    }
-  }
-
-  _tripStartDateChangeHandler([userDate]) {
-    this._data.time = Object.assign(this._data.time, {
-      startFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate().format(`DD/MM/YY HH:MM`),
-    });
-      this.updateData(this._data)
-  };
-
-  _tripEndDateChangeHandler([userDate]) {
-    this._data.time = Object.assign(this._data.time, {
-      endFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate().format(`DD/MM/YY HH:MM`),
-    });
-      this.updateData(this._data)
-  };
-
   _setInnerHandlers() {
     this.getElement()
       .querySelector(`.event__type-group`)
@@ -251,7 +204,6 @@ export default class EditingForm extends SmartView {
 
   restoreHandlers() {
     this._setInnerHandlers();
-    this._setDatePicker();
     this.setFormSubmitHandler(this._callback.formSubmit);
   }
 
@@ -270,11 +222,11 @@ export default class EditingForm extends SmartView {
           currentCity: point.city,
           currentDestinationDescription: point.destinationDescription,
           currentPhotos: point.photoLinks,
-          time: {
-            ...point.time,
-            currentStartDate: point.time.startFullDate,
-            currentEndDate: point.time.endFullDate
-          }
+          // time: {
+          //   ...point.time,
+          //   currentStartDate: point.time.startFullDate,
+          //   currentEndDate: point.time.endFullDate
+          // }
         }
     );
   }
