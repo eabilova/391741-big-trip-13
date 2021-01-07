@@ -50,7 +50,6 @@ export default class Point {
     }
 
     if (this._mode === Mode.EDITING) {
-      this._tripDatesEditMode = new TripDates(point);
       replace(this._editTripPoint, prevPointEditComponent);
     }
 
@@ -78,19 +77,20 @@ export default class Point {
     });
   }
 
-  _renderDatesEditMode(container) {
-    this._tripDatesContainer = container.getElement().querySelector(`.event__field-group--time`);
-    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.BEFOREEND)
+  _renderDatesEditMode(editTripPoint) {
+    this._tripDatesContainer = editTripPoint.getElement().querySelector(`.event__field-group--time`);
+    this._tripDatesEditMode = new TripDates(editTripPoint._data);
+    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.BEFOREEND);
   }
 
   _replacePointToForm() {
     replace(this._editTripPoint, this._tripPoint);
+    this._renderDatesEditMode(this._editTripPoint);
     this._editTripPoint.setFormSubmitHandler(this._formSubmitHandler);
     this._editTripPoint.setEditClickHandler(this._editClickHandler);
     document.addEventListener(`keydown`, this._escKeyDownHandler);
     this._changeMode();
     this._mode = Mode.EDITING;
-    this._renderDatesEditMode(this._editTripPoint);
   }
 
   _replaceFormToPoint() {

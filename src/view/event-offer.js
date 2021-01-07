@@ -9,7 +9,6 @@ export const createEventOffer = (offer) => {
       </li>`;
 };
 
-
 export default class EventOffer extends Abstract {
   constructor(offer) {
     super();

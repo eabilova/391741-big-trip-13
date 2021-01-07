@@ -1,22 +1,23 @@
 import Abstract from "./abstract.js";
 import dayjs from "dayjs";
 import flatpickr from "flatpickr";
+import SmartView from "./smart.js";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const TripDatesTemplate = (data) => {
-  const {time} = data
-  return `
-  <label class="visually-hidden" for="event-start-time-1">From</label>
+  const {time} = data;
+  return `<label class="visually-hidden" for="event-start-time-1">From</label>
   <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${time.currentStartDate}">
   &mdash;
   <label class="visually-hidden" for="event-end-time-1">To</label>
-  <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${time.currentEndDate}">`
-}
+  <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${time.currentEndDate}">`;
+};
 
-export default class TripDates extends Abstract {
+export default class TripDates extends SmartView {
   constructor(point) {
     super();
+    console.log(point);
     this._data = TripDates.parsePointToData(point);
     this._datepicker = null;
 

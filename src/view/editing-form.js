@@ -3,8 +3,6 @@ import dayjs from "dayjs";
 import SmartView from "./smart.js";
 import {generateDescription, generatePhotoList} from "../utils/common.js";
 
-
-
 const editingEventTypeFormTemplate = (currentType) => {
   return EVENT_TYPES.map((type) => `<div class="event__type-item">
     <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${currentType === type ? `checked` : ``}>
@@ -67,7 +65,7 @@ const BLANK_POINT = {
 };
 
 const editingFormTemplate = (data) => {
-  const {type, extraOffers, time, price, currentType, currentDestinationDescription, currentPhotos, currentCity} = data;
+  const {type, extraOffers, price, currentType, currentDestinationDescription, currentPhotos, currentCity} = data;
   const eventType = editingEventTypeFormTemplate(currentType);
   const checkOffers = identifySelectedOffers(currentType, extraOffers);
   const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
@@ -138,10 +136,10 @@ export default class EditingForm extends SmartView {
   constructor(point = BLANK_POINT) {
     super();
     this._data = EditingForm.parsePointToData(point);
+
     this._editClickHandler = this._editClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
-
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
 
     this._setInnerHandlers();
