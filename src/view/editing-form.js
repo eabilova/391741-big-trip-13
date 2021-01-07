@@ -47,6 +47,16 @@ const identifySelectedOffers = (currentType, currentOffers) => {
     </div>`).join(``);
 };
 
+const defineTripDates = (currentStartDate, currentEndDate) => {
+return `<div class="event__field-group  event__field-group--time">
+      <label class="visually-hidden" for="event-start-time-1">From</label>
+      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${currentStartDate}">
+      &mdash;
+      <label class="visually-hidden" for="event-end-time-1">To</label>
+      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${currentEndDate}">
+    </div>`
+}
+
 const BLANK_POINT = {
   type: `taxi`,
   city: ``,
@@ -64,6 +74,7 @@ const editingFormTemplate = (data) => {
   const eventType = editingEventTypeFormTemplate(currentType);
   const checkOffers = identifySelectedOffers(currentType, extraOffers);
   const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
+  const tripdates = defineTripDates(time.currentStartDate, time.currentEndDate);
   const isSubmitDisabled = currentType && !type;
 
   return `<form class="event event--edit" action="#" method="post">
@@ -95,13 +106,7 @@ const editingFormTemplate = (data) => {
       </datalist>
     </div>
 
-    <div class="event__field-group  event__field-group--time">
-      <label class="visually-hidden" for="event-start-time-1">From</label>
-      <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${time.currentStartDate}">
-      &mdash;
-      <label class="visually-hidden" for="event-end-time-1">To</label>
-      <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${time.currentEndDate}">
-    </div>
+    ${tripdates}
 
     <div class="event__field-group  event__field-group--price">
       <label class="event__label" for="event-price-1">
@@ -222,23 +227,17 @@ export default class EditingForm extends SmartView {
   }
 
   _tripStartDateChangeHandler([userDate]) {
-    this._data.time = Object.assign({
-      time: {
-        ...this._data.time,
-        startFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate(),
-      }
-      });
-      this.updateData(this._data.time)
+    this._data.time = Object.assign(this._data.time, {
+      startFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate().format(`DD/MM/YY HH:MM`),
+    });
+      this.updateData(this._data)
   };
 
   _tripEndDateChangeHandler([userDate]) {
-    this._data.time = Object.assign({
-      time: {
-        ...this._data.time,
-        endFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate(),
-      }
-      });
-      this.updateData(this._data.time)
+    this._data.time = Object.assign(this._data.time, {
+      endFullDate: dayjs(userDate).hour(23).minute(59).second(59).toDate().format(`DD/MM/YY HH:MM`),
+    });
+      this.updateData(this._data)
   };
 
   _setInnerHandlers() {
