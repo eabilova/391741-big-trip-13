@@ -42,7 +42,7 @@ export default class RoutePoint extends Abstract {
   constructor(point) {
     super();
     this._point = point;
-    this._clickHandler = this._clickHandler.bind(this);
+    this._openFormClickHandler = this._openFormClickHandler.bind(this);
     this._favoriteButtonClickHandler = this._favoriteButtonClickHandler.bind(this);
   }
 
@@ -50,7 +50,7 @@ export default class RoutePoint extends Abstract {
     return siteContentListItemTemplate(this._point);
   }
 
-  _clickHandler(evt) {
+  _openFormClickHandler(evt) {
     evt.preventDefault();
     this._callback.click();
   }
@@ -60,9 +60,14 @@ export default class RoutePoint extends Abstract {
     this._callback.favoriteClick();
   }
 
-  setClickHandler(callback) {
+  setOpenFormClickHandler(callback) {
     this._callback.click = callback;
-    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._clickHandler);
+    this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._openFormClickHandler);
+  }
+
+  removeOpenFormClickHandler(callback) {
+    this._callback.click = callback;
+    this.getElement().querySelector(`.event__rollup-btn`).removeEventListener(`click`, this._openFormClickHandler);
   }
 
   setFavoriteButtonClickHandler(callback) {

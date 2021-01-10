@@ -7,20 +7,6 @@ export const getRandomInteger = (min = 0, max = 1) => {
   return Math.floor(minCeiling + Math.random() * (maxFlooring - minCeiling + 1));
 };
 
-export const updatePoint = (points, update) => {
-  const index = points.findIndex((point) => point.id === update.id);
-
-  if (index === -1) {
-    return points;
-  }
-
-  return [
-    ...points.slice(0, index),
-    update,
-    ...points.slice(index + 1)
-  ];
-};
-
 export const generatePhotoList = () => {
   let photoAmount = getRandomInteger(PHOTO_AMOUNT.min, PHOTO_AMOUNT.max);
   let photos = [];
