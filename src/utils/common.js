@@ -25,3 +25,5 @@ export const generateDescription = () => {
 
   return splitDescription.slice(0, getRandomInteger(0, splitDescription.length - 1)).join(`. `);
 };
+
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);

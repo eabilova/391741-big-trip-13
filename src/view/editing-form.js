@@ -1,8 +1,9 @@
 import {EVENT_TYPES, OFFERS} from "../const.js";
 import dayjs from "dayjs";
+import he from "he";
 import SmartView from "./smart.js";
 import TripDates from "../view/trip-dates.js";
-import {generateDescription, generatePhotoList} from "../utils/common.js";
+import {generateDescription, generatePhotoList, generateId} from "../utils/common.js";
 import {render, RenderPosition} from "../utils/render.js";
 
 
@@ -47,10 +48,12 @@ const identifySelectedOffers = (currentType, currentOffers) => {
 };
 
 const BLANK_POINT = {
+  id: generateId(),
   type: `taxi`,
   city: ``,
   extraOffers: [],
   destinationDescription: ``,
+  photoLinks: [],
   time: {
     startFullDate: dayjs(new Date()).format(`DD/MM/YY HH:MM`),
     endFullDate: dayjs(new Date()).format(`DD/MM/YY HH:MM`),
@@ -84,7 +87,7 @@ const editingFormTemplate = (data) => {
 
     <div class="event__field-group  event__field-group--destination">
       <label class="event__label  event__type-output" for="event-destination-1">
-        ${currentType}
+        ${he.encode(currentType)}
       </label>
       <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentCity}" list="destination-list-1">
       <datalist id="destination-list-1">
@@ -189,7 +192,7 @@ export default class EditingForm extends SmartView {
       currentType: evt.target.value,
       extraOffers: [],
     });
-    this._renderDatesEditMode();
+    this.renderDatesEditMode();
   }
 
   _destinationChangeHandler(evt) {
@@ -199,10 +202,10 @@ export default class EditingForm extends SmartView {
       currentDestinationDescription: generateDescription(),
       currentPhotos: generatePhotoList()
     });
-    this._renderDatesEditMode();
+    this.renderDatesEditMode();
   }
 
-  _renderDatesEditMode() {
+  renderDatesEditMode() {
     this._tripDatesContainer = this.getElement().querySelector(`.event__field-group--destination`);
     this._tripDatesEditMode = new TripDates(this._data);
     render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
@@ -258,9 +261,14 @@ export default class EditingForm extends SmartView {
       data.photoLinks = [];
     }
 
+    if (!data.currentCity) {
+      data.city = ``;
+    }
+
     delete data.currentType;
     delete data.currentDestinationDescription;
     delete data.currentPhotos;
+    delete data.city;
 
     return data;
   }

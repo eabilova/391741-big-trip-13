@@ -1,8 +1,7 @@
 import dayjs from "dayjs";
-import {getRandomInteger, generateDescription, generatePhotoList} from "../utils/common.js";
+import {getRandomInteger, generateDescription, generatePhotoList, generateId} from "../utils/common.js";
 import {EVENT_TYPES, OFFERS, CITIES, PRICE_AMOUNT, TIME_DIFFERENCE, DAY_DIFFERENCE} from "../const.js";
 
-const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
 
 const generateRouteType = () => {
   const randomIndex = getRandomInteger(0, EVENT_TYPES.length - 1);

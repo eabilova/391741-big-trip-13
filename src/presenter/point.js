@@ -2,7 +2,6 @@
 import TripPoint from "../view/trip-point.js";
 import EventOffer from "../view/event-offer";
 import {render, RenderPosition, replace, remove} from "../utils/render";
-import TripDates from "../view/trip-dates.js";
 import {UserAction, UpdateType} from "../const.js";
 
 const Mode = {
@@ -79,16 +78,10 @@ export default class Point {
     });
   }
 
-  _renderDatesEditMode(editTripPoint) {
-    this._tripDatesContainer = editTripPoint.getElement().querySelector(`.event__field-group--destination`);
-    this._tripDatesEditMode = new TripDates(editTripPoint._data);
-    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
-  }
-
   _replacePointToForm() {
     this._tripPoint.removeOpenFormClickHandler(this._handleOpenEditFormClick);
     replace(this._editTripPoint, this._tripPoint);
-    this._renderDatesEditMode(this._editTripPoint);
+    this._editTripPoint.renderDatesEditMode();
     this._editTripPoint.setFormSubmitHandler(this._handleFormSubmit);
     this._editTripPoint.setExitEditModeClickHandler(this._handleExitEditModeClick);
     this._editTripPoint.setDeleteClickHandler(this._handleDeleteClick);

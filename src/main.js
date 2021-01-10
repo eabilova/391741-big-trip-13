@@ -2,6 +2,7 @@ import {POINT_COUNT} from "./const.js";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
 import TripInfoPresenter from "./presenter/trip.js";
+import FilterPresenter from "./presenter/filter.js";
 import {generateRoute} from "./mock/route-point.js";
 
 const siteHeader = document.querySelector(`header`);
@@ -20,6 +21,14 @@ pointsModel.setPoints(points);
 const filterModel = new FilterModel();
 
 const tripInfo = new TripInfoPresenter(tripMain, pointsModel, filterModel);
+const filterPresenter = new FilterPresenter(filterControl, filterModel, filterModel);
+
+filterPresenter.init();
 tripInfo.init();
+
+document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
+  evt.preventDefault();
+  tripInfo.createPoint();
+});
 
 
