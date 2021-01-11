@@ -1,22 +1,52 @@
 import Abstract from "./abstract.js";
+import dayjs from "dayjs";
+import {getHumanizedDiff} from "../utils/common.js"
+
+const calculateTripDuartion = (time) => {
+  const {startFullDate, endFullDate} = time;
+  return getHumanizedDiff(new Date(endFullDate) - new Date(startFullDate));
+}
+
+const defineShortDate = (time) => {
+  const {startFullDate} = time;
+
+  return dayjs(startFullDate).format(`MMM DD`);
+}
+
+const defineStartTime = (time) => {
+  const {startFullDate} = time;
+
+  return dayjs(startFullDate).format(`HH:mm`);
+}
+
+const defineEndTime = (time) => {
+  const {endFullDate} = time;
+
+  return dayjs(endFullDate).format(`HH:mm`);
+}
 
 const siteContentListItemTemplate = (point) => {
   const {time, price, isFavorite, type, city} = point;
 
+  const duration = calculateTripDuartion(time);
+  const shortDateFormat = defineShortDate(time);
+  const startTime = defineStartTime(time);
+  const endTime = defineEndTime(time);
+
   return `<li class="trip-events__item">
   <div class="event">
-    <time class="event__date" datetime="2019-03-18">${time.day}</time>
+    <time class="event__date" datetime="2019-03-18">${shortDateFormat}</time>
     <div class="event__type">
       <img class="event__type-icon" width="42" height="42" src="img/icons/${type}.png" alt="Event type icon">
     </div>
     <h3 class="event__title">${type.charAt(0).toUpperCase()}${type.slice(1)} ${city}</h3>
     <div class="event__schedule">
       <p class="event__time">
-        <time class="event__start-time" datetime="2019-03-18T10:30">${time.startTime}</time>
+        <time class="event__start-time" datetime="2019-03-18T10:30">${startTime}</time>
         &mdash;
-        <time class="event__end-time" datetime="2019-03-18T11:00">${time.endTime}</time>
+        <time class="event__end-time" datetime="2019-03-18T11:00">${endTime}</time>
       </p>
-      <p class="event__duration">${time.duration}H</p>
+      <p class="event__duration">${duration}</p>
     </div>
     <p class="event__price">
       &euro;&nbsp;<span class="event__price-value">${price}</span>
@@ -50,16 +80,6 @@ export default class RoutePoint extends Abstract {
     return siteContentListItemTemplate(this._point);
   }
 
-  _openFormClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.click();
-  }
-
-  _favoriteButtonClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.favoriteClick();
-  }
-
   setOpenFormClickHandler(callback) {
     this._callback.click = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._openFormClickHandler);
@@ -73,5 +93,15 @@ export default class RoutePoint extends Abstract {
   setFavoriteButtonClickHandler(callback) {
     this._callback.favoriteClick = callback;
     this.getElement().querySelector(`.event__favorite-btn`).addEventListener(`click`, this._favoriteButtonClickHandler);
+  }
+
+  _openFormClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.click();
+  }
+
+  _favoriteButtonClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.favoriteClick();
   }
 }

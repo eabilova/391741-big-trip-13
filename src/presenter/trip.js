@@ -22,6 +22,8 @@ export default class Trip {
     this._currentSortType = SortType.DAY;
 
     this._siteSortingComponent = null;
+    this._tripInfoComponent = null;
+    this._tripCostComponent = null;
 
     this._infoSectionComponent = new InfoSection();
     this._siteMenuComponent = new SiteMenu();
@@ -41,7 +43,6 @@ export default class Trip {
     this._filterModel.addObserver(this._handleModelEvent);
 
     this._renderSiteMode();
-    this._renderInfoSection();
     this._renderTripList();
   }
 
@@ -59,11 +60,11 @@ export default class Trip {
 
     switch (this._currentSortType) {
       case SortType.DAY:
-        return filtredPoints.sort((a, b) => new Date(a.time.day) - new Date(b.time.day));
+        return filtredPoints.sort((a, b) => new Date(a.time.startFullDate) - new Date(b.time.startFullDate));
       case SortType.EVENT:
         return filtredPoints.sort((a, b) => a.type - b.type);
       case SortType.TIME:
-        return filtredPoints.sort((a, b) => a.time.startTime.localeCompare(b.time.startTime));
+        return filtredPoints.sort((a, b) => ((a.time.startFullDate < b.time.startFullDate) ? -1 : (a.time.startFullDate > b.time.startFullDate) ? 1 : 0));
       case SortType.PRICE:
         return filtredPoints.sort((a, b) => a.price - b.price);
       case SortType.OFFER:
@@ -73,12 +74,18 @@ export default class Trip {
   }
 
   _renderTripInfo(points) {
-    if (points.length !== 0) {
+    if (this._tripInfoComponent !== null) {
+      remove(this._tripInfoComponent);
+    }
+
+    if (this._tripCostComponent !== null) {
+      remove(this._tripCostComponent);
+    }
+
       this._tripInfoComponent = new TripInfo(points);
       this._tripCostComponent = new TripCost(points);
       render(this._infoSectionComponent, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
       render(this._infoSectionComponent, this._tripCostComponent, RenderPosition.BEFOREEND);
-    }
   }
 
   _renderSort() {
@@ -99,12 +106,9 @@ export default class Trip {
     render(tripEvents, this._emptyList, RenderPosition.BEFOREEND);
   }
 
-  _renderInfoSection() {
-    const points = this._getPoints();
-    if (points.length > 0) {
+  _renderInfoSection(points) {
       render(this._tripInfoContainer, this._infoSectionComponent, RenderPosition.AFTERBEGIN);
       this._renderTripInfo(points);
-    }
   }
 
   _renderTripList() {
@@ -114,6 +118,7 @@ export default class Trip {
       this._renderEmptyList();
       return;
     }
+    this._renderInfoSection(points);
     this._renderSort();
     render(tripEvents, this._tripListContainer, RenderPosition.BEFOREEND);
     points.forEach((point) => {
@@ -133,7 +138,7 @@ export default class Trip {
     }
     this._currentSortType = sortType;
     remove(this._siteSortingComponent);
-    this._clearBoard({resetSortType: true});
+    this._clearBoard();
     this._renderTripList();
   }
 

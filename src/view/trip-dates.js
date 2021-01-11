@@ -30,6 +30,15 @@ export default class TripDates extends SmartView {
     return tripDatesTemplate(this._data);
   }
 
+  restoreHandlers() {
+    this._setDatePicker();
+  }
+
+  reset(point) {
+    this.updateData(TripDates.parsePointToData(point)
+    );
+  }
+
   _setDatePicker() {
     if (this._datepicker) {
       this._datepicker.destroy();
@@ -40,7 +49,7 @@ export default class TripDates extends SmartView {
       this._datepicker = flatpickr(
           this.getElement().querySelector(`.event__input--time[name="event-start-time"]`),
           {
-            dateFormat: `j/m/y H:i`,
+            dateFormat: `j/m/Y H:i`,
             defaultDate: this._data.time.startFullDate,
             onChange: this._tripStartDateChangeHandler
           }
@@ -50,7 +59,7 @@ export default class TripDates extends SmartView {
       this._datepicker = flatpickr(
           this.getElement().querySelector(`.event__input--time[name="event-end-time"]`),
           {
-            dateFormat: `j/m/y H:i`,
+            dateFormat: `j/m/Y H:i`,
             defaultDate: this._data.time.endFullDate,
             onChange: this._tripEndDateChangeHandler
           }
@@ -60,25 +69,16 @@ export default class TripDates extends SmartView {
 
   _tripStartDateChangeHandler([userDate]) {
     this._data.time = Object.assign(this._data.time, {
-      startFullDate: dayjs(userDate).hour(23).minute(59).second(59).format(`DD/MM/YY HH:MM`),
+      startFullDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
     });
     this.updateData(this._data);
   }
 
   _tripEndDateChangeHandler([userDate]) {
     this._data.time = Object.assign(this._data.time, {
-      endFullDate: dayjs(userDate).hour(23).minute(59).second(59).format(`DD/MM/YY HH:MM`),
+      endFullDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
     });
     this.updateData(this._data);
-  }
-
-  restoreHandlers() {
-    this._setDatePicker();
-  }
-
-  reset(point) {
-    this.updateData(TripDates.parsePointToData(point)
-    );
   }
 
   static parsePointToData(point) {

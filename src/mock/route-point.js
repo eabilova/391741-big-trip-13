@@ -27,22 +27,13 @@ const generateExtraOffers = (pointType) => {
 const generateDate = () => {
   const date = new Date();
   const tripDate = dayjs(date).add(getRandomInteger(DAY_DIFFERENCE.min, DAY_DIFFERENCE.max), `day`).add(getRandomInteger(TIME_DIFFERENCE.firstHalf.min, TIME_DIFFERENCE.firstHalf.max), `hour`);
-  const day = tripDate.format(`MMM DD`);
-  const startFullDate = tripDate.format(`DD/MM/YY HH:mm`);
-  const startTime = tripDate.format(`HH:mm`);
+  const startFullDate = tripDate.toISOString();
   const endDate = tripDate.add(getRandomInteger(TIME_DIFFERENCE.secondHalf.min, TIME_DIFFERENCE.secondHalf.max), `hour`);
-  const endFullDate = endDate.format(`DD/MM/YY HH:mm`);
-  const endTime = endDate.format(`HH:mm`);
-  const duration = endDate.diff(dayjs(date), `hour`);
+  const endFullDate = endDate.toISOString();
 
   return {
-    tripDate,
-    day,
     startFullDate,
     endFullDate,
-    startTime,
-    endTime,
-    duration,
   };
 };
 

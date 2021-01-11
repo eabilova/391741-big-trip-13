@@ -55,14 +55,14 @@ const BLANK_POINT = {
   destinationDescription: ``,
   photoLinks: [],
   time: {
-    startFullDate: dayjs(new Date()).format(`DD/MM/YY HH:MM`),
-    endFullDate: dayjs(new Date()).format(`DD/MM/YY HH:MM`),
+    startFullDate: dayjs(new Date()).toISOString(),
+    endFullDate: dayjs(new Date()).toISOString(),
   },
   price: ` `,
 };
 
 const editingFormTemplate = (data) => {
-  const {type, extraOffers, price, currentType, currentDestinationDescription, currentPhotos, currentCity} = data;
+  const {type, extraOffers, currentType, currentDestinationDescription, currentPhotos, currentCity, currentPrice} = data;
   const eventType = editingEventTypeFormTemplate(currentType);
   const checkOffers = identifySelectedOffers(currentType, extraOffers);
   const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
@@ -102,7 +102,7 @@ const editingFormTemplate = (data) => {
         <span class="visually-hidden">Price</span>
         &euro;
       </label>
-      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${currentPrice}">
     </div>
 
     <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? `disabled` : ``}>Save</button>
@@ -134,6 +134,7 @@ export default class EditingForm extends SmartView {
     this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._priceChangeHandler = this._priceChangeHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -151,11 +152,6 @@ export default class EditingForm extends SmartView {
     }
   }
 
-  _exitEditModeClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.editClick();
-  }
-
   setExitEditModeClickHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector(`.event__rollup-btn`).addEventListener(`click`, this._exitEditModeClickHandler);
@@ -166,24 +162,48 @@ export default class EditingForm extends SmartView {
     this.getElement().querySelector(`.event__rollup-btn`).removeEventListener(`click`, this._exitEditModeClickHandler);
   }
 
-  _formSubmitHandler(evt) {
-    evt.preventDefault();
-    this._callback.formSubmit(EditingForm.parseDataToPoint(this._data));
-  }
-
   setFormSubmitHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().addEventListener(`submit`, this._formSubmitHandler);
   }
 
-  _formDeleteClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.deleteClick(EditingForm.parseDataToPoint(this._data));
-  }
-
   setDeleteClickHandler(callback) {
     this._callback.deleteClick = callback;
     this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
+  }
+
+  renderDatesEditMode() {
+    this._tripDatesContainer = this.getElement().querySelector(`.event__field-group--destination`);
+    this._tripDatesEditMode = new TripDates(this._data);
+    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
+  }
+
+  reset(point) {
+    this.updateData(
+        EditingForm.parsePointToData(point)
+    );
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setExitEditModeClickHandler(this._callback.editClick);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
+  }
+
+  _exitEditModeClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
+  }
+
+  _formSubmitHandler(evt) {
+    evt.preventDefault();
+    this._callback.formSubmit(EditingForm.parseDataToPoint(this._data));
+  }
+
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EditingForm.parseDataToPoint(this._data));
   }
 
   _typeChangeHandler(evt) {
@@ -205,10 +225,12 @@ export default class EditingForm extends SmartView {
     this.renderDatesEditMode();
   }
 
-  renderDatesEditMode() {
-    this._tripDatesContainer = this.getElement().querySelector(`.event__field-group--destination`);
-    this._tripDatesEditMode = new TripDates(this._data);
-    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
+  _priceChangeHandler(evt) {
+    evt.preventDefault();
+    this.updateData({
+      currentPrice: evt.target.value,
+    });
+    this.renderDatesEditMode();
   }
 
   _setInnerHandlers() {
@@ -218,19 +240,9 @@ export default class EditingForm extends SmartView {
     this.getElement()
       .querySelector(`.event__input--destination`)
       .addEventListener(`change`, this._destinationChangeHandler);
-  }
-
-  restoreHandlers() {
-    this._setInnerHandlers();
-    this.setExitEditModeClickHandler(this._callback.editClick);
-    this.setFormSubmitHandler(this._callback.formSubmit);
-    this.setDeleteClickHandler(this._callback.deleteClick);
-  }
-
-  reset(point) {
-    this.updateData(
-        EditingForm.parsePointToData(point)
-    );
+    this.getElement()
+    .querySelector(`.event__input--price`)
+    .addEventListener(`change`, this._priceChangeHandler)
   }
 
   static parsePointToData(point) {
@@ -242,6 +254,7 @@ export default class EditingForm extends SmartView {
           currentCity: point.city,
           currentDestinationDescription: point.destinationDescription,
           currentPhotos: point.photoLinks,
+          currentPrice: point.price,
         }
     );
   }
@@ -249,26 +262,40 @@ export default class EditingForm extends SmartView {
   static parseDataToPoint(data) {
     data = Object.assign({}, data);
 
-    if (!data.currentType) {
+    if (data.currentType) {
+      data.type = data.currentType;
+    } else {
       data.type = `taxi`;
     }
 
-    if (!data.currentDestinationDescription) {
+    if (data.currentDestinationDescription) {
+      data.destinationDescription = data.currentDestinationDescription;
+    } else {
       data.destinationDescription = ``;
     }
 
-    if (!data.currentPhotos) {
+    if (data.currentPhotos) {
+      data.photoLinks = data.currentPhotos;
+    } else {
       data.photoLinks = [];
     }
 
-    if (!data.currentCity) {
+    if (data.currentCity) {
+      data.city = data.currentCity;
+    } else {
       data.city = ``;
+    }
+
+    if (data.currentPrice) {
+      data.price = data.currentPrice;
+    } else {
+      data.price = 0;
     }
 
     delete data.currentType;
     delete data.currentDestinationDescription;
     delete data.currentPhotos;
-    delete data.city;
+    delete data.currentCity;
 
     return data;
   }

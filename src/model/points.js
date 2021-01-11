@@ -14,7 +14,7 @@ export default class Points extends Observer {
     return this._points;
   }
 
-  updatePoints(updateType, update) {
+  updatePoint(updateType, update) {
     const index = this._points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
