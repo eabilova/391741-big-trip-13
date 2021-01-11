@@ -64,7 +64,8 @@ export default class Trip {
       case SortType.EVENT:
         return filtredPoints.sort((a, b) => a.type - b.type);
       case SortType.TIME:
-        return filtredPoints.sort((a, b) => ((a.time.startFullDate < b.time.startFullDate) ? -1 : (a.time.startFullDate > b.time.startFullDate) ? 1 : 0));
+        const sortedItems = filtredPoints.sort((a, b) => (a.time.startFullDate > b.time.startFullDate) ? 1 : 0);
+        return filtredPoints.sort((a, b) => (a.time.startFullDate < b.time.startFullDate) ? -1 : sortedItems);
       case SortType.PRICE:
         return filtredPoints.sort((a, b) => a.price - b.price);
       case SortType.OFFER:
