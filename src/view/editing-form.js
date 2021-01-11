@@ -1,4 +1,4 @@
-import {EVENT_TYPES, OFFERS} from "../const.js";
+import {EVENT_TYPES, OFFERS, CITIES} from "../const.js";
 import dayjs from "dayjs";
 import he from "he";
 import SmartView from "./smart.js";
@@ -47,6 +47,10 @@ const identifySelectedOffers = (currentType, currentOffers) => {
     </div>`).join(``);
 };
 
+const generateDataList = () => {
+  return CITIES.map((city) => `<option value="${city}"></option>`).join(``);
+};
+
 const BLANK_POINT = {
   id: generateId(),
   type: `taxi`,
@@ -66,6 +70,7 @@ const editingFormTemplate = (data) => {
   const eventType = editingEventTypeFormTemplate(currentType);
   const checkOffers = identifySelectedOffers(currentType, extraOffers);
   const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
+  const datalist = generateDataList();
   const isSubmitDisabled = currentType && !type;
 
   return `<form class="event event--edit" action="#" method="post">
@@ -91,9 +96,7 @@ const editingFormTemplate = (data) => {
       </label>
       <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentCity}" list="destination-list-1">
       <datalist id="destination-list-1">
-        <option value="Amsterdam"></option>
-        <option value="Geneva"></option>
-        <option value="Chamonix"></option>
+        ${datalist}
       </datalist>
     </div>
 
