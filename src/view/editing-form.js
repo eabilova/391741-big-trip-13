@@ -58,7 +58,7 @@ const BLANK_POINT = {
     startFullDate: dayjs(new Date()).toISOString(),
     endFullDate: dayjs(new Date()).toISOString(),
   },
-  price: ` `,
+  price: 0,
 };
 
 const editingFormTemplate = (data) => {
@@ -179,9 +179,7 @@ export default class EditingForm extends SmartView {
   }
 
   reset(point) {
-    this.updateData(
-        EditingForm.parsePointToData(point)
-    );
+    this.updateData(EditingForm.parsePointToData(point));
   }
 
   restoreHandlers() {
@@ -226,11 +224,15 @@ export default class EditingForm extends SmartView {
   }
 
   _priceChangeHandler(evt) {
-    evt.preventDefault();
-    this.updateData({
-      currentPrice: evt.target.value,
-    });
-    this.renderDatesEditMode();
+    const validNumber = new RegExp(/^[0-9]+$/);
+    if (evt.target.value.match(validNumber)) {
+      this.updateData({
+        currentPrice: evt.target.value,
+      });
+      this.renderDatesEditMode();
+    } else {
+      evt.preventDefault();
+    }
   }
 
   _setInnerHandlers() {
@@ -242,7 +244,7 @@ export default class EditingForm extends SmartView {
       .addEventListener(`change`, this._destinationChangeHandler);
     this.getElement()
     .querySelector(`.event__input--price`)
-    .addEventListener(`change`, this._priceChangeHandler)
+    .addEventListener(`change`, this._priceChangeHandler);
   }
 
   static parsePointToData(point) {
@@ -262,35 +264,11 @@ export default class EditingForm extends SmartView {
   static parseDataToPoint(data) {
     data = Object.assign({}, data);
 
-    if (data.currentType) {
-      data.type = data.currentType;
-    } else {
-      data.type = `taxi`;
-    }
-
-    if (data.currentDestinationDescription) {
-      data.destinationDescription = data.currentDestinationDescription;
-    } else {
-      data.destinationDescription = ``;
-    }
-
-    if (data.currentPhotos) {
-      data.photoLinks = data.currentPhotos;
-    } else {
-      data.photoLinks = [];
-    }
-
-    if (data.currentCity) {
-      data.city = data.currentCity;
-    } else {
-      data.city = ``;
-    }
-
-    if (data.currentPrice) {
-      data.price = data.currentPrice;
-    } else {
-      data.price = 0;
-    }
+    data.currentType ? data.type = data.currentType : data.type = `taxi`;
+    data.currentDestinationDescription ? data.destinationDescription = data.currentDestinationDescription : data.destinationDescription = ``;
+    data.currentPhotos ? data.photoLinks = data.currentPhotos : data.photoLinks = [];
+    data.currentCity ? data.city = data.currentCity : data.city = ``;
+    data.currentPrice ? data.price = data.currentPrice : data.price = 0;
 
     delete data.currentType;
     delete data.currentDestinationDescription;

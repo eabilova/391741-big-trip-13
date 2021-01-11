@@ -1,29 +1,29 @@
 import Abstract from "./abstract.js";
 import dayjs from "dayjs";
-import {getHumanizedDiff} from "../utils/common.js"
+import {getHumanizedDiff} from "../utils/common.js";
 
 const calculateTripDuartion = (time) => {
   const {startFullDate, endFullDate} = time;
   return getHumanizedDiff(new Date(endFullDate) - new Date(startFullDate));
-}
+};
 
 const defineShortDate = (time) => {
   const {startFullDate} = time;
 
   return dayjs(startFullDate).format(`MMM DD`);
-}
+};
 
 const defineStartTime = (time) => {
   const {startFullDate} = time;
 
   return dayjs(startFullDate).format(`HH:mm`);
-}
+};
 
 const defineEndTime = (time) => {
   const {endFullDate} = time;
 
   return dayjs(endFullDate).format(`HH:mm`);
-}
+};
 
 const siteContentListItemTemplate = (point) => {
   const {time, price, isFavorite, type, city} = point;

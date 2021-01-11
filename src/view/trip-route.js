@@ -2,14 +2,14 @@ import Abstract from "./abstract.js";
 import dayjs from "dayjs";
 
 const defineShortDates = (points) => {
-  let dates = []
+  let dates = [];
 
   points.forEach((point, index) => {
-    dates[index] = dayjs(point.time.startFullDate).format(`MMM DD`)
-  }) ;
+    dates[index] = dayjs(point.time.startFullDate).format(`MMM DD`);
+  });
 
   return dates;
-}
+};
 
 const tripRouteTemplate = (points) => {
   const shortDates = defineShortDates(points);

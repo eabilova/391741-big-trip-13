@@ -74,18 +74,18 @@ export default class Trip {
   }
 
   _renderTripInfo(points) {
-    if (this._tripInfoComponent !== null) {
+    if (this._tripInfoComponent) {
       remove(this._tripInfoComponent);
     }
 
-    if (this._tripCostComponent !== null) {
+    if (this._tripCostComponent) {
       remove(this._tripCostComponent);
     }
 
-      this._tripInfoComponent = new TripInfo(points);
-      this._tripCostComponent = new TripCost(points);
-      render(this._infoSectionComponent, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
-      render(this._infoSectionComponent, this._tripCostComponent, RenderPosition.BEFOREEND);
+    this._tripInfoComponent = new TripInfo(points);
+    this._tripCostComponent = new TripCost(points);
+    render(this._infoSectionComponent, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
+    render(this._infoSectionComponent, this._tripCostComponent, RenderPosition.BEFOREEND);
   }
 
   _renderSort() {
@@ -107,8 +107,8 @@ export default class Trip {
   }
 
   _renderInfoSection(points) {
-      render(this._tripInfoContainer, this._infoSectionComponent, RenderPosition.AFTERBEGIN);
-      this._renderTripInfo(points);
+    render(this._tripInfoContainer, this._infoSectionComponent, RenderPosition.AFTERBEGIN);
+    this._renderTripInfo(points);
   }
 
   _renderTripList() {
