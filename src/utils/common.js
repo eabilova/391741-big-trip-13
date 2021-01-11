@@ -30,10 +30,10 @@ export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10)
 
 
 const UnitMapping = {
-  "days": 24 * 60 * 60 * 1000,
-  "hours": 60 * 60 * 1000,
-  "minutes": 60 * 1000,
-  "seconds": 1000
+  days: 24 * 60 * 60 * 1000,
+  hours: 60 * 60 * 1000,
+  minutes: 60 * 1000,
+  seconds: 1000
 };
 
 const floor = (value) => {
@@ -41,5 +41,5 @@ const floor = (value) => {
 };
 
 export const getHumanizedDiff = (diff) => {
-  return floor(diff / UnitMapping.days) + `D ` + floor((diff % UnitMapping.days) / UnitMapping.hours) + `H ` + floor((diff % UnitMapping.hours) / UnitMapping.minutes) + `M`;
+  return `${floor(diff / UnitMapping.days)}D ${floor((diff % UnitMapping.days) / UnitMapping.hours)}H ${floor((diff % UnitMapping.hours) / UnitMapping.minutes)}M`;
 };

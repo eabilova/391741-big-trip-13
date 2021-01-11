@@ -264,11 +264,11 @@ export default class EditingForm extends SmartView {
   static parseDataToPoint(data) {
     data = Object.assign({}, data);
 
-    data.currentType ? data.type = data.currentType : data.type = `taxi`;
-    data.currentDestinationDescription ? data.destinationDescription = data.currentDestinationDescription : data.destinationDescription = ``;
-    data.currentPhotos ? data.photoLinks = data.currentPhotos : data.photoLinks = [];
-    data.currentCity ? data.city = data.currentCity : data.city = ``;
-    data.currentPrice ? data.price = data.currentPrice : data.price = 0;
+    data.type = data.currentType ? data.currentType : `taxi`;
+    data.destinationDescription = data.currentDestinationDescription ? data.currentDestinationDescription : ``;
+    data.photoLinks = data.currentPhotos ? data.currentPhotos : [];
+    data.city = data.currentCity ? data.currentCity : ``;
+    data.price = data.currentPrice ? data.currentPrice : 0;
 
     delete data.currentType;
     delete data.currentDestinationDescription;
