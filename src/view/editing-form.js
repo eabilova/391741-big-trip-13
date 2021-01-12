@@ -268,8 +268,8 @@ export default class EditingForm extends SmartView {
     .querySelector(`.event__input--price`)
     .addEventListener(`change`, this._priceChangeHandler);
     this.getElement()
-    .querySelectorAll(`.event__offer-checkbox`)
-    .forEach((offer) => offer.addEventListener(`click`, this._offerSelectionHandler));
+    .querySelector(`.event__available-offers`)
+    .addEventListener(`change`, this._offerSelectionHandler);
   }
 
   static parsePointToData(point) {
