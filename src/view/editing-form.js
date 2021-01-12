@@ -132,7 +132,7 @@ export default class EditingForm extends SmartView {
   constructor(point = BLANK_POINT) {
     super();
 
-    this._selectedOffer = [];
+    this._selectedOffers = [];
     this._data = EditingForm.parsePointToData(point);
     this._exitEditModeClickHandler = this._exitEditModeClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -244,17 +244,17 @@ export default class EditingForm extends SmartView {
 
   _offerSelectionHandler(evt) {
     evt.preventDefault();
-    this._selectedOffer = this._data.currentOffers;
-    if (this._selectedOffer.includes(OFFER_LIST[evt.target.value])) {
-      const index = this._selectedOffer.indexOf(OFFER_LIST[evt.target.value]);
+    this._selectedOffers = this._data.currentOffers;
+    if (this._selectedOffers.includes(OFFER_LIST[evt.target.value])) {
+      const index = this._selectedOffers.indexOf(OFFER_LIST[evt.target.value]);
       if (index > -1) {
-        this._selectedOffer.splice(index, 1);
+        this._selectedOffers.splice(index, 1);
       }
     } else {
-      this._selectedOffer.push(OFFER_LIST[evt.target.value]);
+      this._selectedOffers.push(OFFER_LIST[evt.target.value]);
     }
     this.updateData({
-      currentOffers: this._selectedOffer
+      currentOffers: this._selectedOffers
     });
     this.renderDatesEditMode();
   }
