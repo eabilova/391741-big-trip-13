@@ -1,10 +1,10 @@
 import Abstract from "./abstract.js";
 import {SortType} from "../const.js";
 
-const siteSortingTemplate = (sortType) => {
+const siteSortingTemplate = (currentSortType) => {
   return `<form class="trip-events__trip-sort  trip-sort" action="#" method="get">
   <div class="trip-sort__item  trip-sort__item--day">
-    <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" ${sortType === SortType.DAY ? `checked` : ``} data-sort-type="${SortType.DAY}">
+    <input id="sort-day" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-day" ${currentSortType === SortType.DAY ? `checked` : ``} data-sort-type="${SortType.DAY}">
     <label class="trip-sort__btn" for="sort-day">Day</label>
   </div>
 
@@ -14,12 +14,12 @@ const siteSortingTemplate = (sortType) => {
   </div>
 
   <div class="trip-sort__item  trip-sort__item--time">
-    <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" ${sortType === SortType.TIME ? `checked` : ``} data-sort-type="${SortType.TIME}">
+    <input id="sort-time" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-time" ${currentSortType === SortType.TIME ? `checked` : ``} data-sort-type="${SortType.TIME}">
     <label class="trip-sort__btn" for="sort-time">Time</label>
   </div>
 
   <div class="trip-sort__item  trip-sort__item--price">
-    <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" ${sortType === SortType.PRICE ? `checked` : ``} data-sort-type="${SortType.PRICE}">
+    <input id="sort-price" class="trip-sort__input  visually-hidden" type="radio" name="trip-sort" value="sort-price" ${currentSortType === SortType.PRICE ? `checked` : ``} data-sort-type="${SortType.PRICE}">
     <label class="trip-sort__btn" for="sort-price">Price</label>
   </div>
 
@@ -31,16 +31,11 @@ const siteSortingTemplate = (sortType) => {
 };
 
 export default class SiteSorting extends Abstract {
-  constructor(sortType) {
+  constructor(currentSortType) {
     super();
 
-    this._sortType = sortType;
+    this._currentSortType = currentSortType;
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
-  }
-
-  _sortTypeChangeHandler(evt) {
-    evt.preventDefault();
-    this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 
   setSortTypeChangeHandler(callback) {
@@ -51,6 +46,11 @@ export default class SiteSorting extends Abstract {
   }
 
   getTemplate() {
-    return siteSortingTemplate(this._sortType);
+    return siteSortingTemplate(this._currentSortType);
+  }
+
+  _sortTypeChangeHandler(evt) {
+    evt.preventDefault();
+    this._callback.sortTypeChange(evt.target.dataset.sortType);
   }
 }

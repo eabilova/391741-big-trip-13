@@ -1,8 +1,9 @@
-import {EVENT_TYPES, OFFERS} from "../const.js";
+import {EVENT_TYPES, OFFERS, CITIES, OFFER_LIST} from "../const.js";
 import dayjs from "dayjs";
+import he from "he";
 import SmartView from "./smart.js";
 import TripDates from "../view/trip-dates.js";
-import {generateDescription, generatePhotoList} from "../utils/common.js";
+import {generateDescription, generatePhotoList, generateId} from "../utils/common.js";
 import {render, RenderPosition} from "../utils/render.js";
 
 
@@ -36,9 +37,9 @@ const addDestinationDescription = (currentDestinationDescription, currentPhotos)
 const identifySelectedOffers = (currentType, currentOffers) => {
   const selectedTypeOffer = OFFERS.find((offer) => offer.type === currentType);
 
-  return Object.values(selectedTypeOffer.offers).map((offer) => `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-1" type="checkbox" name="event-offer-${offer.id}" ${currentOffers.find((currentOffer) => currentOffer.id === offer.id) ? `checked` : ``}>
-      <label class="event__offer-label" for="event-offer-${offer.id}-1">
+  return Object.values(selectedTypeOffer.offers).map((offer, index) => `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-${index}" type="checkbox" value="${offer.id}" name="event-offer-${offer.id}" ${currentOffers.find((currentOffer) => currentOffer.id === offer.id) ? `checked` : ``}>
+      <label class="event__offer-label" for="event-offer-${offer.id}-${index}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
@@ -46,23 +47,30 @@ const identifySelectedOffers = (currentType, currentOffers) => {
     </div>`).join(``);
 };
 
+const generateDataList = () => {
+  return CITIES.map((city) => `<option value="${city}"></option>`).join(``);
+};
+
 const BLANK_POINT = {
+  id: generateId(),
   type: `taxi`,
   city: ``,
   extraOffers: [],
   destinationDescription: ``,
+  photoLinks: [],
   time: {
-    startFullDate: dayjs(new Date()).format(`DD/MM/YY HH:MM`),
-    endFullDate: dayjs(new Date()).format(`DD/MM/YY HH:MM`),
+    startFullDate: dayjs(new Date()).toISOString(),
+    endFullDate: dayjs(new Date()).toISOString(),
   },
-  price: ` `,
+  price: 0,
 };
 
 const editingFormTemplate = (data) => {
-  const {type, extraOffers, price, currentType, currentDestinationDescription, currentPhotos, currentCity} = data;
+  const {type, currentType, currentDestinationDescription, currentPhotos, currentCity, currentPrice, currentOffers} = data;
   const eventType = editingEventTypeFormTemplate(currentType);
-  const checkOffers = identifySelectedOffers(currentType, extraOffers);
+  const checkOffers = identifySelectedOffers(currentType, currentOffers);
   const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
+  const datalist = generateDataList();
   const isSubmitDisabled = currentType && !type;
 
   return `<form class="event event--edit" action="#" method="post">
@@ -84,13 +92,11 @@ const editingFormTemplate = (data) => {
 
     <div class="event__field-group  event__field-group--destination">
       <label class="event__label  event__type-output" for="event-destination-1">
-        ${currentType}
+        ${he.encode(currentType)}
       </label>
       <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentCity}" list="destination-list-1">
       <datalist id="destination-list-1">
-        <option value="Amsterdam"></option>
-        <option value="Geneva"></option>
-        <option value="Chamonix"></option>
+        ${datalist}
       </datalist>
     </div>
 
@@ -99,7 +105,7 @@ const editingFormTemplate = (data) => {
         <span class="visually-hidden">Price</span>
         &euro;
       </label>
-      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+      <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${currentPrice}">
     </div>
 
     <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? `disabled` : ``}>Save</button>
@@ -125,11 +131,17 @@ const editingFormTemplate = (data) => {
 export default class EditingForm extends SmartView {
   constructor(point = BLANK_POINT) {
     super();
+
+    this._selectedOffers = [];
     this._data = EditingForm.parsePointToData(point);
     this._exitEditModeClickHandler = this._exitEditModeClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
+    this._formDeleteClickHandler = this._formDeleteClickHandler.bind(this);
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
+    this._priceChangeHandler = this._priceChangeHandler.bind(this);
+    this._offerSelectionHandler = this._offerSelectionHandler.bind(this);
+
 
     this._setInnerHandlers();
   }
@@ -138,9 +150,13 @@ export default class EditingForm extends SmartView {
     return editingFormTemplate(this._data);
   }
 
-  _exitEditModeClickHandler(evt) {
-    evt.preventDefault();
-    this._callback.editClick();
+  removeElement() {
+    super.removeElement();
+
+    if (this._datepicker) {
+      this._datepicker.destroy();
+      this._datepicker = null;
+    }
   }
 
   setExitEditModeClickHandler(callback) {
@@ -153,23 +169,55 @@ export default class EditingForm extends SmartView {
     this.getElement().querySelector(`.event__rollup-btn`).removeEventListener(`click`, this._exitEditModeClickHandler);
   }
 
+  setFormSubmitHandler(callback) {
+    this._callback.formSubmit = callback;
+    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  }
+
+  setDeleteClickHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector(`.event__reset-btn`).addEventListener(`click`, this._formDeleteClickHandler);
+  }
+
+  renderDatesEditMode() {
+    this._tripDatesContainer = this.getElement().querySelector(`.event__field-group--destination`);
+    this._tripDatesEditMode = new TripDates(this._data);
+    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
+  }
+
+  reset(point) {
+    this.updateData(EditingForm.parsePointToData(point));
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setExitEditModeClickHandler(this._callback.editClick);
+    this.setFormSubmitHandler(this._callback.formSubmit);
+    this.setDeleteClickHandler(this._callback.deleteClick);
+  }
+
+  _exitEditModeClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.editClick();
+  }
+
   _formSubmitHandler(evt) {
     evt.preventDefault();
     this._callback.formSubmit(EditingForm.parseDataToPoint(this._data));
   }
 
-  setFormSubmitHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().addEventListener(`submit`, this._formSubmitHandler);
+  _formDeleteClickHandler(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EditingForm.parseDataToPoint(this._data));
   }
 
   _typeChangeHandler(evt) {
     evt.preventDefault();
     this.updateData({
       currentType: evt.target.value,
-      extraOffers: [],
+      currentOffers: [],
     });
-    this._renderDatesEditMode();
+    this.renderDatesEditMode();
   }
 
   _destinationChangeHandler(evt) {
@@ -179,13 +227,34 @@ export default class EditingForm extends SmartView {
       currentDestinationDescription: generateDescription(),
       currentPhotos: generatePhotoList()
     });
-    this._renderDatesEditMode();
+    this.renderDatesEditMode();
   }
 
-  _renderDatesEditMode() {
-    this._tripDatesContainer = this.getElement().querySelector(`.event__field-group--destination`);
-    this._tripDatesEditMode = new TripDates(this._data);
-    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
+  _priceChangeHandler(evt) {
+    const validNumber = new RegExp(/^[0-9]+$/);
+    if (evt.target.value.match(validNumber)) {
+      this.updateData({
+        currentPrice: evt.target.value,
+      });
+      this.renderDatesEditMode();
+    } else {
+      evt.preventDefault();
+    }
+  }
+
+  _offerSelectionHandler(evt) {
+    evt.preventDefault();
+    this._selectedOffers = this._data.currentOffers;
+    const index = this._selectedOffers.indexOf(OFFER_LIST[evt.target.value]);
+    if (index > -1) {
+      this._selectedOffers.splice(index, 1);
+    } else {
+      this._selectedOffers.push(OFFER_LIST[evt.target.value]);
+    }
+    this.updateData({
+      currentOffers: this._selectedOffers
+    });
+    this.renderDatesEditMode();
   }
 
   _setInnerHandlers() {
@@ -195,18 +264,12 @@ export default class EditingForm extends SmartView {
     this.getElement()
       .querySelector(`.event__input--destination`)
       .addEventListener(`change`, this._destinationChangeHandler);
-  }
-
-  restoreHandlers() {
-    this._setInnerHandlers();
-    this.setExitEditModeClickHandler(this._callback.editClick);
-    this.setFormSubmitHandler(this._callback.formSubmit);
-  }
-
-  reset(point) {
-    this.updateData(
-        EditingForm.parsePointToData(point)
-    );
+    this.getElement()
+    .querySelector(`.event__input--price`)
+    .addEventListener(`change`, this._priceChangeHandler);
+    this.getElement()
+    .querySelector(`.event__available-offers`)
+    .addEventListener(`change`, this._offerSelectionHandler);
   }
 
   static parsePointToData(point) {
@@ -218,6 +281,8 @@ export default class EditingForm extends SmartView {
           currentCity: point.city,
           currentDestinationDescription: point.destinationDescription,
           currentPhotos: point.photoLinks,
+          currentPrice: point.price,
+          currentOffers: point.extraOffers
         }
     );
   }
@@ -225,21 +290,19 @@ export default class EditingForm extends SmartView {
   static parseDataToPoint(data) {
     data = Object.assign({}, data);
 
-    if (!data.currentType) {
-      data.type = `taxi`;
-    }
-
-    if (!data.currentDestinationDescription) {
-      data.destinationDescription = ``;
-    }
-
-    if (!data.currentPhotos) {
-      data.photoLinks = [];
-    }
+    data.type = data.currentType ? data.currentType : `taxi`;
+    data.destinationDescription = data.currentDestinationDescription ? data.currentDestinationDescription : ``;
+    data.photoLinks = data.currentPhotos ? data.currentPhotos : [];
+    data.city = data.currentCity ? data.currentCity : ``;
+    data.price = data.currentPrice ? data.currentPrice : 0;
+    data.extraOffers = data.currentOffers ? data.currentOffers : [];
 
     delete data.currentType;
     delete data.currentDestinationDescription;
     delete data.currentPhotos;
+    delete data.currentCity;
+    delete data.currentPrice;
+    delete data.currentOffers;
 
     return data;
   }

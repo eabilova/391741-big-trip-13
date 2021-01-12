@@ -7,20 +7,6 @@ export const getRandomInteger = (min = 0, max = 1) => {
   return Math.floor(minCeiling + Math.random() * (maxFlooring - minCeiling + 1));
 };
 
-export const updatePoint = (points, update) => {
-  const index = points.findIndex((point) => point.id === update.id);
-
-  if (index === -1) {
-    return points;
-  }
-
-  return [
-    ...points.slice(0, index),
-    update,
-    ...points.slice(index + 1)
-  ];
-};
-
 export const generatePhotoList = () => {
   let photoAmount = getRandomInteger(PHOTO_AMOUNT.min, PHOTO_AMOUNT.max);
   let photos = [];
@@ -38,4 +24,22 @@ export const generateDescription = () => {
   const splitDescription = DESCRIPTION.split(`. `);
 
   return splitDescription.slice(0, getRandomInteger(0, splitDescription.length - 1)).join(`. `);
+};
+
+export const generateId = () => Date.now() + parseInt(Math.random() * 10000, 10);
+
+
+const UnitMapping = {
+  days: 24 * 60 * 60 * 1000,
+  hours: 60 * 60 * 1000,
+  minutes: 60 * 1000,
+  seconds: 1000
+};
+
+const floor = (value) => {
+  return Math.floor(value);
+};
+
+export const getHumanizedDiff = (diff) => {
+  return `${floor(diff / UnitMapping.days)}D ${floor((diff % UnitMapping.days) / UnitMapping.hours)}H ${floor((diff % UnitMapping.hours) / UnitMapping.minutes)}M`;
 };
