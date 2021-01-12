@@ -245,11 +245,9 @@ export default class EditingForm extends SmartView {
   _offerSelectionHandler(evt) {
     evt.preventDefault();
     this._selectedOffers = this._data.currentOffers;
-    if (this._selectedOffers.includes(OFFER_LIST[evt.target.value])) {
-      const index = this._selectedOffers.indexOf(OFFER_LIST[evt.target.value]);
-      if (index > -1) {
-        this._selectedOffers.splice(index, 1);
-      }
+    const index = this._selectedOffers.indexOf(OFFER_LIST[evt.target.value]);
+    if (index > -1) {
+      this._selectedOffers.splice(index, 1);
     } else {
       this._selectedOffers.push(OFFER_LIST[evt.target.value]);
     }
