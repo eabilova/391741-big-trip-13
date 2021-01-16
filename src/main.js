@@ -38,7 +38,6 @@ document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (e
 
 api.getPoints()
   .then((points) => {
-    console.log(points);
     pointsModel.setPoints(UpdateType.INIT, points);
   })
   .catch(() => {
@@ -48,13 +47,11 @@ api.getPoints()
 
 api.getOffers()
 .then((offers) => {
-  console.log(offers);
   offerList = offers;
 });
 
 
 api.getDestinations()
 .then((destinations) => {
-  console.log(destinations);
   destinationList = destinations;
 });

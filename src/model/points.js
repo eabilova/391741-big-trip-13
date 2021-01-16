@@ -91,7 +91,6 @@ export default class Points extends Observer {
         {},
         point,
         {
-          "is_favorite": point.isFavorite,
           "offers": point.extraOffers,
           "destination.name": point.city,
           "destination.description": point.destinationDescription,
@@ -102,7 +101,6 @@ export default class Points extends Observer {
         }
     );
 
-    delete adaptedPoint.isFavorite;
     delete adaptedPoint.extraOffers;
     delete adaptedPoint.city;
     delete adaptedPoint.destinationDescription;

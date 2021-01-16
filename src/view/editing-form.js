@@ -4,7 +4,6 @@ import dayjs from "dayjs";
 import he from "he";
 import SmartView from "./smart.js";
 import TripDates from "../view/trip-dates.js";
-import {generateDescription, generatePhotoList, generateId} from "../utils/common.js";
 import {render, RenderPosition} from "../utils/render.js";
 
 const editingEventTypeFormTemplate = (currentType, isDisabled) => {
@@ -54,7 +53,7 @@ const generateDataList = () => {
 };
 
 const BLANK_POINT = {
-  id: generateId(),
+  id: 0,
   type: `taxi`,
   city: ``,
   extraOffers: [],
@@ -68,12 +67,12 @@ const BLANK_POINT = {
 };
 
 const editingFormTemplate = (data) => {
-  const {type, currentType, currentDestinationDescription, currentPhotos, currentCity, currentPrice, currentOffers, isDisabled, isSaving, isDeleting} = data;
+  const {price, city, currentType, currentDestinationDescription, currentPhotos, currentCity, currentPrice, currentOffers, isDisabled, isSaving, isDeleting} = data;
   const eventType = editingEventTypeFormTemplate(currentType, isDisabled);
   const checkOffers = identifySelectedOffers(currentType, currentOffers, isDisabled);
   const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
   const datalist = generateDataList();
-  const isSubmitDisabled = currentType && !type;
+  const isSubmitDisabled = (!currentPrice && !price) || (!currentCity && !city);
 
   return `<form class="event event--edit" action="#" method="post">
   <header class="event__header">
@@ -110,8 +109,8 @@ const editingFormTemplate = (data) => {
       <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${currentPrice}">
     </div>
 
-    <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? `disabled` : ``}>Save</button>
-    <button class="event__reset-btn" type="reset">Delete</button>
+    <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled || isDisabled ? `disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
+    <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Deleting...` : `Delete`}</button>
     <button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
     </button>
@@ -253,7 +252,7 @@ export default class EditingForm extends SmartView {
       if (offer.title === evt.target.value) {
         index = i;
       }
-    })
+    });
 
     if (index > -1) {
       this._selectedOffers.splice(index, 1);
@@ -264,7 +263,7 @@ export default class EditingForm extends SmartView {
           if (offer.title === evt.target.value) {
             selectedOffer = offer;
           }
-        })
+        });
       });
       this._selectedOffers.push(selectedOffer);
     }
@@ -316,6 +315,8 @@ export default class EditingForm extends SmartView {
     data.city = data.currentCity ? data.currentCity : ``;
     data.price = data.currentPrice ? data.currentPrice : 0;
     data.extraOffers = data.currentOffers ? data.currentOffers : [];
+    data.time.startFullDate = data.time.currentStartDate ? data.time.currentStartDate : dayjs(new Date()).toISOString();
+    data.time.endFullDate = data.time.currentEndDate ? data.time.currentEndDate : dayjs(new Date()).toISOString();
 
     delete data.currentType;
     delete data.currentDestinationDescription;
@@ -326,6 +327,8 @@ export default class EditingForm extends SmartView {
     delete data.isDisabled;
     delete data.isSaving;
     delete data.isDeleting;
+    delete data.time.currentStartDate;
+    delete data.time.currentEndDate;
 
     return data;
   }

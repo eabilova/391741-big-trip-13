@@ -4,7 +4,7 @@ import TripCost from "../view/trip-cost.js";
 import LoadingView from "../view/loading.js";
 import SiteMenu from "../view/site-menu.js";
 import SiteSorting from "../view/sorting.js";
-import PointPresenter, {State as PointPresentaerViewState} from "./point.js";
+import PointPresenter, {State as PointPresenterViewState} from "./point.js";
 import EmptyList from "../view/no-points";
 import TripList from "../view/content-list.js";
 import NewPointPresenter from "./new-point.js";
@@ -159,33 +159,33 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._tripPoint[update.id].setViewState(PointPresentaerViewState.SAVING);
+        this._tripPoint[update.id].setViewState(PointPresenterViewState.SAVING);
         this._api.updatePoint(update)
         .then((response) => {
           this._pointsModel.updatePoint(updateType, response);
         })
         .catch(() => {
-          this._tripPoint[update.id].setViewState(PointPresentaerViewState.ABORTING);
+          this._tripPoint[update.id].setViewState(PointPresenterViewState.ABORTING);
         });
         break;
       case UserAction.ADD_POINT:
-        this._emptyList.setSaving();
+        this._newPointPresenter.setSaving();
         this._api.addPoint(update)
         .then((response) => {
           this._pointsModel.addPoint(updateType, response);
         })
         .catch(() => {
-          this._tripPoint.setAborting();
+          this._newPointPresenter.setAborting();
         });
         break;
       case UserAction.DELETE_POINT:
-        this._tripPoint[update.id].setViewState(PointPresentaerViewState.DELETING);
+        this._tripPoint[update.id].setViewState(PointPresenterViewState.DELETING);
         this._api.deletePoint(update)
         .then(() => {
           this._pointsModel.deletePoint(updateType, update);
         })
         .catch(() => {
-          this._tripPoint[update.id].setVieState(PointPresentaerViewState.ABORTING);
+          this._tripPoint[update.id].setVieState(PointPresenterViewState.ABORTING);
         });
         break;
     }
