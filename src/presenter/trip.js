@@ -1,8 +1,7 @@
 ﻿import InfoSection from "../view/trip-info-section.js";
 import TripInfo from "../view/trip-route.js";
 import TripCost from "../view/trip-cost.js";
-import CityList from "../view/city-datalist.js";
-import LoadingView from "../view/loading.js"
+import LoadingView from "../view/loading.js";
 import SiteMenu from "../view/site-menu.js";
 import SiteSorting from "../view/sorting.js";
 import PointPresenter, {State as PointPresentaerViewState} from "./point.js";
@@ -57,11 +56,6 @@ export default class Trip {
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._newPointPresenter.init();
   }
-
-  // createCityDataList() {
-  //   return this._getPoints();
-  // }
-
 
   _getPoints() {
     const filterType = this._filterModel.getFilter();

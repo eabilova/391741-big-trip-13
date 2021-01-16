@@ -8,6 +8,10 @@ import Api from "./api.js";
 const AUTHORIZATION = `Basic 39hgp-1tfgdph56vd`;
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
 
+export let offerList;
+export let destinationList;
+
+
 const siteHeader = document.querySelector(`header`);
 const tripMain = siteHeader.querySelector(`.trip-main`);
 const tripControls = siteHeader.querySelector(`.trip-controls`);
@@ -39,3 +43,16 @@ api.getPoints()
   .catch(() => {
     pointsModel.setPoints(UpdateType.INIT, []);
   });
+
+
+api.getOffers()
+.then((offers) => {
+  offerList = offers;
+});
+
+
+api.getDestinations()
+.then((destinations) => {
+  console.log(destinations);
+  destinationList = destinations;
+});

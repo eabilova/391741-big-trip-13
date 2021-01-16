@@ -1,11 +1,11 @@
-import {EVENT_TYPES, OFFERS, CITIES, OFFER_LIST} from "../const.js";
+import {EVENT_TYPES} from "../const.js";
+import {offerList, destinationList} from "../main.js";
 import dayjs from "dayjs";
 import he from "he";
 import SmartView from "./smart.js";
 import TripDates from "../view/trip-dates.js";
 import {generateDescription, generatePhotoList, generateId} from "../utils/common.js";
-import {render, RenderPosition} from "../utils/render.js";;
-import CityList from "./city-datalist.js";
+import {render, RenderPosition} from "../utils/render.js";
 
 const editingEventTypeFormTemplate = (currentType, isDisabled) => {
   return EVENT_TYPES.map((type) => `<div class="event__type-item">
@@ -15,7 +15,7 @@ const editingEventTypeFormTemplate = (currentType, isDisabled) => {
 };
 
 const addPhotos = (currentPhotos) => {
-  return currentPhotos.map((photo) => `<img class="event__photo" src="${photo.src}" alt="Event photo">`).join(``);
+  return currentPhotos.map((photo) => `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`).join(``);
 };
 
 const addDestinationDescription = (currentDestinationDescription, currentPhotos) => {
@@ -35,11 +35,13 @@ const addDestinationDescription = (currentDestinationDescription, currentPhotos)
 };
 
 const identifySelectedOffers = (currentType, currentOffers, isDisabled) => {
-  const selectedTypeOffer = OFFERS.find((offer) => offer.type === currentType);
+  const selectedTypeOffer = offerList.find((offer) => offer.type === currentType);
+  const selectedType = selectedTypeOffer.type;
+  const selectedOffers = selectedTypeOffer.offers;
 
-  return Object.values(selectedTypeOffer.offers).map((offer, index) => `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-${index}" type="checkbox" value="${offer.id}" name="event-offer-${offer.id}" ${currentOffers.find((currentOffer) => currentOffer.id === offer.id) ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
-      <label class="event__offer-label" for="event-offer-${offer.id}-${index}">
+  return selectedOffers.map((offer, index) => `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${selectedType}-${index}" type="checkbox" value="${offer.title}" name="event-offer-${selectedType}-${index}" ${currentOffers.find((currentOffer) => currentOffer.title === offer.title) ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
+      <label class="event__offer-label" for="event-offer-${selectedType}-${index}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
@@ -47,9 +49,9 @@ const identifySelectedOffers = (currentType, currentOffers, isDisabled) => {
     </div>`).join(``);
 };
 
-// const generateDataList = () => {
-//   return CITIES.map((city) => `<option value="${city}"></option>`).join(``);
-// };
+const generateDataList = () => {
+  return destinationList.map((destination) => `<option value="${destination.name}"></option>`).join(``);
+};
 
 const BLANK_POINT = {
   id: generateId(),
@@ -70,7 +72,7 @@ const editingFormTemplate = (data) => {
   const eventType = editingEventTypeFormTemplate(currentType, isDisabled);
   const checkOffers = identifySelectedOffers(currentType, currentOffers, isDisabled);
   const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
-  // const datalist = generateDataList();
+  const datalist = generateDataList();
   const isSubmitDisabled = currentType && !type;
 
   return `<form class="event event--edit" action="#" method="post">
@@ -95,6 +97,9 @@ const editingFormTemplate = (data) => {
         ${he.encode(currentType)}
       </label>
       <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentCity}" list="destination-list-1" ${isDisabled ? `disabled` : ``}>
+      <datalist id="destination-list-1">
+      ${datalist}
+      </datalist>
     </div>
 
     <div class="event__field-group  event__field-group--price">
@@ -181,12 +186,6 @@ export default class EditingForm extends SmartView {
     render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
   }
 
-  renderCityDataList() {
-    this._datalistContainer = this.getElement().querySelector(`.event__input--destination`);
-    this._cityDataListComponent = new CityList(points);
-    render(this._datalistContainer, this._cityDataListComponent, RenderPosition.AFTEREND)
-  }
-
   reset(point) {
     this.updateData(EditingForm.parsePointToData(point));
   }
@@ -220,7 +219,6 @@ export default class EditingForm extends SmartView {
       currentOffers: [],
     });
     this.renderDatesEditMode();
-    this.renderCityDataList();
   }
 
   _destinationChangeHandler(evt) {
@@ -231,7 +229,6 @@ export default class EditingForm extends SmartView {
       currentPhotos: generatePhotoList()
     });
     this.renderDatesEditMode();
-    this.renderCityDataList();
   }
 
   _priceChangeHandler(evt) {
@@ -241,7 +238,6 @@ export default class EditingForm extends SmartView {
         currentPrice: evt.target.value,
       });
       this.renderDatesEditMode();
-      this.renderCityDataList();
     } else {
       evt.preventDefault();
     }
@@ -250,17 +246,27 @@ export default class EditingForm extends SmartView {
   _offerSelectionHandler(evt) {
     evt.preventDefault();
     this._selectedOffers = this._data.currentOffers;
-    const index = this._selectedOffers.indexOf(OFFER_LIST[evt.target.value]);
+
+    const type = this._data.currentType;
+    const data = offerList.find((offer) => offer.type === type);
+    const index = this._selectedOffers.indexOf(data.offers[evt.target.value]);
     if (index > -1) {
       this._selectedOffers.splice(index, 1);
     } else {
-      this._selectedOffers.push(OFFER_LIST[evt.target.value]);
+      let selectedOffer;
+      offerList.forEach((pointOffer) => {
+        pointOffer.offers.forEach((offer) => {
+          if (offer.title === evt.target.value) {
+            selectedOffer = offer;
+          }
+        })
+      });
+      this._selectedOffers.push(selectedOffer);
     }
     this.updateData({
       currentOffers: this._selectedOffers
     });
     this.renderDatesEditMode();
-    this.renderCityDataList();
   }
 
   _setInnerHandlers() {

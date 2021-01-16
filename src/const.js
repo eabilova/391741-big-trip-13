@@ -1,6 +1,4 @@
-﻿import PointsModel from "./model/points.js";
-
-export const DESCRIPTION = `loremipsum`;
+﻿export const DESCRIPTION = `loremipsum`;
 export const EVENT_TYPES = [
   `taxi`,
   `bus`,
@@ -12,85 +10,6 @@ export const EVENT_TYPES = [
   `check-in`,
   `sightseeing`,
   `restaurant`,
-];
-
-export const OFFER_LIST = {
-  luggage: {
-    id: `luggage`,
-    title: `Add luggage`,
-    price: 30
-  },
-  comfort: {
-    id: `comfort`,
-    title: `Switch to comfort`,
-    price: 100
-  },
-  meal: {
-    id: `meal`,
-    title: `Add meal`,
-    price: 15
-  },
-  seats: {
-    id: `seats`,
-    title: `Choose seats`,
-    price: 5
-  },
-  train: {
-    id: `train`,
-    title: `Travel by train`,
-    price: 40
-  }
-};
-
-
-export const OFFERS = [{
-  type: `taxi`,
-  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.seats, OFFER_LIST.train]
-},
-{
-  type: `bus`,
-  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.meal, OFFER_LIST.seats, OFFER_LIST.train]
-},
-{
-  type: `train`,
-  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.meal, OFFER_LIST.seats]
-},
-{
-  type: `ship`,
-  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.meal, OFFER_LIST.seats, OFFER_LIST.train]
-},
-{
-  type: `transport`,
-  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.seats, OFFER_LIST.train]
-},
-{
-  type: `drive`,
-  offers: [OFFER_LIST.train]
-},
-{
-  type: `flight`,
-  offers: [OFFER_LIST.luggage, OFFER_LIST.comfort, OFFER_LIST.meal, OFFER_LIST.seats, OFFER_LIST.train]
-},
-{
-  type: `check-in`,
-  offers: [OFFER_LIST.comfort, OFFER_LIST.meal]
-},
-{
-  type: `sightseeing`,
-  offers: [OFFER_LIST.comfort]
-},
-{
-  type: `restaurant`,
-  offers: []
-}
-];
-
-export const CITIES = [
-  `Las Vegas`,
-  `Los Angeles`,
-  `San Francisco`,
-  `Houston`,
-  `New York`,
 ];
 
 export const PHOTO_NUMBER = {
