@@ -222,11 +222,12 @@ export default class EditingForm extends SmartView {
   }
 
   _destinationChangeHandler(evt) {
+    this._selectedCity = destinationList.find((listItem) => listItem.name === evt.target.value);
     evt.preventDefault();
     this.updateData({
       currentCity: evt.target.value,
-      currentDestinationDescription: generateDescription(),
-      currentPhotos: generatePhotoList()
+      currentDestinationDescription: this._selectedCity.description,
+      currentPhotos: this._selectedCity.pictures,
     });
     this.renderDatesEditMode();
   }
