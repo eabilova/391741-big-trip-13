@@ -1,6 +1,4 @@
 import EditTripForm from "../view/editing-form.js";
-import {generateId} from "../utils/common.js";
-import TripDates from "../view/trip-dates.js";
 import {remove, render, RenderPosition} from "../utils/render.js";
 import {UserAction, UpdateType} from "../const.js";
 
@@ -42,19 +40,31 @@ export default class NewPoint {
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
 
-  _renderDatesEditMode() {
-    this._tripDatesContainer = this._editPointComponent.getElement().querySelector(`.event__field-group--destination`);
-    this._tripDatesEditMode = new TripDates();
-    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
+  setSaving() {
+    this._editPointComponent.updateData({
+      isDisabled: true,
+      isSaving: true
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._editPointComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false
+      });
+    };
+
+    this._editPointComponent.shake(resetFormState);
   }
 
   _handleFormSubmit(point) {
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,
-        Object.assign({id: generateId()}, point)
+        point
     );
-    this.destroy();
   }
 
   _handleDeleteClick() {
