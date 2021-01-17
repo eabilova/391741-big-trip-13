@@ -1,5 +1,5 @@
 import {EVENT_TYPES} from "../const.js";
-import {offerList, destinationList} from "../main.js";
+import {getOfferList, getDestinationList} from "../main.js";
 import dayjs from "dayjs";
 import he from "he";
 import SmartView from "./smart.js";
@@ -34,7 +34,7 @@ const addDestinationDescription = (currentDestinationDescription, currentPhotos)
 };
 
 const identifySelectedOffers = (currentType, currentOffers, isDisabled) => {
-  const selectedTypeOffer = offerList.find((offer) => offer.type === currentType);
+  const selectedTypeOffer = getOfferList().find((offer) => offer.type === currentType);
   const selectedType = selectedTypeOffer.type;
   const selectedOffers = selectedTypeOffer.offers;
 
@@ -226,6 +226,7 @@ export default class EditingForm extends SmartView {
   }
 
   _destinationChangeHandler(evt) {
+    const destinationList = getDestinationList();
     this._selectedCity = destinationList.find((listItem) => listItem.name === evt.target.value);
     evt.preventDefault();
     this.updateData({
@@ -263,7 +264,7 @@ export default class EditingForm extends SmartView {
       this._selectedOffers.splice(index, 1);
     } else {
       let selectedOffer;
-      offerList.forEach((pointOffer) => {
+      getOfferList().forEach((pointOffer) => {
         pointOffer.offers.forEach((offer) => {
           if (offer.title === evt.target.value) {
             selectedOffer = offer;
