@@ -53,7 +53,6 @@ const generateDataList = () => {
 };
 
 const BLANK_POINT = {
-  id: 0,
   isFavorite: false,
   type: `taxi`,
   city: ``,
