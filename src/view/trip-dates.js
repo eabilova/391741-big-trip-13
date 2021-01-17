@@ -18,7 +18,7 @@ const tripDatesTemplate = (data) => {
 export default class TripDates extends SmartView {
   constructor(point) {
     super();
-    this._data = TripDates.parsePointToData(point);
+    this._data = point;
     this._datepicker = null;
 
     this._tripStartDateChangeHandler = this._tripStartDateChangeHandler.bind(this);
@@ -50,7 +50,7 @@ export default class TripDates extends SmartView {
           this.getElement().querySelector(`.event__input--time[name="event-start-time"]`),
           {
             dateFormat: `j/m/Y H:i`,
-            defaultDate: this._data.time.startFullDate,
+            defaultDate: this._data.time.currentStartDate,
             onChange: this._tripStartDateChangeHandler
           }
       );
@@ -60,7 +60,7 @@ export default class TripDates extends SmartView {
           this.getElement().querySelector(`.event__input--time[name="event-end-time"]`),
           {
             dateFormat: `j/m/Y H:i`,
-            defaultDate: this._data.time.endFullDate,
+            defaultDate: this._data.time.currentEndDate,
             onChange: this._tripEndDateChangeHandler
           }
       );
@@ -69,32 +69,15 @@ export default class TripDates extends SmartView {
 
   _tripStartDateChangeHandler([userDate]) {
     this._data.time = Object.assign(this._data.time, {
-      startFullDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
+      currentStartDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
     });
     this.updateData(this._data);
   }
 
   _tripEndDateChangeHandler([userDate]) {
     this._data.time = Object.assign(this._data.time, {
-      endFullDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
+      currentEndDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
     });
     this.updateData(this._data);
-  }
-
-  static parsePointToData(point) {
-    point.time = Object.assign(point.time, {
-      currentStartDate: point.time.startFullDate,
-      currentEndDate: point.time.endFullDate
-    });
-    return point;
-  }
-
-  static parseDataToPoint(data) {
-    data = Object.assign({}, data);
-
-    delete data.currentStartDate;
-    delete data.currentEndDate;
-
-    return data;
   }
 }

@@ -1,21 +1,20 @@
-import {EVENT_TYPES, OFFERS, CITIES, OFFER_LIST} from "../const.js";
+import {EVENT_TYPES} from "../const.js";
+import {getOfferList, getDestinationList} from "../main.js";
 import dayjs from "dayjs";
 import he from "he";
 import SmartView from "./smart.js";
 import TripDates from "../view/trip-dates.js";
-import {generateDescription, generatePhotoList, generateId} from "../utils/common.js";
 import {render, RenderPosition} from "../utils/render.js";
 
-
-const editingEventTypeFormTemplate = (currentType) => {
+const editingEventTypeFormTemplate = (currentType, isDisabled) => {
   return EVENT_TYPES.map((type) => `<div class="event__type-item">
-    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${currentType === type ? `checked` : ``}>
+    <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${currentType === type ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
       <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type.charAt(0).toUpperCase()}${type.slice(1)}</label>
   </div>`).join(``);
 };
 
 const addPhotos = (currentPhotos) => {
-  return currentPhotos.map((photo) => `<img class="event__photo" src="${photo}" alt="Event photo">`).join(``);
+  return currentPhotos.map((photo) => `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`).join(``);
 };
 
 const addDestinationDescription = (currentDestinationDescription, currentPhotos) => {
@@ -34,12 +33,14 @@ const addDestinationDescription = (currentDestinationDescription, currentPhotos)
   return description;
 };
 
-const identifySelectedOffers = (currentType, currentOffers) => {
-  const selectedTypeOffer = OFFERS.find((offer) => offer.type === currentType);
+const identifySelectedOffers = (currentType, currentOffers, isDisabled) => {
+  const selectedTypeOffer = getOfferList().find((offer) => offer.type === currentType);
+  const selectedType = selectedTypeOffer.type;
+  const selectedOffers = selectedTypeOffer.offers;
 
-  return Object.values(selectedTypeOffer.offers).map((offer, index) => `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.id}-${index}" type="checkbox" value="${offer.id}" name="event-offer-${offer.id}" ${currentOffers.find((currentOffer) => currentOffer.id === offer.id) ? `checked` : ``}>
-      <label class="event__offer-label" for="event-offer-${offer.id}-${index}">
+  return selectedOffers.map((offer, index) => `<div class="event__offer-selector">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${selectedType}-${index}" type="checkbox" value="${offer.title}" name="event-offer-${selectedType}-${index}" ${currentOffers.find((currentOffer) => currentOffer.title === offer.title) ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
+      <label class="event__offer-label" for="event-offer-${selectedType}-${index}">
         <span class="event__offer-title">${offer.title}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
@@ -48,11 +49,12 @@ const identifySelectedOffers = (currentType, currentOffers) => {
 };
 
 const generateDataList = () => {
-  return CITIES.map((city) => `<option value="${city}"></option>`).join(``);
+  return getDestinationList().map((destination) => `<option value="${destination.name}"></option>`).join(``);
 };
 
 const BLANK_POINT = {
-  id: generateId(),
+  id: 0,
+  isFavorite: false,
   type: `taxi`,
   city: ``,
   extraOffers: [],
@@ -66,12 +68,12 @@ const BLANK_POINT = {
 };
 
 const editingFormTemplate = (data) => {
-  const {type, currentType, currentDestinationDescription, currentPhotos, currentCity, currentPrice, currentOffers} = data;
-  const eventType = editingEventTypeFormTemplate(currentType);
-  const checkOffers = identifySelectedOffers(currentType, currentOffers);
+  const {price, city, currentType, currentDestinationDescription, currentPhotos, currentCity, currentPrice, currentOffers, isDisabled, isSaving, isDeleting} = data;
+  const eventType = editingEventTypeFormTemplate(currentType, isDisabled);
+  const checkOffers = identifySelectedOffers(currentType, currentOffers, isDisabled);
   const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
   const datalist = generateDataList();
-  const isSubmitDisabled = currentType && !type;
+  const isSubmitDisabled = (!currentPrice && !price) || (!currentCity && !city);
 
   return `<form class="event event--edit" action="#" method="post">
   <header class="event__header">
@@ -94,9 +96,9 @@ const editingFormTemplate = (data) => {
       <label class="event__label  event__type-output" for="event-destination-1">
         ${he.encode(currentType)}
       </label>
-      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentCity}" list="destination-list-1">
+      <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${currentCity}" list="destination-list-1" ${isDisabled ? `disabled` : ``}>
       <datalist id="destination-list-1">
-        ${datalist}
+      ${datalist}
       </datalist>
     </div>
 
@@ -108,8 +110,8 @@ const editingFormTemplate = (data) => {
       <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${currentPrice}">
     </div>
 
-    <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled ? `disabled` : ``}>Save</button>
-    <button class="event__reset-btn" type="reset">Delete</button>
+    <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled || isDisabled ? `disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
+    <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Deleting...` : `Delete`}</button>
     <button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
     </button>
@@ -141,7 +143,6 @@ export default class EditingForm extends SmartView {
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._priceChangeHandler = this._priceChangeHandler.bind(this);
     this._offerSelectionHandler = this._offerSelectionHandler.bind(this);
-
 
     this._setInnerHandlers();
   }
@@ -180,9 +181,13 @@ export default class EditingForm extends SmartView {
   }
 
   renderDatesEditMode() {
-    this._tripDatesContainer = this.getElement().querySelector(`.event__field-group--destination`);
+    this._tripDatesContainer = this.getElement().querySelector(`.event__field-group--time`);
+    if (this._tripDatesContainer) {
+      this._tripDatesContainer.remove();
+    }
+    this._tripDestinationContainer = this.getElement().querySelector(`.event__field-group--destination`);
     this._tripDatesEditMode = new TripDates(this._data);
-    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
+    render(this._tripDestinationContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
   }
 
   reset(point) {
@@ -221,11 +226,12 @@ export default class EditingForm extends SmartView {
   }
 
   _destinationChangeHandler(evt) {
+    this._selectedCity = getDestinationList().find((listItem) => listItem.name === evt.target.value);
     evt.preventDefault();
     this.updateData({
       currentCity: evt.target.value,
-      currentDestinationDescription: generateDescription(),
-      currentPhotos: generatePhotoList()
+      currentDestinationDescription: this._selectedCity.description,
+      currentPhotos: this._selectedCity.pictures,
     });
     this.renderDatesEditMode();
   }
@@ -245,11 +251,26 @@ export default class EditingForm extends SmartView {
   _offerSelectionHandler(evt) {
     evt.preventDefault();
     this._selectedOffers = this._data.currentOffers;
-    const index = this._selectedOffers.indexOf(OFFER_LIST[evt.target.value]);
+    let index = -1;
+
+    this._selectedOffers.forEach((offer, i) => {
+      if (offer.title === evt.target.value) {
+        index = i;
+      }
+    });
+
     if (index > -1) {
       this._selectedOffers.splice(index, 1);
     } else {
-      this._selectedOffers.push(OFFER_LIST[evt.target.value]);
+      let selectedOffer;
+      getOfferList().forEach((pointOffer) => {
+        pointOffer.offers.forEach((offer) => {
+          if (offer.title === evt.target.value) {
+            selectedOffer = offer;
+          }
+        });
+      });
+      this._selectedOffers.push(selectedOffer);
     }
     this.updateData({
       currentOffers: this._selectedOffers
@@ -273,6 +294,11 @@ export default class EditingForm extends SmartView {
   }
 
   static parsePointToData(point) {
+    point.time = Object.assign(point.time, {
+      currentStartDate: point.time.startFullDate,
+      currentEndDate: point.time.endFullDate
+    });
+
     return Object.assign(
         {},
         point,
@@ -282,7 +308,10 @@ export default class EditingForm extends SmartView {
           currentDestinationDescription: point.destinationDescription,
           currentPhotos: point.photoLinks,
           currentPrice: point.price,
-          currentOffers: point.extraOffers
+          currentOffers: point.extraOffers,
+          isDisabled: false,
+          isSaving: false,
+          isDeleting: false
         }
     );
   }
@@ -296,6 +325,8 @@ export default class EditingForm extends SmartView {
     data.city = data.currentCity ? data.currentCity : ``;
     data.price = data.currentPrice ? data.currentPrice : 0;
     data.extraOffers = data.currentOffers ? data.currentOffers : [];
+    data.time.startFullDate = data.time.currentStartDate ? data.time.currentStartDate : dayjs(new Date()).toISOString();
+    data.time.endFullDate = data.time.currentEndDate ? data.time.currentEndDate : dayjs(new Date()).toISOString();
 
     delete data.currentType;
     delete data.currentDestinationDescription;
@@ -303,6 +334,11 @@ export default class EditingForm extends SmartView {
     delete data.currentCity;
     delete data.currentPrice;
     delete data.currentOffers;
+    delete data.isDisabled;
+    delete data.isSaving;
+    delete data.isDeleting;
+    delete data.time.currentStartDate;
+    delete data.time.currentEndDate;
 
     return data;
   }
