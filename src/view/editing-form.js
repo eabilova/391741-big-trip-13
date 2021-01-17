@@ -49,7 +49,7 @@ const identifySelectedOffers = (currentType, currentOffers, isDisabled) => {
 };
 
 const generateDataList = () => {
-  return destinationList.map((destination) => `<option value="${destination.name}"></option>`).join(``);
+  return getDestinationList().map((destination) => `<option value="${destination.name}"></option>`).join(``);
 };
 
 const BLANK_POINT = {
@@ -226,8 +226,7 @@ export default class EditingForm extends SmartView {
   }
 
   _destinationChangeHandler(evt) {
-    const destinationList = getDestinationList();
-    this._selectedCity = destinationList.find((listItem) => listItem.name === evt.target.value);
+    this._selectedCity = getDestinationList().find((listItem) => listItem.name === evt.target.value);
     evt.preventDefault();
     this.updateData({
       currentCity: evt.target.value,
