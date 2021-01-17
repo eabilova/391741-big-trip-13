@@ -57,6 +57,13 @@ export default class Trip {
     this._newPointPresenter.init();
   }
 
+  destroy() {
+    this._clearTripList({resetSortType: true});
+
+    this._pointsModel.removeObserver(this._handleModelEvent);
+    this._filterModel.removeObserver(this._handleModelEvent);
+  }
+
   _getPoints() {
     const filterType = this._filterModel.getFilter();
     const points = this._pointsModel.getPoints();
@@ -152,7 +159,7 @@ export default class Trip {
     }
     this._currentSortType = sortType;
     remove(this._siteSortingComponent);
-    this._clearBoard();
+    this._clearTripList();
     this._renderTripList();
   }
 
@@ -197,11 +204,11 @@ export default class Trip {
         this._tripPoint[data.id].init(data);
         break;
       case UpdateType.MINOR:
-        this._clearBoard();
+        this._clearTripList();
         this._renderTripList();
         break;
       case UpdateType.MAJOR:
-        this._clearBoard({resetSortType: true});
+        this._clearTripList({resetSortType: true});
         this._renderTripList();
         break;
       case UpdateType.INIT:
@@ -219,7 +226,10 @@ export default class Trip {
       .forEach((presenter) => presenter.resetView());
   }
 
-  _clearBoard({resetSortType = false} = {}) {
+  _clearTripList({resetSortType = false} = {}) {
+    if (this._newPointPresenter) {
+      this._newPointPresenter.destroy();
+    }
 
     Object
       .values(this._tripPoint)

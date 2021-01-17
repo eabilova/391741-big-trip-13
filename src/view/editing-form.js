@@ -135,7 +135,6 @@ export default class EditingForm extends SmartView {
     super();
 
     this._selectedOffers = [];
-    this._tripDatesContainer = null;
     this._data = EditingForm.parsePointToData(point);
     this._exitEditModeClickHandler = this._exitEditModeClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -182,12 +181,13 @@ export default class EditingForm extends SmartView {
   }
 
   renderDatesEditMode() {
-    if (this._tripDatesContainer) {
+    this._tripDatesContainer = this.getElement().querySelector(`.event__field-group--time`);
+    if (this._tripDatesContainer !== null) {
       this._tripDatesContainer.remove();
     }
-    this._tripDatesContainer = this.getElement().querySelector(`.event__field-group--destination`);
+    this._tripDestinationContainer = this.getElement().querySelector(`.event__field-group--destination`);
     this._tripDatesEditMode = new TripDates(this._data);
-    render(this._tripDatesContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
+    render(this._tripDestinationContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
   }
 
   reset(point) {
