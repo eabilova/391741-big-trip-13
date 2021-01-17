@@ -182,7 +182,7 @@ export default class EditingForm extends SmartView {
 
   renderDatesEditMode() {
     this._tripDatesContainer = this.getElement().querySelector(`.event__field-group--time`);
-    if (this._tripDatesContainer !== null) {
+    if (this._tripDatesContainer) {
       this._tripDatesContainer.remove();
     }
     this._tripDestinationContainer = this.getElement().querySelector(`.event__field-group--destination`);
