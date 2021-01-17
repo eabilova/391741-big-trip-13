@@ -23,11 +23,11 @@ const api = new Api(END_POINT, AUTHORIZATION);
 
 export const getDestinationList = () => {
   return destinationList;
-}
+};
 
 export const getOfferList = () => {
   return offerList;
-}
+};
 
 const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
