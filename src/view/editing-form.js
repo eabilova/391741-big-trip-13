@@ -54,6 +54,7 @@ const generateDataList = () => {
 
 const BLANK_POINT = {
   id: 0,
+  isFavorite: false,
   type: `taxi`,
   city: ``,
   extraOffers: [],
@@ -293,6 +294,11 @@ export default class EditingForm extends SmartView {
   }
 
   static parsePointToData(point) {
+    point.time = Object.assign(point.time, {
+      currentStartDate: point.time.startFullDate,
+      currentEndDate: point.time.endFullDate
+    });
+
     return Object.assign(
         {},
         point,

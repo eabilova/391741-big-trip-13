@@ -76,9 +76,7 @@ export default class Points extends Observer {
 
     delete adaptedPoint.is_favorite;
     delete adaptedPoint.offers;
-    delete adaptedPoint.destination.name;
-    delete adaptedPoint.destination.description;
-    delete adaptedPoint.destination.pictures;
+    delete adaptedPoint.destination;
     delete adaptedPoint.base_price;
     delete adaptedPoint.date_from;
     delete adaptedPoint.date_to;
@@ -91,23 +89,26 @@ export default class Points extends Observer {
         {},
         point,
         {
+          "is_favorite": point.isFavorite,
           "offers": point.extraOffers,
-          "destination.name": point.city,
-          "destination.description": point.destinationDescription,
-          "destination.pictures": point.photoLinks,
-          "base_price": point.price,
+          "destination": {
+            "name": point.city,
+            "description": point.destinationDescription,
+            "pictures": point.photoLinks,
+          },
+          "base_price": parseInt(point.price, 10),
           "date_from": point.time.startFullDate,
           "date_to": point.time.endFullDate
         }
     );
 
     delete adaptedPoint.extraOffers;
+    delete adaptedPoint.isFavorite;
     delete adaptedPoint.city;
     delete adaptedPoint.destinationDescription;
     delete adaptedPoint.photoLinks;
     delete adaptedPoint.price;
-    delete adaptedPoint.time.startFullDate;
-    delete adaptedPoint.time.endFullDate;
+    delete adaptedPoint.time;
 
     return adaptedPoint;
   }
