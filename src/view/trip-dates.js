@@ -69,14 +69,14 @@ export default class TripDates extends SmartView {
 
   _tripStartDateChangeHandler([userDate]) {
     this._data.time = Object.assign(this._data.time, {
-      currentStartDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
+      startFullDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
     });
     this.updateData(this._data);
   }
 
   _tripEndDateChangeHandler([userDate]) {
     this._data.time = Object.assign(this._data.time, {
-      currentEndDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
+      endFullDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
     });
     this.updateData(this._data);
   }
@@ -89,12 +89,12 @@ export default class TripDates extends SmartView {
     return point;
   }
 
-  static parseDataToPoint(data) {
-    data = Object.assign({}, data);
+  // static parseDataToPoint(data) {
+  //   data = Object.assign({}, data);
 
-    delete data.currentStartDate;
-    delete data.currentEndDate;
+  //   delete data.currentStartDate;
+  //   delete data.currentEndDate;
 
-    return data;
-  }
+  //   return data;
+  // }
 }

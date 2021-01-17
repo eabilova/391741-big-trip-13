@@ -128,8 +128,8 @@ export default class Point {
 
   _replaceFormToPoint() {
     this._editTripPoint.removeEditClickHandler(this._handleExitEditModeClick);
-    this._dateContainers = this._editTripPoint.getElement().querySelector(`.event__field-group--time`);
-    this._dateContainers.remove();
+    // this._dateContainers = this._editTripPoint.getElement().querySelector(`.event__field-group--time`);
+    // this._dateContainers.remove();
     replace(this._tripPoint, this._editTripPoint);
     this._tripPoint.setOpenFormClickHandler(this._handleOpenEditFormClick);
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
