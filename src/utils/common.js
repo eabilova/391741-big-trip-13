@@ -10,5 +10,16 @@ const floor = (value) => {
 };
 
 export const getHumanizedDiff = (diff) => {
-  return `${floor(diff / UnitMapping.days)}D ${floor((diff % UnitMapping.days) / UnitMapping.hours)}H ${floor((diff % UnitMapping.hours) / UnitMapping.minutes)}M`;
+  const dayDiff = floor(diff / UnitMapping.days);
+  const hourDiff = floor((diff % UnitMapping.days) / UnitMapping.hours);
+  const minDiff = floor((diff % UnitMapping.hours) / UnitMapping.minutes);
+  let duration;
+  if (dayDiff > 0) {
+    duration = `${dayDiff}D ${hourDiff}H ${minDiff}m`;
+  } else if (dayDiff === 0 && hourDiff > 0) {
+    duration = `${hourDiff}H ${minDiff}m`;
+  } else if (dayDiff === 0 && hourDiff === 0 && minDiff > 0) {
+    duration = `${minDiff}m`;
+  }
+  return duration;
 };

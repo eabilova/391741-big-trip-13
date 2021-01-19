@@ -2,7 +2,7 @@ import {EVENT_TYPES} from "../const.js";
 import {getOfferList, getDestinationList} from "../main.js";
 import dayjs from "dayjs";
 import he from "he";
-import SmartView from "./smart.js";
+import Smart from "./smart.js";
 import TripDates from "../view/trip-dates.js";
 import {render, RenderPosition} from "../utils/render.js";
 
@@ -129,7 +129,7 @@ const editingFormTemplate = (data) => {
 </form>`;
 };
 
-export default class EditingForm extends SmartView {
+export default class EditingForm extends Smart {
   constructor(point = BLANK_POINT) {
     super();
 

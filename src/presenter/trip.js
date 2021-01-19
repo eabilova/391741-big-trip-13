@@ -2,14 +2,13 @@
 import TripInfo from "../view/trip-route.js";
 import TripCost from "../view/trip-cost.js";
 import LoadingView from "../view/loading.js";
-import SiteMenu from "../view/site-menu.js";
 import SiteSorting from "../view/sorting.js";
 import PointPresenter, {State as PointPresenterViewState} from "./point.js";
 import EmptyList from "../view/no-points";
 import TripList from "../view/content-list.js";
 import NewPointPresenter from "./new-point.js";
 import {filter} from "../utils/filter.js";
-import {switchControl, tripEvents} from "../main.js";
+import {tripEvents} from "../main.js";
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {SortType, UpdateType, UserAction, FilterType} from "../const.js";
 
@@ -30,7 +29,7 @@ export default class Trip {
     this._cityDataListComponent =
 
     this._infoSectionComponent = new InfoSection();
-    this._siteMenuComponent = new SiteMenu();
+
     this._tripListContainer = new TripList();
     this._emptyList = new EmptyList();
     this._loadingComponent = new LoadingView();
@@ -47,18 +46,19 @@ export default class Trip {
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
 
-    this._renderSiteMode();
     this._renderTripList();
   }
 
-  createPoint() {
+  createPoint(callback) {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._newPointPresenter.init();
+    this._newPointPresenter.init(callback);
   }
 
   destroy() {
     this._clearTripList({resetSortType: true});
+
+    remove(this._tripListContainer);
 
     this._pointsModel.removeObserver(this._handleModelEvent);
     this._filterModel.removeObserver(this._handleModelEvent);
@@ -108,10 +108,6 @@ export default class Trip {
     this._siteSortingComponent = new SiteSorting(this._currentSortType);
     this._siteSortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     render(tripEvents, this._siteSortingComponent, RenderPosition.BEFOREEND);
-  }
-
-  _renderSiteMode() {
-    render(switchControl, this._siteMenuComponent, RenderPosition.AFTEREND);
   }
 
   _renderEmptyList() {
