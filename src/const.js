@@ -43,3 +43,17 @@ export const MenuItem = {
   TABLE: `TABLE`,
   STATISTICS: `STATISTICS`
 };
+
+export const BAR_HEIGHT = 55;
+
+export const StatTitle = {
+  MONEY: `MONEY`,
+  TYPE: `TYPE`,
+  TIME: `TIME-SPEND`
+};
+
+export const StatFormat = {
+  MONEY: (val) => `€ ${val}`,
+  TYPE: (val) => `${val}x`,
+  TIME: (val) => `${val}D`
+};

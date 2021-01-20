@@ -1,19 +1,17 @@
 import Smart from "./smart.js";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
-import {makeItemsUniq, getTotalPriceByTypes, getTotalCountByTypes} from "../utils/statistics.js";
+import {BAR_HEIGHT, StatTitle, StatFormat} from "../const.js";
+import {makeItemsUniq, getTotalPriceByTypes, getTotalCountByTypes, getDurationTotalCountByTypes} from "../utils/statistics.js";
 
-const BAR_HEIGHT = 55;
-
-const renderPriceChart = (moneyCtx, uniqueTypeList, points) => {
-  const priceTotalByTypes = getTotalPriceByTypes(points, uniqueTypeList);
-  return new Chart(moneyCtx, {
+const renderStatisticsTemplate = (ctx, uniqueTypeList, dataValues, title, format) => {
+  return new Chart(ctx, {
     plugins: [ChartDataLabels],
     type: `horizontalBar`,
     data: {
       labels: uniqueTypeList,
       datasets: [{
-        data: priceTotalByTypes,
+        data: dataValues,
         backgroundColor: `#ffffff`,
         hoverBackgroundColor: `#ffffff`,
         anchor: `start`
@@ -28,12 +26,12 @@ const renderPriceChart = (moneyCtx, uniqueTypeList, points) => {
           color: `#000000`,
           anchor: `end`,
           align: `start`,
-          formatter: (val) => `€ ${val}`
+          formatter: format
         }
       },
       title: {
         display: true,
-        text: `MONEY`,
+        text: title,
         fontColor: `#000000`,
         fontSize: 23,
         position: `left`
@@ -71,82 +69,24 @@ const renderPriceChart = (moneyCtx, uniqueTypeList, points) => {
       }
     }
   });
+};
+
+const renderPriceChart = (moneyCtx, uniqueTypeList, points) => {
+  const priceTotalByTypes = getTotalPriceByTypes(points, uniqueTypeList);
+  renderStatisticsTemplate(moneyCtx, uniqueTypeList, priceTotalByTypes, StatTitle.MONEY, StatFormat.MONEY);
 };
 
 const renderTransportChart = (typeCtx, uniqueTypeList, points) => {
   const transportTotalCountByTypes = getTotalCountByTypes(points, uniqueTypeList);
-  new Chart(typeCtx, {
-    plugins: [ChartDataLabels],
-    type: `horizontalBar`,
-    data: {
-      labels: uniqueTypeList,
-      datasets: [{
-        data: transportTotalCountByTypes,
-        backgroundColor: `#ffffff`,
-        hoverBackgroundColor: `#ffffff`,
-        anchor: `start`
-      }]
-    },
-    options: {
-      plugins: {
-        datalabels: {
-          font: {
-            size: 13
-          },
-          color: `#000000`,
-          anchor: `end`,
-          align: `start`,
-          formatter: (val) => `${val}x`
-        }
-      },
-      title: {
-        display: true,
-        text: `TYPE`,
-        fontColor: `#000000`,
-        fontSize: 23,
-        position: `left`
-      },
-      scales: {
-        yAxes: [{
-          ticks: {
-            fontColor: `#000000`,
-            padding: 5,
-            fontSize: 13,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false
-          },
-          barThickness: 44,
-        }],
-        xAxes: [{
-          ticks: {
-            display: false,
-            beginAtZero: true,
-          },
-          gridLines: {
-            display: false,
-            drawBorder: false
-          },
-          minBarLength: 50
-        }],
-      },
-      legend: {
-        display: false
-      },
-      tooltips: {
-        enabled: false,
-      }
-    }
-  });
+  renderStatisticsTemplate(typeCtx, uniqueTypeList, transportTotalCountByTypes, StatTitle.TYPE, StatFormat.TYPE);
 };
 
-const renderTimeSpentChart = (timeCtx, points) => {
-  // Функция для отрисовки графика по датам
+const renderTimeSpentChart = (timeCtx, uniqueTypeList, points) => {
+  const durationTotalCountByType = getDurationTotalCountByTypes(points, uniqueTypeList);
+  renderStatisticsTemplate(timeCtx, uniqueTypeList, durationTotalCountByType, StatTitle.TIME, StatFormat.TIME);
 };
 
-const createStatisticsTemplate = (data) => {
-  const {points} = data;
+const createStatisticsTemplate = () => {
   return `<section class="statistics">
   <h2 class="visually-hidden">Trip statistics</h2>
 
@@ -210,9 +150,9 @@ export default class Statistics extends Smart {
     const typeList = this._data.map((point) => point.type.toUpperCase());
     const uniqueTypeList = makeItemsUniq(typeList);
 
-    moneyCtx.height = BAR_HEIGHT * typeList.length;
-    typeCtx.height = BAR_HEIGHT * typeList.length;
-    timeCtx.height = BAR_HEIGHT * typeList.length;
+    moneyCtx.height = BAR_HEIGHT * uniqueTypeList.length;
+    typeCtx.height = BAR_HEIGHT * uniqueTypeList.length;
+    timeCtx.height = BAR_HEIGHT * uniqueTypeList.length;
 
 
     this._priceChart = renderPriceChart(moneyCtx, uniqueTypeList, this._data);

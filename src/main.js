@@ -1,6 +1,6 @@
 import SiteMenu from "./view/site-menu.js";
 import {render, RenderPosition, remove} from "./utils/render.js";
-import {UpdateType, MenuItem, FilterType} from "./const.js";
+import {UpdateType, MenuItem} from "./const.js";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
 import TripInfoPresenter from "./presenter/trip.js";
@@ -49,7 +49,7 @@ let statisticsComponent = null;
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
     case MenuItem.TABLE:
-      siteMenuComponent.getElement().querySelector(`[data-value=${MenuItem.STATISTICS}]`).classList.remove(`trip-tabs__btn--active`)
+      siteMenuComponent.getElement().querySelector(`[data-value=${MenuItem.STATISTICS}]`).classList.remove(`trip-tabs__btn--active`);
       siteMenuComponent.getElement().querySelector(`[data-value=${MenuItem.TABLE}]`).classList.add(`trip-tabs__btn--active`);
       tripInfo.init();
       remove(statisticsComponent);
@@ -70,7 +70,9 @@ tripInfo.init();
 
 document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
   evt.preventDefault();
+  remove(statisticsComponent);
   tripInfo.createPoint(handlePointNewFormClose);
+  tripInfo.init();
   siteMenuComponent.getElement().querySelector(`[data-value=${MenuItem.TABLE}]`).classList.remove(`trip-tabs__btn--active`);
 });
 

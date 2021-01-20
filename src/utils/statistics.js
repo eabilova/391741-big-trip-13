@@ -1,3 +1,5 @@
+import dayjs from "dayjs";
+
 export const makeItemsUniq = (items) => [...new Set(items)];
 
 const getTotalPriceByType = (points, type) => {
@@ -24,10 +26,31 @@ const getTotalCountByType = (points, type) => {
   return total;
 };
 
+const getDuration = (time) => {
+  const {endFullDate, startFullDate} = time;
+  return dayjs(endFullDate).diff(dayjs(startFullDate), `minute`);
+};
+
+const getDurationTotalCountByType = (points, type) => {
+  let total = 0;
+
+  points.forEach((point) => {
+    if (point.type === type.toLowerCase()) {
+      total += getDuration(point.time);
+    }
+  });
+
+  return Math.round(total / 1440);
+};
+
 export const getTotalPriceByTypes = (points, types) => {
   return types.map((type) => getTotalPriceByType(points, type));
 };
 
 export const getTotalCountByTypes = (points, types) => {
   return types.map((type) => getTotalCountByType(points, type));
+};
+
+export const getDurationTotalCountByTypes = (points, types) => {
+  return types.map((type) => getDurationTotalCountByType(points, type));
 };
