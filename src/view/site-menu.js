@@ -27,7 +27,7 @@ export default class SiteMenu extends Abstract {
   setMenuItem(menuItem) {
     const item = this.getElement().querySelector(`[data-value=${menuItem}]`);
 
-    if (item !== null) {
+    if (item) {
       item.classList.add(`trip-tabs__btn--active`);
     }
   }

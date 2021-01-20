@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
+import {fullDayInMinutes} from "../const.js";
 
-export const makeItemsUniq = (items) => [...new Set(items)];
 
 const getTotalPriceByType = (points, type) => {
   let total = 0;
@@ -40,7 +40,7 @@ const getDurationTotalCountByType = (points, type) => {
     }
   });
 
-  return Math.round(total / 1440);
+  return Math.round(total / fullDayInMinutes);
 };
 
 export const getTotalPriceByTypes = (points, types) => {
@@ -54,3 +54,5 @@ export const getTotalCountByTypes = (points, types) => {
 export const getDurationTotalCountByTypes = (points, types) => {
   return types.map((type) => getDurationTotalCountByType(points, type));
 };
+
+export const makeItemsUniq = (items) => [...new Set(items)];

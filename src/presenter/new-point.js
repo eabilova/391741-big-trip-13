@@ -17,7 +17,7 @@ export default class NewPoint {
 
   init(callback) {
     this._destroyCallback = callback;
-    if (this._editPointComponent !== null) {
+    if (this._editPointComponent) {
       return;
     }
 
@@ -36,7 +36,7 @@ export default class NewPoint {
       return;
     }
 
-    if (this._destroyCallback !== null) {
+    if (this._destroyCallback) {
       this._destroyCallback();
     }
 

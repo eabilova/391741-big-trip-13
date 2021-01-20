@@ -34,7 +34,8 @@ const addDestinationDescription = (currentDestinationDescription, currentPhotos)
 };
 
 const identifySelectedOffers = (currentType, currentOffers, isDisabled) => {
-  const selectedTypeOffer = getOfferList().find((offer) => offer.type === currentType);
+  const offers = getOfferList();
+  const selectedTypeOffer = offers.find((offer) => offer.type === currentType);
   const selectedType = selectedTypeOffer.type;
   const selectedOffers = selectedTypeOffer.offers;
 

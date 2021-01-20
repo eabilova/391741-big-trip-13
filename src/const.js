@@ -57,3 +57,5 @@ export const StatFormat = {
   TYPE: (val) => `${val}x`,
   TIME: (val) => `${val}D`
 };
+
+export const fullDayInMinutes = 1440;

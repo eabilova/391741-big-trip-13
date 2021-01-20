@@ -101,7 +101,7 @@ export default class Trip {
   }
 
   _renderSort() {
-    if (this._siteSortingComponent !== null) {
+    if (this._siteSortingComponent) {
       this._siteSortingComponent = null;
     }
 
@@ -123,6 +123,10 @@ export default class Trip {
     if (this._isLoading) {
       this._renderLoading();
       return;
+    }
+
+    if (this._siteSortingComponent) {
+      remove(this._siteSortingComponent);
     }
 
     const points = this._getPoints();

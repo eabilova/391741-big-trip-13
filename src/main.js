@@ -67,34 +67,35 @@ const handleSiteMenuClick = (menuItem) => {
 filterPresenter.init();
 tripInfo.init();
 
-
 document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
+  if (statisticsComponent) {
+    remove(statisticsComponent);
+    siteMenuComponent.getElement().querySelector(`[data-value=${MenuItem.STATISTICS}]`).classList.remove(`trip-tabs__btn--active`);
+  }
   evt.preventDefault();
-  remove(statisticsComponent);
   tripInfo.createPoint(handlePointNewFormClose);
   tripInfo.init();
   siteMenuComponent.getElement().querySelector(`[data-value=${MenuItem.TABLE}]`).classList.remove(`trip-tabs__btn--active`);
 });
 
-api.getPoints()
-.then((points) => {
-  pointsModel.setPoints(UpdateType.INIT, points);
-  render(switchControl, siteMenuComponent, RenderPosition.AFTEREND);
-  siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-})
-.catch(() => {
-  pointsModel.setPoints(UpdateType.INIT, []);
-  render(switchControl, siteMenuComponent, RenderPosition.AFTEREND);
-  siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-});
-
-
 api.getDestinations()
 .then((destinations) => {
   destinationList = destinations;
-});
-
-api.getOffers()
-.then((offers) => {
-  offerList = offers;
+})
+.then(() => {
+  return api.getOffers()
+  .then((offers) => {
+    offerList = offers;
+  });
+})
+.then(() => {
+  return api.getPoints().then((points) => {
+    pointsModel.setPoints(UpdateType.INIT, points);
+    render(switchControl, siteMenuComponent, RenderPosition.AFTEREND);
+    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+  }).catch(() => {
+    pointsModel.setPoints(UpdateType.INIT, []);
+    render(switchControl, siteMenuComponent, RenderPosition.AFTEREND);
+    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
+  });
 });
