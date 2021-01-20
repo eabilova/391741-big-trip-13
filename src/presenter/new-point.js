@@ -8,20 +8,24 @@ export default class NewPoint {
     this._changeData = changeData;
 
     this._editPointComponent = null;
+    this._destroyCallback = null;
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleCloseFormClick = this._handleCloseFormClick.bind(this);
   }
 
-  init() {
-    if (this._editPointComponent !== null) {
+  init(callback) {
+    this._destroyCallback = callback;
+    if (this._editPointComponent) {
       return;
     }
 
     this._editPointComponent = new EditTripForm();
     this._editPointComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._editPointComponent.setDeleteClickHandler(this._handleDeleteClick);
+    this._editPointComponent.setExitEditModeClickHandler(this._handleCloseFormClick);
 
     render(this._pointListContainer, this._editPointComponent, RenderPosition.AFTERBEGIN);
     this._editPointComponent.renderDatesEditMode();
@@ -32,6 +36,10 @@ export default class NewPoint {
   destroy() {
     if (this._editPointComponent === null) {
       return;
+    }
+
+    if (this._destroyCallback) {
+      this._destroyCallback();
     }
 
     remove(this._editPointComponent);
@@ -68,6 +76,10 @@ export default class NewPoint {
   }
 
   _handleDeleteClick() {
+    this.destroy();
+  }
+
+  _handleCloseFormClick() {
     this.destroy();
   }
 

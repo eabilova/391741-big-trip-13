@@ -1,6 +1,6 @@
 import dayjs from "dayjs";
 import flatpickr from "flatpickr";
-import SmartView from "./smart.js";
+import Smart from "./smart.js";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
@@ -15,7 +15,7 @@ const tripDatesTemplate = (data) => {
   </div>`;
 };
 
-export default class TripDates extends SmartView {
+export default class TripDates extends Smart {
   constructor(point) {
     super();
     this._data = point;

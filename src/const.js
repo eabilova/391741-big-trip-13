@@ -37,3 +37,25 @@ export const FilterType = {
   FUTURE: `future`,
   PAST: `past`,
 };
+
+export const MenuItem = {
+  ADD_NEW_POINT: `ADD_NEW_POINT`,
+  TABLE: `TABLE`,
+  STATISTICS: `STATISTICS`
+};
+
+export const BAR_HEIGHT = 55;
+
+export const StatTitle = {
+  MONEY: `MONEY`,
+  TYPE: `TYPE`,
+  TIME: `TIME-SPEND`
+};
+
+export const StatFormat = {
+  MONEY: (val) => `€ ${val}`,
+  TYPE: (val) => `${val}x`,
+  TIME: (val) => `${val}D`
+};
+
+export const fullDayInMinutes = 1440;

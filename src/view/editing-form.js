@@ -2,7 +2,7 @@ import {EVENT_TYPES} from "../const.js";
 import {getOfferList, getDestinationList} from "../main.js";
 import dayjs from "dayjs";
 import he from "he";
-import SmartView from "./smart.js";
+import Smart from "./smart.js";
 import TripDates from "../view/trip-dates.js";
 import {render, RenderPosition} from "../utils/render.js";
 
@@ -34,7 +34,8 @@ const addDestinationDescription = (currentDestinationDescription, currentPhotos)
 };
 
 const identifySelectedOffers = (currentType, currentOffers, isDisabled) => {
-  const selectedTypeOffer = getOfferList().find((offer) => offer.type === currentType);
+  const offers = getOfferList();
+  const selectedTypeOffer = offers.find((offer) => offer.type === currentType);
   const selectedType = selectedTypeOffer.type;
   const selectedOffers = selectedTypeOffer.offers;
 
@@ -129,7 +130,7 @@ const editingFormTemplate = (data) => {
 </form>`;
 };
 
-export default class EditingForm extends SmartView {
+export default class EditingForm extends Smart {
   constructor(point = BLANK_POINT) {
     super();
 
@@ -202,7 +203,7 @@ export default class EditingForm extends SmartView {
 
   _exitEditModeClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editClick();
+    this._callback.editClick(EditingForm.parseDataToPoint(this._data));
   }
 
   _formSubmitHandler(evt) {
