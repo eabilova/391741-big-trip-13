@@ -6,17 +6,17 @@ export default class Points extends Observer {
     this._points = [];
   }
 
-  setPoints(eventType, points) {
+  setPoints(updateType, points) {
     this._points = points.slice();
 
-    this._notify(eventType);
+    this._notify(updateType);
   }
 
   getPoints() {
     return this._points;
   }
 
-  updatePoint(eventType, update) {
+  updatePoint(updateType, update) {
     const index = this._points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
@@ -29,19 +29,19 @@ export default class Points extends Observer {
       ...this._points.slice(index + 1)
     ];
 
-    this._notify(eventType, update);
+    this._notify(updateType, update);
   }
 
-  addPoint(eventType, update) {
+  addPoint(updateType, update) {
     this._points = [
       update,
       ...this._points
     ];
 
-    this._notify(eventType, update);
+    this._notify(updateType, update);
   }
 
-  deletePoint(eventType, update) {
+  deletePoint(updateType, update) {
     const index = this._points.findIndex((point) => point.id === update.id);
 
     if (index === -1) {
@@ -53,7 +53,7 @@ export default class Points extends Observer {
       ...this._points.slice(index + 1)
     ];
 
-    this._notify(eventType);
+    this._notify(updateType);
   }
 
   static adaptToClient(point) {
