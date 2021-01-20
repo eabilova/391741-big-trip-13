@@ -203,7 +203,7 @@ export default class EditingForm extends Smart {
 
   _exitEditModeClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editClick();
+    this._callback.editClick(EditingForm.parseDataToPoint(this._data));
   }
 
   _formSubmitHandler(evt) {

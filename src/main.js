@@ -8,7 +8,7 @@ import FilterPresenter from "./presenter/filter.js";
 import Statistics from "./view/statistics.js";
 import Api from "./api.js";
 
-const AUTHORIZATION = `Basic 39hgp-1tfg7dph56vd`;
+const AUTHORIZATION = `Basic 39h5gp-1tfg7dph56vd`;
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
 
 let destinationList;
@@ -68,11 +68,11 @@ filterPresenter.init();
 tripInfo.init();
 
 document.querySelector(`.trip-main__event-add-btn`).addEventListener(`click`, (evt) => {
+  evt.preventDefault();
   if (statisticsComponent) {
     remove(statisticsComponent);
     siteMenuComponent.getElement().querySelector(`[data-value=${MenuItem.STATISTICS}]`).classList.remove(`trip-tabs__btn--active`);
   }
-  evt.preventDefault();
   tripInfo.createPoint(handlePointNewFormClose);
   tripInfo.init();
   siteMenuComponent.getElement().querySelector(`[data-value=${MenuItem.TABLE}]`).classList.remove(`trip-tabs__btn--active`);
@@ -93,9 +93,10 @@ api.getDestinations()
     pointsModel.setPoints(UpdateType.INIT, points);
     render(switchControl, siteMenuComponent, RenderPosition.AFTEREND);
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
-  }).catch(() => {
-    pointsModel.setPoints(UpdateType.INIT, []);
-    render(switchControl, siteMenuComponent, RenderPosition.AFTEREND);
-    siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   });
+})
+.catch(() => {
+  pointsModel.setPoints(UpdateType.INIT, []);
+  render(switchControl, siteMenuComponent, RenderPosition.AFTEREND);
+  siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 });
