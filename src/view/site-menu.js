@@ -29,7 +29,7 @@ export default class SiteMenu extends Abstract {
   }
 
   activateStat() {
-    this.getElement().querySelector(`[data-value=${MenuItem.STATISTICS}]`).classList.add(`trip-tabs__btn--active`)
+    this.getElement().querySelector(`[data-value=${MenuItem.STATISTICS}]`).classList.add(`trip-tabs__btn--active`);
   }
 
   deactivateTable() {
@@ -37,7 +37,7 @@ export default class SiteMenu extends Abstract {
   }
 
   deactivateStat() {
-    this.getElement().querySelector(`[data-value=${MenuItem.STATISTICS}]`).classList.remove(`trip-tabs__btn--active`)
+    this.getElement().querySelector(`[data-value=${MenuItem.STATISTICS}]`).classList.remove(`trip-tabs__btn--active`);
   }
 
   setMenuItem(menuItem) {

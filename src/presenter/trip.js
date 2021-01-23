@@ -26,7 +26,6 @@ export default class Trip {
     this._siteSortingComponent = null;
     this._tripInfoComponent = null;
     this._tripCostComponent = null;
-    this._cityDataListComponent =
 
     this._infoSectionComponent = new InfoSection();
 
@@ -192,7 +191,7 @@ export default class Trip {
           this._pointsModel.deletePoint(updateType, update);
         })
         .catch(() => {
-          this._tripPoint[update.id].setVieState(PointPresenterViewState.ABORTING);
+          this._tripPoint[update.id].setViewState(PointPresenterViewState.ABORTING);
         });
         break;
     }

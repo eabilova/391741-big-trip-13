@@ -68,7 +68,7 @@ const handleSiteMenuClick = (menuItem) => {
 filterPresenter.init();
 tripInfo.init();
 
-newEventButton.addEventListener(`click`, (evt) => {
+export const renderNewPointForm = (evt) => {
   evt.preventDefault();
   newEventButton.disabled = true;
   siteMenuComponent.deactivateTable();
@@ -76,10 +76,13 @@ newEventButton.addEventListener(`click`, (evt) => {
     remove(statisticsComponent);
     siteMenuComponent.deactivateStat();
     siteMenuComponent.activateTable();
+    tripInfo.init();
   }
   tripInfo.createPoint(handlePointNewFormClose);
-  tripInfo.init();
-});
+  newEventButton.removeEventListener(`click`, renderNewPointForm);
+};
+
+newEventButton.addEventListener(`click`, renderNewPointForm);
 
 
 api.getDestinations()

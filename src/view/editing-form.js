@@ -1,7 +1,7 @@
-import {EVENT_TYPES} from "../const.js";
-import {getOfferList, getDestinationList} from "../main.js";
 import dayjs from "dayjs";
 import he from "he";
+import {EVENT_TYPES} from "../const.js";
+import {getOfferList, getDestinationList} from "../main.js";
 import Smart from "./smart.js";
 import TripDates from "../view/trip-dates.js";
 import {render, RenderPosition} from "../utils/render.js";
@@ -188,6 +188,10 @@ export default class EditingForm extends Smart {
     this._tripDestinationContainer = this.getElement().querySelector(`.event__field-group--destination`);
     this._tripDatesEditMode = new TripDates(this._data);
     render(this._tripDestinationContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
+  }
+
+  removeFlatpickr() {
+    this._tripDatesEditMode.destroyFlatpickr();
   }
 
   reset(point) {

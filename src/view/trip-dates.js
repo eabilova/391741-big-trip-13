@@ -34,6 +34,10 @@ export default class TripDates extends Smart {
     this._setDatePicker();
   }
 
+  destroyFlatpickr() {
+    this._datepicker.destroy();
+  }
+
   reset(point) {
     this.updateData(TripDates.parsePointToData(point)
     );

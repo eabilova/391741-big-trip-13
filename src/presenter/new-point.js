@@ -1,7 +1,7 @@
 import EditTripForm from "../view/editing-form.js";
 import {remove, render, RenderPosition} from "../utils/render.js";
 import {UserAction, UpdateType} from "../const.js";
-import {newEventButton} from "../main.js";
+import {newEventButton, renderNewPointForm} from "../main.js";
 
 export default class NewPoint {
   constructor(PointListContainer, changeData) {
@@ -46,6 +46,7 @@ export default class NewPoint {
     remove(this._editPointComponent);
     this._editPointComponent = null;
     newEventButton.disabled = false;
+    newEventButton.addEventListener(`click`, renderNewPointForm);
 
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }

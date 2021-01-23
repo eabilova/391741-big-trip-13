@@ -129,8 +129,9 @@ export default class Point {
   _replaceFormToPoint() {
     this._editTripPoint.removeEditClickHandler(this._handleExitEditModeClick);
     replace(this._tripPoint, this._editTripPoint);
+    this._editTripPoint.removeFlatpickr();
     this._tripPoint.setOpenFormClickHandler(this._handleOpenEditFormClick);
-    document.removeEventListener(`keydown`, this._escKeyDownHandler);
+    document.removeEventListener(`keydown`, this._handleEscKeyDown);
     this._mode = Mode.DEFAULT;
   }
 
@@ -175,8 +176,8 @@ export default class Point {
         currentEndDate: this._point.time.endFullDate,
       });
       this._changeData(
-        UpdateType.MINOR,
-        this._point
+          UpdateType.MINOR,
+          this._point
       );
     }
     this._replacePointToForm();

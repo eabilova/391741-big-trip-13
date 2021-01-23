@@ -11,9 +11,9 @@ const floor = (value) => {
 
 export const getHumanizedDiff = (diff) => {
   const day = floor(diff / UnitMapping.days);
-  const dayDiff = day > 0 ? day.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false}) : day;
-  const hourDiff = (floor((diff % UnitMapping.days) / UnitMapping.hours)).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
-  const minDiff = (floor((diff % UnitMapping.hours) / UnitMapping.minutes)).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+  const dayDiff = day > 0 ? day.toLocaleString(`en-US`, {minimumIntegerDigits: 2, useGrouping: false}) : day;
+  const hourDiff = (floor((diff % UnitMapping.days) / UnitMapping.hours)).toLocaleString(`en-US`, {minimumIntegerDigits: 2, useGrouping: false});
+  const minDiff = (floor((diff % UnitMapping.hours) / UnitMapping.minutes)).toLocaleString(`en-US`, {minimumIntegerDigits: 2, useGrouping: false});
 
   let duration;
 
