@@ -35,6 +35,7 @@ export default class TripDates extends Smart {
   }
 
   destroyFlatpickr() {
+    document.querySelectorAll(`.flatpickr-calendar`).forEach((item) => item.remove());
     this._datepicker.destroy();
   }
 

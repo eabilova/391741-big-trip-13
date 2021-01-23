@@ -44,6 +44,7 @@ export default class NewPoint {
     }
 
     remove(this._editPointComponent);
+    this._editPointComponent.removeFlatpickr();
     this._editPointComponent = null;
     newEventButton.disabled = false;
     newEventButton.addEventListener(`click`, renderNewPointForm);
