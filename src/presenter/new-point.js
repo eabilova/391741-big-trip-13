@@ -1,6 +1,7 @@
 import EditTripForm from "../view/editing-form.js";
 import {remove, render, RenderPosition} from "../utils/render.js";
 import {UserAction, UpdateType} from "../const.js";
+import {newEventButton} from "../main.js";
 
 export default class NewPoint {
   constructor(PointListContainer, changeData) {
@@ -44,6 +45,7 @@ export default class NewPoint {
 
     remove(this._editPointComponent);
     this._editPointComponent = null;
+    newEventButton.disabled = false;
 
     document.removeEventListener(`keydown`, this._escKeyDownHandler);
   }
@@ -68,6 +70,12 @@ export default class NewPoint {
   }
 
   _handleFormSubmit(point) {
+    if (!point.time.currentStartDate || !point.time.currentEndDate) {
+      point.time = Object.assign(point.time, {
+        currentStartDate: point.time.startFullDate,
+        currentEndDate: point.time.endFullDate,
+      });
+    }
     this._changeData(
         UserAction.ADD_POINT,
         UpdateType.MINOR,

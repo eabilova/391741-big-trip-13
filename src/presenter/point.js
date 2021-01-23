@@ -169,6 +169,16 @@ export default class Point {
   }
 
   _handleOpenEditFormClick() {
+    if (!this._point.time.currentStartDate || !this._point.time.currentEndDate) {
+      this._point.time = Object.assign(this._point.time, {
+        currentStartDate: this._point.time.startFullDate,
+        currentEndDate: this._point.time.endFullDate,
+      });
+      this._changeData(
+        UpdateType.MINOR,
+        this._point
+      );
+    }
     this._replacePointToForm();
   }
 

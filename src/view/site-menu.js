@@ -24,6 +24,22 @@ export default class SiteMenu extends Abstract {
     this.getElement().addEventListener(`click`, this._menuClickHandler);
   }
 
+  activateTable() {
+    this.getElement().querySelector(`[data-value=${MenuItem.TABLE}]`).classList.add(`trip-tabs__btn--active`);
+  }
+
+  activateStat() {
+    this.getElement().querySelector(`[data-value=${MenuItem.STATISTICS}]`).classList.add(`trip-tabs__btn--active`)
+  }
+
+  deactivateTable() {
+    this.getElement().querySelector(`[data-value=${MenuItem.TABLE}]`).classList.remove(`trip-tabs__btn--active`);
+  }
+
+  deactivateStat() {
+    this.getElement().querySelector(`[data-value=${MenuItem.STATISTICS}]`).classList.remove(`trip-tabs__btn--active`)
+  }
+
   setMenuItem(menuItem) {
     const item = this.getElement().querySelector(`[data-value=${menuItem}]`);
 

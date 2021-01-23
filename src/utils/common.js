@@ -10,16 +10,19 @@ const floor = (value) => {
 };
 
 export const getHumanizedDiff = (diff) => {
-  const dayDiff = floor(diff / UnitMapping.days);
-  const hourDiff = floor((diff % UnitMapping.days) / UnitMapping.hours);
-  const minDiff = floor((diff % UnitMapping.hours) / UnitMapping.minutes);
+  const day = floor(diff / UnitMapping.days);
+  const dayDiff = day > 0 ? day.toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false}) : day;
+  const hourDiff = (floor((diff % UnitMapping.days) / UnitMapping.hours)).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+  const minDiff = (floor((diff % UnitMapping.hours) / UnitMapping.minutes)).toLocaleString('en-US', {minimumIntegerDigits: 2, useGrouping:false});
+
   let duration;
+
   if (dayDiff > 0) {
-    duration = `${dayDiff}D ${hourDiff}H ${minDiff}m`;
+    duration = `${dayDiff}D ${hourDiff}H ${minDiff}M`;
   } else if (dayDiff === 0 && hourDiff > 0) {
-    duration = `${hourDiff}H ${minDiff}m`;
+    duration = `${hourDiff}H ${minDiff}M`;
   } else if (dayDiff === 0 && hourDiff === 0 && minDiff > 0) {
-    duration = `${minDiff}m`;
+    duration = `${minDiff}M`;
   }
   return duration;
 };
