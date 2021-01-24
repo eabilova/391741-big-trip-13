@@ -32,4 +32,4 @@ export const getHumanizedDiff = (diff) => {
 export const getPointsDuration = (point) => {
   const {time} = point;
   return dayjs(time.endFullDate).diff(dayjs(time.startFullDate), `minute`);
-}
+};

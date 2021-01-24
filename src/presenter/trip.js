@@ -72,11 +72,11 @@ export default class Trip {
       case SortType.DAY:
         return filtredPoints.sort((a, b) => new Date(a.time.startFullDate) - new Date(b.time.startFullDate));
       case SortType.EVENT:
-        return filtredPoints.sort((a, b) => a.type - b.type);
+        return filtredPoints.sort((a, b) => b.type - a.type);
       case SortType.TIME:
-        return filtredPoints.sort((a, b) => getPointsDuration(a) - getPointsDuration(b));
+        return filtredPoints.sort((a, b) => getPointsDuration(b) - getPointsDuration(a));
       case SortType.PRICE:
-        return filtredPoints.sort((a, b) => a.price - b.price);
+        return filtredPoints.sort((a, b) => b.price - a.price);
       case SortType.OFFER:
         return filtredPoints.sort((a, b) => a.extraOffers - b.extraOffers);
     }
