@@ -1,4 +1,6 @@
-﻿const UnitMapping = {
+﻿import dayjs from "dayjs";
+
+const UnitMapping = {
   days: 24 * 60 * 60 * 1000,
   hours: 60 * 60 * 1000,
   minutes: 60 * 1000,
@@ -26,3 +28,8 @@ export const getHumanizedDiff = (diff) => {
   }
   return duration;
 };
+
+export const getPointsDuration = (point) => {
+  const {time} = point;
+  return dayjs(time.endFullDate).diff(dayjs(time.startFullDate), `minute`);
+}

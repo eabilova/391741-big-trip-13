@@ -11,6 +11,7 @@ import {filter} from "../utils/filter.js";
 import {tripEvents} from "../main.js";
 import {render, RenderPosition, remove} from "../utils/render.js";
 import {SortType, UpdateType, UserAction, FilterType} from "../const.js";
+import {getPointsDuration} from "../utils/common.js";
 
 export default class Trip {
   constructor(tripInfoContainer, pointsModel, filterModel, api) {
@@ -62,7 +63,6 @@ export default class Trip {
     this._newPointPresenter.init(callback);
   }
 
-
   _getPoints() {
     const filterType = this._filterModel.getFilter();
     const points = this._pointsModel.getPoints();
@@ -74,8 +74,7 @@ export default class Trip {
       case SortType.EVENT:
         return filtredPoints.sort((a, b) => a.type - b.type);
       case SortType.TIME:
-        const sortedItems = filtredPoints.sort((a, b) => (a.time.startFullDate > b.time.startFullDate) ? 1 : 0);
-        return filtredPoints.sort((a, b) => (a.time.startFullDate < b.time.startFullDate) ? -1 : sortedItems);
+        return filtredPoints.sort((a, b) => getPointsDuration(a) - getPointsDuration(b));
       case SortType.PRICE:
         return filtredPoints.sort((a, b) => a.price - b.price);
       case SortType.OFFER:
@@ -85,7 +84,7 @@ export default class Trip {
   }
 
   _renderTripInfo(points) {
-    const sortedByDatePoints = points.sort((a, b) => new Date(a.time.startFullDate) - new Date(b.time.startFullDate));
+    const sortedByDatePoints = points.slice().sort((a, b) => new Date(a.time.startFullDate) - new Date(b.time.startFullDate));
     if (this._tripInfoComponent) {
       remove(this._tripInfoComponent);
     }
