@@ -53,6 +53,14 @@ const generateDataList = () => {
   return getDestinationList().map((destination) => `<option value="${destination.name}"></option>`).join(``);
 };
 
+const generateDeleteButton = (isDisabled, isDeleting) => {
+  return `<button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Deleting...` : `Delete`}</button>`
+}
+
+const generateCancelButton = (isDisabled, isDeleting) => {
+  return `<button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Canceling...` : `Cancel`}</button>`
+}
+
 const BLANK_POINT = {
   isFavorite: false,
   type: `taxi`,
@@ -68,11 +76,12 @@ const BLANK_POINT = {
 };
 
 const editingFormTemplate = (data) => {
-  const {price, city, currentType, currentDestinationDescription, currentPhotos, currentCity, currentPrice, currentOffers, isDisabled, isSaving, isDeleting} = data;
+  const {price, city, currentType, currentDestinationDescription, currentPhotos, currentCity, currentPrice, currentOffers, isDisabled, isSaving, isDeleting, isNew} = data;
   const eventType = editingEventTypeFormTemplate(currentType, isDisabled);
   const checkOffers = identifySelectedOffers(currentType, currentOffers, isDisabled);
   const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
   const datalist = generateDataList();
+  const buttonCancelDelete = isNew ? generateCancelButton(isDisabled, isDeleting) :  generateDeleteButton(isDisabled, isDeleting);
   const isSubmitDisabled = (!currentPrice && !price) || (!currentCity && !city);
 
   return `<form class="event event--edit" action="#" method="post">
@@ -111,7 +120,7 @@ const editingFormTemplate = (data) => {
     </div>
 
     <button class="event__save-btn  btn  btn--blue" type="submit" ${isSubmitDisabled || isDisabled ? `disabled` : ``}>${isSaving ? `Saving...` : `Save`}</button>
-    <button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Deleting...` : `Delete`}</button>
+    ${buttonCancelDelete}
     <button class="event__rollup-btn" type="button">
       <span class="visually-hidden">Open event</span>
     </button>
@@ -315,7 +324,8 @@ export default class EditingForm extends Smart {
           currentOffers: point.extraOffers,
           isDisabled: false,
           isSaving: false,
-          isDeleting: false
+          isDeleting: false,
+          isNew: false
         }
     );
   }
@@ -341,6 +351,7 @@ export default class EditingForm extends Smart {
     delete data.isDisabled;
     delete data.isSaving;
     delete data.isDeleting;
+    delete data.isNew;
     delete data.time.currentStartDate;
     delete data.time.currentEndDate;
 

@@ -27,7 +27,9 @@ export default class NewPoint {
     this._editPointComponent.setFormSubmitHandler(this._handleFormSubmit);
     this._editPointComponent.setDeleteClickHandler(this._handleDeleteClick);
     this._editPointComponent.setExitEditModeClickHandler(this._handleCloseFormClick);
-
+    this._editPointComponent.updateData({
+      isNew: true
+    });
     render(this._pointListContainer, this._editPointComponent, RenderPosition.AFTERBEGIN);
     this._editPointComponent.renderDatesEditMode();
 
@@ -55,7 +57,8 @@ export default class NewPoint {
   setSaving() {
     this._editPointComponent.updateData({
       isDisabled: true,
-      isSaving: true
+      isSaving: true,
+      isNew: false
     });
   }
 
@@ -64,7 +67,8 @@ export default class NewPoint {
       this._editPointComponent.updateData({
         isDisabled: false,
         isSaving: false,
-        isDeleting: false
+        isDeleting: false,
+        isNew: false
       });
     };
 
