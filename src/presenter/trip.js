@@ -28,7 +28,6 @@ export default class Trip {
     this._tripCostComponent = null;
 
     this._infoSectionComponent = new InfoSection();
-
     this._tripListContainer = new TripList();
     this._emptyList = new EmptyList();
     this._loadingComponent = new LoadingView();
@@ -48,12 +47,6 @@ export default class Trip {
     this._renderTripList();
   }
 
-  createPoint(callback) {
-    this._currentSortType = SortType.DAY;
-    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
-    this._newPointPresenter.init(callback);
-  }
-
   destroy() {
     this._clearTripList({resetSortType: true});
 
@@ -62,6 +55,13 @@ export default class Trip {
     this._pointsModel.removeObserver(this._handleModelEvent);
     this._filterModel.removeObserver(this._handleModelEvent);
   }
+
+  createPoint(callback) {
+    this._currentSortType = SortType.DAY;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._newPointPresenter.init(callback);
+  }
+
 
   _getPoints() {
     const filterType = this._filterModel.getFilter();
@@ -85,6 +85,7 @@ export default class Trip {
   }
 
   _renderTripInfo(points) {
+    const sortedByDatePoints = points.sort((a, b) => new Date(a.time.startFullDate) - new Date(b.time.startFullDate));
     if (this._tripInfoComponent) {
       remove(this._tripInfoComponent);
     }
@@ -93,7 +94,7 @@ export default class Trip {
       remove(this._tripCostComponent);
     }
 
-    this._tripInfoComponent = new TripInfo(points);
+    this._tripInfoComponent = new TripInfo(sortedByDatePoints);
     this._tripCostComponent = new TripCost(points);
     render(this._infoSectionComponent, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
     render(this._infoSectionComponent, this._tripCostComponent, RenderPosition.BEFOREEND);
@@ -101,7 +102,7 @@ export default class Trip {
 
   _renderSort() {
     if (this._siteSortingComponent) {
-      this._siteSortingComponent = null;
+      remove(this._siteSortingComponent);
     }
 
     this._siteSortingComponent = new SiteSorting(this._currentSortType);
@@ -122,10 +123,6 @@ export default class Trip {
     if (this._isLoading) {
       this._renderLoading();
       return;
-    }
-
-    if (this._siteSortingComponent) {
-      remove(this._siteSortingComponent);
     }
 
     const points = this._getPoints();
@@ -157,7 +154,6 @@ export default class Trip {
       return;
     }
     this._currentSortType = sortType;
-    remove(this._siteSortingComponent);
     this._clearTripList();
     this._renderTripList();
   }

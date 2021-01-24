@@ -135,6 +135,7 @@ export default class EditingForm extends Smart {
     super();
 
     this._selectedOffers = [];
+    this._tripDatesEditMode = null;
     this._data = EditingForm.parsePointToData(point);
     this._exitEditModeClickHandler = this._exitEditModeClickHandler.bind(this);
     this._formSubmitHandler = this._formSubmitHandler.bind(this);
@@ -153,11 +154,6 @@ export default class EditingForm extends Smart {
 
   removeElement() {
     super.removeElement();
-
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
-    }
   }
 
   setExitEditModeClickHandler(callback) {
@@ -226,6 +222,7 @@ export default class EditingForm extends Smart {
       currentType: evt.target.value,
       currentOffers: [],
     });
+    this.removeFlatpickr();
     this.renderDatesEditMode();
   }
 
@@ -237,6 +234,7 @@ export default class EditingForm extends Smart {
       currentDestinationDescription: this._selectedCity.description,
       currentPhotos: this._selectedCity.pictures,
     });
+    this.removeFlatpickr();
     this.renderDatesEditMode();
   }
 
@@ -246,6 +244,7 @@ export default class EditingForm extends Smart {
       this.updateData({
         currentPrice: evt.target.value,
       });
+      this.removeFlatpickr();
       this.renderDatesEditMode();
     } else {
       evt.preventDefault();
@@ -279,6 +278,7 @@ export default class EditingForm extends Smart {
     this.updateData({
       currentOffers: this._selectedOffers
     });
+    this.removeFlatpickr();
     this.renderDatesEditMode();
   }
 

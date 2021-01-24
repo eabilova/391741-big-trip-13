@@ -63,8 +63,7 @@ export default class NewPoint {
     const resetFormState = () => {
       this._editPointComponent.updateData({
         isDisabled: false,
-        isSaving: false,
-        isDeleting: false
+        isSaving: false
       });
     };
 

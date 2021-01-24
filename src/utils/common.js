@@ -19,9 +19,9 @@ export const getHumanizedDiff = (diff) => {
 
   if (dayDiff > 0) {
     duration = `${dayDiff}D ${hourDiff}H ${minDiff}M`;
-  } else if (dayDiff === 0 && hourDiff > 0) {
+  } else if (dayDiff === 0 && hourDiff !== "00") {
     duration = `${hourDiff}H ${minDiff}M`;
-  } else if (dayDiff === 0 && hourDiff === 0 && minDiff > 0) {
+  } else if (dayDiff === 0 && hourDiff === "00" && (minDiff > 0 || minDiff === "00")) {
     duration = `${minDiff}M`;
   }
   return duration;

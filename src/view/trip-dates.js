@@ -19,7 +19,8 @@ export default class TripDates extends Smart {
   constructor(point) {
     super();
     this._data = point;
-    this._datepicker = null;
+    this._startDatepicker = null;
+    this._endDatepicker = null;
 
     this._tripStartDateChangeHandler = this._tripStartDateChangeHandler.bind(this);
     this._tripEndDateChangeHandler = this._tripEndDateChangeHandler.bind(this);
@@ -35,8 +36,8 @@ export default class TripDates extends Smart {
   }
 
   destroyFlatpickr() {
-    document.querySelectorAll(`.flatpickr-calendar`).forEach((item) => item.remove());
-    this._datepicker.destroy();
+    this._startDatepicker.destroy();
+    this._endDatepicker.destroy();
   }
 
   reset(point) {
@@ -45,13 +46,15 @@ export default class TripDates extends Smart {
   }
 
   _setDatePicker() {
-    if (this._datepicker) {
-      this._datepicker.destroy();
-      this._datepicker = null;
+    if (this._startDatepicker || this._endDatepicker) {
+      this._startDatepicker.destroy();
+      this._endDatepicker.destroy();
+      this._startDatepicker = null;
+      this._endDatepicker = null;
     }
 
     if (this._data.time.currentStartDate) {
-      this._datepicker = flatpickr(
+      this._startDatepicker = flatpickr(
           this.getElement().querySelector(`.event__input--time[name="event-start-time"]`),
           {
             dateFormat: `j/m/Y H:i`,
@@ -61,7 +64,7 @@ export default class TripDates extends Smart {
       );
     }
     if (this._data.time.currentEndDate) {
-      this._datepicker = flatpickr(
+      this._endDatepicker = flatpickr(
           this.getElement().querySelector(`.event__input--time[name="event-end-time"]`),
           {
             dateFormat: `j/m/Y H:i`,
