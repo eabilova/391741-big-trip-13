@@ -46,10 +46,13 @@ export default class TripDates extends Smart {
   }
 
   _setDatePicker() {
-    if (this._startDatepicker || this._endDatepicker) {
+    if (this._startDatepicker) {
       this._startDatepicker.destroy();
-      this._endDatepicker.destroy();
       this._startDatepicker = null;
+    }
+
+    if (this._endDatepicker) {
+      this._endDatepicker.destroy();
       this._endDatepicker = null;
     }
 
@@ -58,7 +61,7 @@ export default class TripDates extends Smart {
           this.getElement().querySelector(`.event__input--time[name="event-start-time"]`),
           {
             dateFormat: `j/m/Y H:i`,
-            defaultDate: this._data.time.currentStartDate,
+            defaultDate: new Date(this._data.time.currentStartDate) <  new Date(this._data.time.currentEndDate) ? this._data.time.currentStartDate : this._data.time.currentEndDate,
             onChange: this._tripStartDateChangeHandler
           }
       );
@@ -68,7 +71,7 @@ export default class TripDates extends Smart {
           this.getElement().querySelector(`.event__input--time[name="event-end-time"]`),
           {
             dateFormat: `j/m/Y H:i`,
-            defaultDate: this._data.time.currentEndDate,
+            defaultDate: new Date(this._data.time.currentEndDate) > new Date(this._data.time.currentStartDate) ? this._data.time.currentEndDate : this._data.time.currentStartDate,
             onChange: this._tripEndDateChangeHandler
           }
       );

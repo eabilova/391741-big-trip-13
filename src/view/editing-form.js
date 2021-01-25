@@ -54,12 +54,12 @@ const generateDataList = () => {
 };
 
 const generateDeleteButton = (isDisabled, isDeleting) => {
-  return `<button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Deleting...` : `Delete`}</button>`
-}
+  return `<button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Deleting...` : `Delete`}</button>`;
+};
 
 const generateCancelButton = (isDisabled, isDeleting) => {
-  return `<button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Canceling...` : `Cancel`}</button>`
-}
+  return `<button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Canceling...` : `Cancel`}</button>`;
+};
 
 const BLANK_POINT = {
   isFavorite: false,
@@ -81,7 +81,7 @@ const editingFormTemplate = (data) => {
   const checkOffers = identifySelectedOffers(currentType, currentOffers, isDisabled);
   const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
   const datalist = generateDataList();
-  const buttonCancelDelete = isNew ? generateCancelButton(isDisabled, isDeleting) :  generateDeleteButton(isDisabled, isDeleting);
+  const buttonCancelDelete = isNew ? generateCancelButton(isDisabled, isDeleting) : generateDeleteButton(isDisabled, isDeleting);
   const isSubmitDisabled = (!currentPrice && !price) || (!currentCity && !city);
 
   return `<form class="event event--edit" action="#" method="post">
