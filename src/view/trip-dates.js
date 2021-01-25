@@ -61,7 +61,10 @@ export default class TripDates extends Smart {
           this.getElement().querySelector(`.event__input--time[name="event-start-time"]`),
           {
             dateFormat: `j/m/Y H:i`,
-            defaultDate: new Date(this._data.time.currentStartDate) < new Date(this._data.time.currentEndDate) ? this._data.time.currentStartDate: this._data.time.currentEndDate,
+            defaultDate: this._data.time.currentStartDate ? this._data.time.currentStartDate : `today`,
+            enableTime: true,
+            maxDate: this._data.time.currentEndDate,
+            maxTime: this.maxDate === this._data.time.currentEndDate ? this._data.time.currentEndDate : ``,
             onChange: this._tripStartDateChangeHandler
           }
       );
@@ -71,7 +74,10 @@ export default class TripDates extends Smart {
           this.getElement().querySelector(`.event__input--time[name="event-end-time"]`),
           {
             dateFormat: `j/m/Y H:i`,
-            defaultDate: new Date(this._data.time.currentEndDate) > new Date(this._data.time.currentStartDate) ? this._data.time.currentEndDate : this._data.time.currentStartDate,
+            defaultDate:  this._data.time.currentEndDate ? this._data.time.currentEndDate : `today`,
+            enableTime: true,
+            minDate: this._data.time.currentStartDate,
+            minTime: this.minDate === this._data.time.currentStartDate ? this._data.time.currentStartDate : ``,
             onChange: this._tripEndDateChangeHandler
           }
       );
@@ -79,17 +85,15 @@ export default class TripDates extends Smart {
   }
 
   _tripStartDateChangeHandler([userDate]) {
-    const startDate = new Date([userDate]) < new Date(this._endDatepicker.config.defaultDate) ? userDate : this._endDatepicker.config.defaultDate;
     this._data.time = Object.assign(this._data.time, {
-      currentStartDate: dayjs(startDate).hour(23).minute(59).second(59).toISOString(),
+      currentStartDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
     });
     this.updateData(this._data);
   }
 
   _tripEndDateChangeHandler([userDate]) {
-    const endDate = new Date(userDate) > new Date(this._startDatepicker.config.defaultDate) ? userDate : this._startDatepicker.config.defaultDate;
     this._data.time = Object.assign(this._data.time, {
-      currentEndDate: dayjs(endDate).hour(23).minute(59).second(59).toISOString(),
+      currentEndDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
     });
     this.updateData(this._data);
   }
