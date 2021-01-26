@@ -212,7 +212,7 @@ export default class EditingForm extends Smart {
 
   _exitEditModeClickHandler(evt) {
     evt.preventDefault();
-    this._callback.editClick(EditingForm.parseDataToPoint(this._data));
+    this._callback.editClick(EditingForm.parsePointToData(this._data));
   }
 
   _formSubmitHandler(evt) {
@@ -222,7 +222,7 @@ export default class EditingForm extends Smart {
 
   _formDeleteClickHandler(evt) {
     evt.preventDefault();
-    this._callback.deleteClick(EditingForm.parseDataToPoint(this._data));
+    this._callback.deleteClick(EditingForm.parsePointToData(this._data));
   }
 
   _typeChangeHandler(evt) {
@@ -322,6 +322,8 @@ export default class EditingForm extends Smart {
           currentPhotos: point.photoLinks,
           currentPrice: point.price,
           currentOffers: point.extraOffers,
+          currentStartDate: point.time.startFullDate,
+          currentEndDate: point.time.endFullDate,
           isDisabled: false,
           isSaving: false,
           isDeleting: false,
