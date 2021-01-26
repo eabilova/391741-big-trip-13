@@ -128,6 +128,7 @@ export default class Point {
 
   _replaceFormToPoint() {
     this._editTripPoint.removeEditClickHandler(this._handleExitEditModeClick);
+    this._editTripPoint.reset(this._point);
     replace(this._tripPoint, this._editTripPoint);
     this._editTripPoint.removeFlatpickr();
     this._tripPoint.setOpenFormClickHandler(this._handleOpenEditFormClick);
