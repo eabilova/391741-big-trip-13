@@ -84,14 +84,14 @@ export default class TripDates extends Smart {
     }
   }
 
-  _tripStartDateChangeHandler([userDate]) {
+  _tripStartDateChangeHandler(userDate) {
     this._data.time = Object.assign(this._data.time, {
       currentStartDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
     });
     this.updateData(this._data);
   }
 
-  _tripEndDateChangeHandler([userDate]) {
+  _tripEndDateChangeHandler(userDate) {
     this._data.time = Object.assign(this._data.time, {
       currentEndDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
     });

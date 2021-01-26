@@ -8,7 +8,7 @@ import FilterPresenter from "./presenter/filter.js";
 import Statistics from "./view/statistics.js";
 import Api from "./api.js";
 
-const AUTHORIZATION = `Basic 39hgp-1tf6g7dh56vd`;
+const AUTHORIZATION = `Basic 39hgp-1tf6g7dhvd`;
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
 
 let destinationList;
