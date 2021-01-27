@@ -139,7 +139,6 @@ export default class Point {
   _handleEscKeyDown(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
-      this._editTripPoint.reset(this._point);
       this._replaceFormToPoint();
     }
   }
@@ -153,7 +152,6 @@ export default class Point {
   }
 
   _handleExitEditModeClick() {
-    this._editTripPoint.reset(this._point);
     this._replaceFormToPoint();
   }
 

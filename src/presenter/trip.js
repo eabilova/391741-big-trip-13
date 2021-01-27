@@ -60,7 +60,9 @@ export default class Trip {
   createPoint(callback) {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._clearTripList({resetSortType: true});
     this._newPointPresenter.init(callback);
+    this._renderTripList();
   }
 
   _getPoints() {

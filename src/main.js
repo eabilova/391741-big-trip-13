@@ -76,7 +76,6 @@ export const renderNewPointForm = (evt) => {
     remove(statisticsComponent);
     siteMenuComponent.deactivateStat();
     siteMenuComponent.activateTable();
-    tripInfo.init();
   }
   tripInfo.createPoint(handlePointNewFormClose);
   newEventButton.removeEventListener(`click`, renderNewPointForm);
