@@ -262,7 +262,7 @@ export default class EditingForm extends Smart {
 
   _offerSelectionHandler(evt) {
     evt.preventDefault();
-    this._selectedOffers = this._data.currentOffers;
+    this._selectedOffers = this._data.currentOffers.slice();
     let index = -1;
 
     this._selectedOffers.forEach((offer, i) => {
