@@ -1,5 +1,5 @@
 import EditTripForm from "../view/editing-form.js";
-import {remove, render, RenderPosition} from "../utils/render.js";
+import {remove, render, Position} from "../utils/render.js";
 import {UserAction, UpdateType} from "../const.js";
 import {newEventButton, renderNewPointForm} from "../main.js";
 
@@ -30,7 +30,7 @@ export default class NewPoint {
     this._editPointComponent.updateData({
       isNew: true
     });
-    render(this._pointListContainer, this._editPointComponent, RenderPosition.AFTERBEGIN);
+    render(this._pointListContainer, this._editPointComponent, Position.AFTERBEGIN);
     this._editPointComponent.renderDatesEditMode();
 
     document.addEventListener(`keydown`, this._escKeyDownHandler);

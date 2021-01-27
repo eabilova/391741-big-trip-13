@@ -1,21 +1,20 @@
 ﻿import dayjs from "dayjs";
 
 const UnitMapping = {
-  days: 24 * 60 * 60 * 1000,
-  hours: 60 * 60 * 1000,
-  minutes: 60 * 1000,
-  seconds: 1000
+  DAYS: 24 * 60 * 60 * 1000,
+  HOURS: 60 * 60 * 1000,
+  MINUTES: 60 * 1000
 };
 
-const floor = (value) => {
+const getFloorValue = (value) => {
   return Math.floor(value);
 };
 
-export const getHumanizedDiff = (diff) => {
-  const day = floor(diff / UnitMapping.days);
+export const getTimePeriodDifference = (diff) => {
+  const day = getFloorValue(diff / UnitMapping.DAYS);
   const dayDiff = day > 0 ? day.toLocaleString(`en-US`, {minimumIntegerDigits: 2, useGrouping: false}) : day;
-  const hourDiff = (floor((diff % UnitMapping.days) / UnitMapping.hours)).toLocaleString(`en-US`, {minimumIntegerDigits: 2, useGrouping: false});
-  const minDiff = (floor((diff % UnitMapping.hours) / UnitMapping.minutes)).toLocaleString(`en-US`, {minimumIntegerDigits: 2, useGrouping: false});
+  const hourDiff = (getFloorValue((diff % UnitMapping.DAYS) / UnitMapping.HOURS)).toLocaleString(`en-US`, {minimumIntegerDigits: 2, useGrouping: false});
+  const minDiff = (getFloorValue((diff % UnitMapping.HOURS) / UnitMapping.MINUTES)).toLocaleString(`en-US`, {minimumIntegerDigits: 2, useGrouping: false});
 
   let duration;
 

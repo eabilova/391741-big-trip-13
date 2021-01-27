@@ -1,4 +1,8 @@
-﻿export const EVENT_TYPES = [
+﻿export const FULL_DAY_IN_MINUTES = 1440;
+
+export const BAR_HEIGHT = 55;
+
+export const EVENT_TYPES = [
   `taxi`,
   `bus`,
   `train`,
@@ -44,8 +48,6 @@ export const MenuItem = {
   STATISTICS: `STATISTICS`
 };
 
-export const BAR_HEIGHT = 55;
-
 export const StatTitle = {
   MONEY: `MONEY`,
   TYPE: `TYPE`,
@@ -58,4 +60,13 @@ export const StatFormat = {
   TIME: (val) => `${val}D`
 };
 
-export const fullDayInMinutes = 1440;
+export const Mode = {
+  DEFAULT: `DEFAULT`,
+  EDITING: `EDITING`
+};
+
+export const State = {
+  SAVING: `SAVING`,
+  DELETING: `DELETING`,
+  ABORTING: `ABORTING`
+};

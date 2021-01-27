@@ -8,7 +8,7 @@ const createFilterItem = (filter, currentFilterType) => {
   </div>`;
 };
 
-const siteFilterTemplate = (filters, currentFilterType) => {
+const createSiteFilterTemplate = (filters, currentFilterType) => {
   const filterItemsTemplate = filters
   .map((filter) => createFilterItem(filter, currentFilterType))
   .join(``);
@@ -29,7 +29,7 @@ export default class SiteFilter extends Abstract {
   }
 
   getTemplate() {
-    return siteFilterTemplate(this._filters, this._currentFilterType);
+    return createSiteFilterTemplate(this._filters, this._currentFilterType);
   }
 
   setFilterTypeChangeHandler(callback) {

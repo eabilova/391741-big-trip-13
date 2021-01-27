@@ -1,19 +1,8 @@
 ﻿import EditTripForm from "../view/editing-form.js";
 import TripPoint from "../view/trip-point.js";
 import EventOffer from "../view/event-offer";
-import {render, RenderPosition, replace, remove} from "../utils/render";
-import {UserAction, UpdateType} from "../const.js";
-
-const Mode = {
-  DEFAULT: `DEFAULT`,
-  EDITING: `EDITING`
-};
-
-export const State = {
-  SAVING: `SAVING`,
-  DELETING: `DELETING`,
-  ABORTING: `ABORTING`
-};
+import {render, Position, replace, remove} from "../utils/render";
+import {UserAction, UpdateType, Mode, State} from "../const.js";
 
 export default class Point {
   constructor(pointContainer, changeData, changeMode) {
@@ -48,7 +37,7 @@ export default class Point {
     this._tripPoint.setFavoriteButtonClickHandler(this._handleFavoriteButtonClick);
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
-      render(this._pointContainer, this._tripPoint, RenderPosition.BEFOREEND);
+      render(this._pointContainer, this._tripPoint, Position.BEFOREEND);
       return;
     }
 
@@ -110,7 +99,7 @@ export default class Point {
     const {extraOffers} = point;
     extraOffers.forEach((offer) => {
       const eventOfferComponent = new EventOffer(offer);
-      render(offerContainer, eventOfferComponent, RenderPosition.BEFOREEND);
+      render(offerContainer, eventOfferComponent, Position.BEFOREEND);
     });
   }
 

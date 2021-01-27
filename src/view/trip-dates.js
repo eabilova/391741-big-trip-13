@@ -4,7 +4,7 @@ import Smart from "./smart.js";
 
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
-const tripDatesTemplate = (data) => {
+const createTripDatesTemplate = (data) => {
   const {time} = data;
   return `<div class="event__field-group  event__field-group--time">
   <label class="visually-hidden" for="event-start-time-1">From</label>
@@ -28,7 +28,7 @@ export default class TripDates extends Smart {
   }
 
   getTemplate() {
-    return tripDatesTemplate(this._data);
+    return createTripDatesTemplate(this._data);
   }
 
   restoreHandlers() {

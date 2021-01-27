@@ -1,5 +1,5 @@
 import SiteMenu from "./view/site-menu.js";
-import {render, RenderPosition, remove} from "./utils/render.js";
+import {render, Position, remove} from "./utils/render.js";
 import {UpdateType, MenuItem} from "./const.js";
 import PointsModel from "./model/points.js";
 import FilterModel from "./model/filter.js";
@@ -40,7 +40,7 @@ const siteMenuComponent = new SiteMenu();
 const tripInfo = new TripInfoPresenter(tripMain, pointsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(filterControl, filterModel, filterModel);
 
-const handlePointNewFormClose = () => {
+const handleNewPointFormClose = () => {
   siteMenuComponent.activateTable();
   siteMenuComponent.setMenuItem(MenuItem.TABLE);
 };
@@ -60,7 +60,7 @@ const handleSiteMenuClick = (menuItem) => {
       siteMenuComponent.activateStat();
       tripInfo.destroy();
       statisticsComponent = new Statistics(pointsModel.getPoints());
-      render(main, statisticsComponent, RenderPosition.BEFOREEND);
+      render(main, statisticsComponent, Position.BEFOREEND);
       break;
   }
 };
@@ -77,7 +77,7 @@ export const renderNewPointForm = (evt) => {
     siteMenuComponent.deactivateStat();
     siteMenuComponent.activateTable();
   }
-  tripInfo.createPoint(handlePointNewFormClose);
+  tripInfo.createPoint(handleNewPointFormClose);
   newEventButton.removeEventListener(`click`, renderNewPointForm);
 };
 
@@ -96,12 +96,12 @@ api.getDestinations()
 .then(() => {
   return api.getPoints().then((points) => {
     pointsModel.setPoints(UpdateType.INIT, points);
-    render(switchControl, siteMenuComponent, RenderPosition.AFTEREND);
+    render(switchControl, siteMenuComponent, Position.AFTEREND);
     siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
   });
 })
 .catch(() => {
   pointsModel.setPoints(UpdateType.INIT, []);
-  render(switchControl, siteMenuComponent, RenderPosition.AFTEREND);
+  render(switchControl, siteMenuComponent, Position.AFTEREND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 });

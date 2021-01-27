@@ -1,6 +1,6 @@
 ﻿import Abstract from "./abstract.js";
 
-export const createEventOffer = (offer) => {
+const createEventOffer = (offer) => {
   const {title, price} = offer;
   return `<li class="event__offer">
         <span class="event__offer-title">${title}</span>

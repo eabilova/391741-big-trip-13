@@ -1,10 +1,10 @@
 import Abstract from "./abstract.js";
 import dayjs from "dayjs";
-import {getHumanizedDiff} from "../utils/common.js";
+import {getTimePeriodDifference} from "../utils/common.js";
 
-const calculateTripDuartion = (time) => {
+const calculateTripDuration = (time) => {
   const {startFullDate, endFullDate} = time;
-  return getHumanizedDiff(new Date(endFullDate) - new Date(startFullDate));
+  return getTimePeriodDifference(new Date(endFullDate) - new Date(startFullDate));
 };
 
 const defineShortDate = (time) => {
@@ -25,10 +25,10 @@ const defineEndTime = (time) => {
   return dayjs(endFullDate).format(`HH:mm`);
 };
 
-const siteContentListItemTemplate = (point) => {
+const createPointTemplate = (point) => {
   const {time, price, isFavorite, type, city} = point;
 
-  const duration = calculateTripDuartion(time);
+  const duration = calculateTripDuration(time);
   const shortDateFormat = defineShortDate(time);
   const startTime = defineStartTime(time);
   const endTime = defineEndTime(time);
@@ -77,7 +77,7 @@ export default class RoutePoint extends Abstract {
   }
 
   getTemplate() {
-    return siteContentListItemTemplate(this._point);
+    return createPointTemplate(this._point);
   }
 
   setOpenFormClickHandler(callback) {

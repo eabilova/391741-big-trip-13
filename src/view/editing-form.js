@@ -4,9 +4,9 @@ import {EVENT_TYPES} from "../const.js";
 import {getOfferList, getDestinationList} from "../main.js";
 import Smart from "./smart.js";
 import TripDates from "../view/trip-dates.js";
-import {render, RenderPosition} from "../utils/render.js";
+import {render, Position} from "../utils/render.js";
 
-const editingEventTypeFormTemplate = (currentType, isDisabled) => {
+const renderEditingEventTypeFormTemplate = (currentType, isDisabled) => {
   return EVENT_TYPES.map((type) => `<div class="event__type-item">
     <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${currentType === type ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
       <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type.charAt(0).toUpperCase()}${type.slice(1)}</label>
@@ -75,9 +75,9 @@ const BLANK_POINT = {
   price: 0,
 };
 
-const editingFormTemplate = (data) => {
+const createEditingFormTemplate = (data) => {
   const {price, city, currentType, currentDestinationDescription, currentPhotos, currentCity, currentPrice, currentOffers, isDisabled, isSaving, isDeleting, isNew} = data;
-  const eventType = editingEventTypeFormTemplate(currentType, isDisabled);
+  const eventType = renderEditingEventTypeFormTemplate(currentType, isDisabled);
   const checkOffers = identifySelectedOffers(currentType, currentOffers, isDisabled);
   const description = addDestinationDescription(currentDestinationDescription, currentPhotos);
   const datalist = generateDataList();
@@ -158,7 +158,7 @@ export default class EditingForm extends Smart {
   }
 
   getTemplate() {
-    return editingFormTemplate(this._data);
+    return createEditingFormTemplate(this._data);
   }
 
   removeElement() {
@@ -192,7 +192,7 @@ export default class EditingForm extends Smart {
     }
     this._tripDestinationContainer = this.getElement().querySelector(`.event__field-group--destination`);
     this._tripDatesEditMode = new TripDates(this._data);
-    render(this._tripDestinationContainer, this._tripDatesEditMode, RenderPosition.AFTEREND);
+    render(this._tripDestinationContainer, this._tripDatesEditMode, Position.AFTEREND);
   }
 
   removeFlatpickr() {

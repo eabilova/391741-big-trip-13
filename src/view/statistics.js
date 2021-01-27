@@ -2,7 +2,7 @@ import Smart from "./smart.js";
 import Chart from "chart.js";
 import ChartDataLabels from 'chartjs-plugin-datalabels';
 import {BAR_HEIGHT, StatTitle, StatFormat} from "../const.js";
-import {makeItemsUniq, getTotalPriceByTypes, getTotalCountByTypes, getDurationTotalCountByTypes} from "../utils/statistics.js";
+import {makeItemsUniq, getTotalPriceByTypes, getTotalCountByTypes, getTotalDurationCountByTypes} from "../utils/statistics.js";
 
 const renderStatisticsTemplate = (ctx, uniqueTypeList, dataValues, title, format) => {
   return new Chart(ctx, {
@@ -82,7 +82,7 @@ const renderTransportChart = (typeCtx, uniqueTypeList, points) => {
 };
 
 const renderTimeSpentChart = (timeCtx, uniqueTypeList, points) => {
-  const durationTotalCountByType = getDurationTotalCountByTypes(points, uniqueTypeList);
+  const durationTotalCountByType = getTotalDurationCountByTypes(points, uniqueTypeList);
   renderStatisticsTemplate(timeCtx, uniqueTypeList, durationTotalCountByType, StatTitle.TIME, StatFormat.TIME);
 };
 

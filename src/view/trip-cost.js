@@ -10,7 +10,7 @@ const calculateTripCost = (points) => {
   return offerPrice + pointPrice;
 };
 
-export const tripCostTemplate = (points) => {
+const createTripCostTemplate = (points) => {
   const total = calculateTripCost(points);
 
   return `<p class="trip-info__cost">
@@ -25,6 +25,6 @@ export default class TripCost extends Abstract {
   }
 
   getTemplate() {
-    return tripCostTemplate(this._points);
+    return createTripCostTemplate(this._points);
   }
 }

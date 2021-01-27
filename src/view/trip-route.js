@@ -11,7 +11,7 @@ const defineShortDates = (points) => {
   return dates;
 };
 
-const tripRouteTemplate = (points) => {
+const createTripRouteTemplate = (points) => {
   const shortDates = defineShortDates(points);
 
   return `<div class="trip-info__main">
@@ -28,6 +28,6 @@ export default class TripInfo extends Abstract {
   }
 
   getTemplate() {
-    return tripRouteTemplate(this._points);
+    return createTripRouteTemplate(this._points);
   }
 }

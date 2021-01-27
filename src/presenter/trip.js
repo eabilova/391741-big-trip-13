@@ -3,14 +3,14 @@ import TripInfo from "../view/trip-route.js";
 import TripCost from "../view/trip-cost.js";
 import LoadingView from "../view/loading.js";
 import SiteSorting from "../view/sorting.js";
-import PointPresenter, {State as PointPresenterViewState} from "./point.js";
+import PointPresenter from "./point.js";
 import EmptyList from "../view/no-points";
 import TripList from "../view/content-list.js";
 import NewPointPresenter from "./new-point.js";
-import {filter} from "../utils/filter.js";
+import {Filter} from "../utils/filter.js";
 import {tripEvents} from "../main.js";
-import {render, RenderPosition, remove} from "../utils/render.js";
-import {SortType, UpdateType, UserAction, FilterType} from "../const.js";
+import {render, Position, remove} from "../utils/render.js";
+import {SortType, UpdateType, UserAction, FilterType, State as PointPresenterViewState} from "../const.js";
 import {getPointsDuration} from "../utils/common.js";
 
 export default class Trip {
@@ -68,7 +68,7 @@ export default class Trip {
   _getPoints() {
     const filterType = this._filterModel.getFilter();
     const points = this._pointsModel.getPoints();
-    const filtredPoints = filter[filterType](points);
+    const filtredPoints = Filter[filterType](points);
 
     switch (this._currentSortType) {
       case SortType.DAY:
@@ -97,8 +97,8 @@ export default class Trip {
 
     this._tripInfoComponent = new TripInfo(sortedByDatePoints);
     this._tripCostComponent = new TripCost(points);
-    render(this._infoSectionComponent, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
-    render(this._infoSectionComponent, this._tripCostComponent, RenderPosition.BEFOREEND);
+    render(this._infoSectionComponent, this._tripInfoComponent, Position.AFTERBEGIN);
+    render(this._infoSectionComponent, this._tripCostComponent, Position.BEFOREEND);
   }
 
   _renderSort() {
@@ -108,15 +108,15 @@ export default class Trip {
 
     this._siteSortingComponent = new SiteSorting(this._currentSortType);
     this._siteSortingComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
-    render(tripEvents, this._siteSortingComponent, RenderPosition.BEFOREEND);
+    render(tripEvents, this._siteSortingComponent, Position.BEFOREEND);
   }
 
   _renderEmptyList() {
-    render(tripEvents, this._emptyList, RenderPosition.BEFOREEND);
+    render(tripEvents, this._emptyList, Position.BEFOREEND);
   }
 
   _renderInfoSection(points) {
-    render(this._tripInfoContainer, this._infoSectionComponent, RenderPosition.AFTERBEGIN);
+    render(this._tripInfoContainer, this._infoSectionComponent, Position.AFTERBEGIN);
     this._renderTripInfo(points);
   }
 
@@ -134,7 +134,7 @@ export default class Trip {
     }
     this._renderInfoSection(points);
     this._renderSort();
-    render(tripEvents, this._tripListContainer, RenderPosition.BEFOREEND);
+    render(tripEvents, this._tripListContainer, Position.BEFOREEND);
     points.forEach((point) => {
       this._renderPoint(point);
     });
@@ -147,7 +147,7 @@ export default class Trip {
   }
 
   _renderLoading() {
-    render(tripEvents, this._loadingComponent, RenderPosition.AFTERBEGIN);
+    render(tripEvents, this._loadingComponent, Position.AFTERBEGIN);
   }
 
   _handleSortTypeChange(sortType) {

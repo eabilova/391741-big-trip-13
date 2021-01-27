@@ -1,5 +1,5 @@
 import SiteFilter from "../view/site-filter.js";
-import {render, RenderPosition, replace, remove} from "../utils/render.js";
+import {render, Position, replace, remove} from "../utils/render.js";
 import {FilterType, UpdateType} from "../const.js";
 
 export default class Filter {
@@ -28,7 +28,7 @@ export default class Filter {
     this._filterComponent.setFilterTypeChangeHandler(this._handleFilterTypeChange);
 
     if (prevFilterComponent === null) {
-      render(this._filterContainer, this._filterComponent, RenderPosition.AFTEREND);
+      render(this._filterContainer, this._filterComponent, Position.AFTEREND);
       return;
     }
 
