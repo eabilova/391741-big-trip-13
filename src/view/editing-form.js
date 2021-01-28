@@ -1,20 +1,34 @@
+import {EVENT_TYPES} from "../const.js";
 import dayjs from "dayjs";
 import he from "he";
-import {EVENT_TYPES} from "../const.js";
 import {getOfferList, getDestinationList} from "../main.js";
 import Smart from "./smart.js";
 import TripDates from "../view/trip-dates.js";
 import {render, Position} from "../utils/render.js";
+
+const BLANK_POINT = {
+  isFavorite: false,
+  type: `taxi`,
+  city: ``,
+  extraOffers: [],
+  destinationDescription: ``,
+  photoLinks: [],
+  time: {
+    startFullDate: dayjs(new Date()).toISOString(),
+    endFullDate: dayjs(new Date()).toISOString(),
+  },
+  price: 0,
+};
+
+const addPhotos = (currentPhotos) => {
+  return currentPhotos.map((photo) => `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`).join(``);
+};
 
 const renderEditingEventTypeFormTemplate = (currentType, isDisabled) => {
   return EVENT_TYPES.map((type) => `<div class="event__type-item">
     <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}" ${currentType === type ? `checked` : ``} ${isDisabled ? `disabled` : ``}>
       <label class="event__type-label  event__type-label--${type}" for="event-type-${type}-1">${type.charAt(0).toUpperCase()}${type.slice(1)}</label>
   </div>`).join(``);
-};
-
-const addPhotos = (currentPhotos) => {
-  return currentPhotos.map((photo) => `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`).join(``);
 };
 
 const addDestinationDescription = (currentDestinationDescription, currentPhotos) => {
@@ -59,20 +73,6 @@ const generateDeleteButton = (isDisabled, isDeleting) => {
 
 const generateCancelButton = (isDisabled, isDeleting) => {
   return `<button class="event__reset-btn" type="reset" ${isDisabled ? `disabled` : ``}>${isDeleting ? `Canceling...` : `Cancel`}</button>`;
-};
-
-const BLANK_POINT = {
-  isFavorite: false,
-  type: `taxi`,
-  city: ``,
-  extraOffers: [],
-  destinationDescription: ``,
-  photoLinks: [],
-  time: {
-    startFullDate: dayjs(new Date()).toISOString(),
-    endFullDate: dayjs(new Date()).toISOString(),
-  },
-  price: 0,
 };
 
 const createEditingFormTemplate = (data) => {

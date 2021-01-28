@@ -38,15 +38,15 @@ export default class SiteSorting extends Abstract {
     this._sortTypeChangeHandler = this._sortTypeChangeHandler.bind(this);
   }
 
+  getTemplate() {
+    return createSiteSortingTemplate(this._currentSortType);
+  }
+
   setSortTypeChangeHandler(callback) {
     this._callback.sortTypeChange = callback;
     this.getElement().querySelectorAll(`.trip-sort__input`).forEach((input) => {
       input.addEventListener(`change`, this._sortTypeChangeHandler);
     });
-  }
-
-  getTemplate() {
-    return createSiteSortingTemplate(this._currentSortType);
   }
 
   _sortTypeChangeHandler(evt) {

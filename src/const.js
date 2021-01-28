@@ -1,7 +1,6 @@
 ﻿export const FULL_DAY_IN_MINUTES = 1440;
-
 export const BAR_HEIGHT = 55;
-
+export const SHAKE_ANIMATION_TIMEOUT = 600;
 export const EVENT_TYPES = [
   `taxi`,
   `bus`,

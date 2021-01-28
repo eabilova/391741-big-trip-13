@@ -6,7 +6,7 @@ export const Position = {
   AFTEREND: `afterend`,
 };
 
-export const render = ((container, child, place) => {
+export const render = (container, child, place) => {
   if (container instanceof Abstract) {
     container = container.getElement();
   }
@@ -16,7 +16,7 @@ export const render = ((container, child, place) => {
   }
 
   container.insertAdjacentElement(place, child);
-});
+};
 
 export const createElement = (template) => {
   const newElement = document.createElement(`div`);

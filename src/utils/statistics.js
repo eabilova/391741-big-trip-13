@@ -1,6 +1,5 @@
-import dayjs from "dayjs";
 import {FULL_DAY_IN_MINUTES} from "../const.js";
-
+import dayjs from "dayjs";
 
 const getTotalPriceByType = (points, type) => {
   let total = 0;

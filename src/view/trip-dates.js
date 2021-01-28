@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import flatpickr from "flatpickr";
 import Smart from "./smart.js";
-
 import "../../node_modules/flatpickr/dist/flatpickr.min.css";
 
 const createTripDatesTemplate = (data) => {
@@ -81,14 +80,14 @@ export default class TripDates extends Smart {
 
   _tripStartDateChangeHandler(userDate) {
     this._data.time = Object.assign(this._data.time, {
-      currentStartDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
+      currentStartDate: dayjs(userDate).hour().minute().second().toISOString(),
     });
     this.updateData(this._data);
   }
 
   _tripEndDateChangeHandler(userDate) {
     this._data.time = Object.assign(this._data.time, {
-      currentEndDate: dayjs(userDate).hour(23).minute(59).second(59).toISOString(),
+      currentEndDate: dayjs(userDate).hour().minute().second().toISOString(),
     });
     this.updateData(this._data);
   }

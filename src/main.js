@@ -13,6 +13,8 @@ const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
 
 let destinationList;
 let offerList;
+let statisticsComponent = null;
+const api = new Api(END_POINT, AUTHORIZATION);
 
 const siteHeader = document.querySelector(`header`);
 const tripMain = siteHeader.querySelector(`.trip-main`);
@@ -23,16 +25,6 @@ const main = document.querySelector(`main`);
 export const newEventButton = document.querySelector(`.trip-main__event-add-btn`);
 export const tripEvents = main.querySelector(`.trip-events`);
 
-const api = new Api(END_POINT, AUTHORIZATION);
-
-export const getDestinationList = () => {
-  return destinationList;
-};
-
-export const getOfferList = () => {
-  return offerList;
-};
-
 const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
 const siteMenuComponent = new SiteMenu();
@@ -40,12 +32,13 @@ const siteMenuComponent = new SiteMenu();
 const tripInfo = new TripInfoPresenter(tripMain, pointsModel, filterModel, api);
 const filterPresenter = new FilterPresenter(filterControl, filterModel, filterModel);
 
+filterPresenter.init();
+tripInfo.init();
+
 const handleNewPointFormClose = () => {
   siteMenuComponent.activateTable();
   siteMenuComponent.setMenuItem(MenuItem.TABLE);
 };
-
-let statisticsComponent = null;
 
 const handleSiteMenuClick = (menuItem) => {
   switch (menuItem) {
@@ -64,9 +57,6 @@ const handleSiteMenuClick = (menuItem) => {
       break;
   }
 };
-
-filterPresenter.init();
-tripInfo.init();
 
 export const renderNewPointForm = (evt) => {
   evt.preventDefault();
@@ -105,3 +95,11 @@ api.getDestinations()
   render(switchControl, siteMenuComponent, Position.AFTEREND);
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 });
+
+export const getDestinationList = () => {
+  return destinationList;
+};
+
+export const getOfferList = () => {
+  return offerList;
+};
