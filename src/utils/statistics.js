@@ -3,12 +3,12 @@ import dayjs from "dayjs";
 
 const getPointListOfSpecifiedType = (points, type) => {
   return points.filter((point) => point.type === type.toLowerCase());
-}
+};
 
 const getTotalPriceByType = (points, type) => {
   const items = getPointListOfSpecifiedType(points, type);
-  const total = items.reduce(function(sum, current) {
-    return sum + current.price;
+  const total = items.reduce(function (sum, point) {
+    return sum + point.price;
   }, 0);
 
   return total;
@@ -26,8 +26,8 @@ const getPointDurationByType = (time) => {
 
 const getTotalDurationCountByType = (points, type) => {
   const items = getPointListOfSpecifiedType(points, type);
-  const total = items.reduce(function(sum, current) {
-    return sum + getPointDurationByType(current.time);
+  const total = items.reduce(function (sum, point) {
+    return sum + getPointDurationByType(point.time);
   }, 0);
 
   return Math.round(total / FULL_DAY_IN_MINUTES);
