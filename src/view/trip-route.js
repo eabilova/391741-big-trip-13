@@ -2,7 +2,7 @@ import Abstract from "./abstract.js";
 import dayjs from "dayjs";
 
 const defineShortDates = (points) => {
-  let dates = [];
+  const dates = [];
 
   points.forEach((point, index) => {
     dates[index] = dayjs(point.time.startFullDate).format(`MMM DD`);

@@ -1,8 +1,8 @@
 import Abstract from "./abstract.js";
 
 const calculateTripCost = (points) => {
-  let offers = [];
-  let offerPrices = [];
+  const offers = [];
+  const offerPrices = [];
   points.forEach((point) => offers.push(point.extraOffers));
   offers.forEach((offer) => offer.forEach((pointOffer) => offerPrices.push(pointOffer.price)));
   const pointPrice = (points.map((point) => parseInt(point.price, 10))).reduce((a, b) => a + b, 0);
