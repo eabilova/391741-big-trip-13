@@ -8,7 +8,7 @@ import FilterPresenter from "./presenter/filter.js";
 import Statistics from "./view/statistics.js";
 import Api from "./api.js";
 
-const AUTHORIZATION = `Basic 39hgp-1tf6g7dhvd`;
+const AUTHORIZATION = `Basic 39hgp-1tf6g7dghvd`;
 const END_POINT = `https://13.ecmascript.pages.academy/big-trip`;
 
 let destinationList;
@@ -22,8 +22,8 @@ const tripControls = siteHeader.querySelector(`.trip-controls`);
 const switchControl = tripControls.querySelector(`h2:first-of-type`);
 const filterControl = tripControls.querySelector(`h2:last-of-type`);
 const main = document.querySelector(`main`);
-export const newEventButton = document.querySelector(`.trip-main__event-add-btn`);
-export const tripEvents = main.querySelector(`.trip-events`);
+const newEventButton = document.querySelector(`.trip-main__event-add-btn`);
+const tripEvents = main.querySelector(`.trip-events`);
 
 const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
@@ -34,6 +34,14 @@ const filterPresenter = new FilterPresenter(filterControl, filterModel, filterMo
 
 filterPresenter.init();
 tripInfo.init();
+
+const getDestinationList = () => {
+  return destinationList;
+};
+
+const getOfferList = () => {
+  return offerList;
+};
 
 const handleNewPointFormClose = () => {
   siteMenuComponent.activateTable();
@@ -58,7 +66,7 @@ const handleSiteMenuClick = (menuItem) => {
   }
 };
 
-export const renderNewPointForm = (evt) => {
+const newButtonClickHandler = (evt) => {
   evt.preventDefault();
   newEventButton.disabled = true;
   siteMenuComponent.deactivateTable();
@@ -68,10 +76,10 @@ export const renderNewPointForm = (evt) => {
     siteMenuComponent.activateTable();
   }
   tripInfo.createPoint(handleNewPointFormClose);
-  newEventButton.removeEventListener(`click`, renderNewPointForm);
+  newEventButton.removeEventListener(`click`, newButtonClickHandler);
 };
 
-newEventButton.addEventListener(`click`, renderNewPointForm);
+newEventButton.addEventListener(`click`, newButtonClickHandler);
 
 api.getDestinations()
 .then((destinations) => {
@@ -96,10 +104,4 @@ api.getDestinations()
   siteMenuComponent.setMenuClickHandler(handleSiteMenuClick);
 });
 
-export const getDestinationList = () => {
-  return destinationList;
-};
-
-export const getOfferList = () => {
-  return offerList;
-};
+export {newEventButton, tripEvents, newButtonClickHandler, getDestinationList, getOfferList};

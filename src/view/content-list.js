@@ -5,7 +5,7 @@ const createSiteContentListTemplate = () => {
 </ul>`;
 };
 
-export default class RouteList extends Abstract {
+export default class ContentList extends Abstract {
   getTemplate() {
     return createSiteContentListTemplate();
   }

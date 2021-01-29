@@ -68,7 +68,7 @@ const createPointTemplate = (point) => {
 </li>`;
 };
 
-export default class RoutePoint extends Abstract {
+export default class TripPoint extends Abstract {
   constructor(point) {
     super();
     this._point = point;

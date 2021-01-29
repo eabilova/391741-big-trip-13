@@ -1,4 +1,4 @@
-﻿import Abstract from "../view/abstract.js";
+﻿import Abstract from "./abstract.js";
 
 const createEmptyListTemplate = () => {
   return `<p class="trip-events__msg">Click New Event to create your first point</p>`;

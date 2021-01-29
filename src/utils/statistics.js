@@ -1,28 +1,22 @@
 import {FULL_DAY_IN_MINUTES} from "../const.js";
 import dayjs from "dayjs";
 
-const getTotalPriceByType = (points, type) => {
-  let total = 0;
+const getPointListOfSpecifiedType = (points, type) => {
+  return points.filter((point) => point.type === type.toLowerCase());
+}
 
-  points.forEach((point) => {
-    if (point.type === type.toLowerCase()) {
-      total += parseInt(point.price, 10);
-    }
-  });
+const getTotalPriceByType = (points, type) => {
+  const items = getPointListOfSpecifiedType(points, type);
+  const total = items.reduce(function(sum, current) {
+    return sum + current.price;
+  }, 0);
 
   return total;
 };
 
 const getTotalCountByType = (points, type) => {
-  let total = 0;
-
-  points.forEach((point) => {
-    if (point.type === type.toLowerCase()) {
-      total++;
-    }
-  });
-
-  return total;
+  const items = getPointListOfSpecifiedType(points, type);
+  return items.length;
 };
 
 const getPointDurationByType = (time) => {
@@ -31,13 +25,10 @@ const getPointDurationByType = (time) => {
 };
 
 const getTotalDurationCountByType = (points, type) => {
-  let total = 0;
-
-  points.forEach((point) => {
-    if (point.type === type.toLowerCase()) {
-      total += getPointDurationByType(point.time);
-    }
-  });
+  const items = getPointListOfSpecifiedType(points, type);
+  const total = items.reduce(function(sum, current) {
+    return sum + getPointDurationByType(current.time);
+  }, 0);
 
   return Math.round(total / FULL_DAY_IN_MINUTES);
 };

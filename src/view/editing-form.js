@@ -152,7 +152,7 @@ export default class EditingForm extends Smart {
     this._typeChangeHandler = this._typeChangeHandler.bind(this);
     this._destinationChangeHandler = this._destinationChangeHandler.bind(this);
     this._priceChangeHandler = this._priceChangeHandler.bind(this);
-    this._offerSelectionHandler = this._offerSelectionHandler.bind(this);
+    this._offerChangeHandler = this._offerChangeHandler.bind(this);
 
     this._setInnerHandlers();
   }
@@ -260,7 +260,7 @@ export default class EditingForm extends Smart {
     }
   }
 
-  _offerSelectionHandler(evt) {
+  _offerChangeHandler(evt) {
     evt.preventDefault();
     this._selectedOffers = this._data.currentOffers.slice();
     let index = -1;
@@ -303,7 +303,7 @@ export default class EditingForm extends Smart {
     .addEventListener(`change`, this._priceChangeHandler);
     this.getElement()
     .querySelector(`.event__available-offers`)
-    .addEventListener(`change`, this._offerSelectionHandler);
+    .addEventListener(`change`, this._offerChangeHandler);
   }
 
   static parsePointToData(point) {

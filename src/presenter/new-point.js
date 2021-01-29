@@ -1,7 +1,7 @@
 import EditTripForm from "../view/editing-form.js";
 import {remove, render, Position} from "../utils/render.js";
 import {UserAction, UpdateType} from "../const.js";
-import {newEventButton, renderNewPointForm} from "../main.js";
+import {newEventButton, newButtonClickHandler} from "../main.js";
 
 export default class NewPoint {
   constructor(PointListContainer, changeData) {
@@ -13,7 +13,7 @@ export default class NewPoint {
 
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
-    this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._documentKeyDownHandler = this._documentKeyDownHandler.bind(this);
     this._handleCloseFormClick = this._handleCloseFormClick.bind(this);
   }
 
@@ -33,7 +33,7 @@ export default class NewPoint {
     render(this._pointListContainer, this._editPointComponent, Position.AFTERBEGIN);
     this._editPointComponent.renderDatesEditMode();
 
-    document.addEventListener(`keydown`, this._escKeyDownHandler);
+    document.addEventListener(`keydown`, this._documentKeyDownHandler);
   }
 
   destroy() {
@@ -49,9 +49,9 @@ export default class NewPoint {
     this._editPointComponent.removeFlatpickr();
     this._editPointComponent = null;
     newEventButton.disabled = false;
-    newEventButton.addEventListener(`click`, renderNewPointForm);
+    newEventButton.addEventListener(`click`, newButtonClickHandler);
 
-    document.removeEventListener(`keydown`, this._escKeyDownHandler);
+    document.removeEventListener(`keydown`, this._documentKeyDownHandler);
   }
 
   setSaving() {
@@ -97,7 +97,7 @@ export default class NewPoint {
     this.destroy();
   }
 
-  _escKeyDownHandler(evt) {
+  _documentKeyDownHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
       this.destroy();

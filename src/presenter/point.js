@@ -19,7 +19,7 @@ export default class Point {
     this._handleExitEditModeClick = this._handleExitEditModeClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
-    this._handleEscKeyDown = this._handleEscKeyDown.bind(this);
+    this._documentKeyDownHandler = this._documentKeyDownHandler.bind(this);
   }
 
   init(point) {
@@ -110,7 +110,7 @@ export default class Point {
     this._editTripPoint.setFormSubmitHandler(this._handleFormSubmit);
     this._editTripPoint.setExitEditModeClickHandler(this._handleExitEditModeClick);
     this._editTripPoint.setDeleteClickHandler(this._handleDeleteClick);
-    document.addEventListener(`keydown`, this._handleEscKeyDown);
+    document.addEventListener(`keydown`, this._documentKeyDownHandler);
     this._changeMode();
     this._mode = Mode.EDITING;
   }
@@ -121,11 +121,11 @@ export default class Point {
     replace(this._tripPoint, this._editTripPoint);
     this._editTripPoint.removeFlatpickr();
     this._tripPoint.setOpenFormClickHandler(this._handleOpenEditFormClick);
-    document.removeEventListener(`keydown`, this._handleEscKeyDown);
+    document.removeEventListener(`keydown`, this._documentKeyDownHandler);
     this._mode = Mode.DEFAULT;
   }
 
-  _handleEscKeyDown(evt) {
+  _documentKeyDownHandler(evt) {
     if (evt.key === `Escape` || evt.key === `Esc`) {
       evt.preventDefault();
       this._replaceFormToPoint();

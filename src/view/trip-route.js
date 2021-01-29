@@ -21,7 +21,7 @@ const createTripRouteTemplate = (points) => {
   </div>`;
 };
 
-export default class TripInfo extends Abstract {
+export default class TripRoute extends Abstract {
   constructor(points) {
     super();
     this._points = points;
