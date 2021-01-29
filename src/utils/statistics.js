@@ -7,11 +7,10 @@ const getPointListOfSpecifiedType = (points, type) => {
 
 const getTotalPriceByType = (points, type) => {
   const items = getPointListOfSpecifiedType(points, type);
-  const total = items.reduce(function (sum, point) {
+
+  return items.reduce(function (sum, point) {
     return sum + point.price;
   }, 0);
-
-  return total;
 };
 
 const getTotalCountByType = (points, type) => {
